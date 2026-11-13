@@ -2,6 +2,12 @@
 
 O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/), e as versões seguem o [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.0.1] - 2026-11
+
+### Corrigido
+
+- Geração das imagens Docker para arm64: a compilação passou a rodar na arquitetura da máquina de build, sem emulação. Na 1.0.0, a imagem da API para arm64 levava mais de uma hora para compilar no GitHub Actions.
+
 ## [1.0.0] - 2026-11
 
 Primeira versão pública, com o escopo inicial do plano em sete etapas.
