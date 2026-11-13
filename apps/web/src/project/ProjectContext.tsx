@@ -1,4 +1,5 @@
 import { createContext, use, useEffect, useState, type ReactNode } from 'react';
+import { AccountStore } from '../account/accountStore';
 import { LearningStore } from '../learning/learningStore';
 import { EditorStatusStore } from './editorStatus';
 import { ProjectStore } from './projectStore';
@@ -10,6 +11,7 @@ interface Stores {
   run: RunStore;
   editor: EditorStatusStore;
   learning: LearningStore;
+  account: AccountStore;
 }
 
 const ProjectContext = createContext<Stores | null>(null);
@@ -25,11 +27,13 @@ export function ProjectProvider({
   const [stores] = useState<Stores>(() => {
     const project = new ProjectStore();
     const run = new RunStore();
+    const account = new AccountStore();
     return {
       project,
       run,
+      account,
       editor: new EditorStatusStore(),
-      learning: new LearningStore(project, run),
+      learning: new LearningStore(project, run, account),
     };
   });
 
@@ -38,7 +42,8 @@ export function ProjectProvider({
     void (storage ?? createBestStorage)().then((s) => {
       if (cancelled) return;
       void stores.project.init(s);
-      void stores.learning.init(s);
+      // a sessão é consultada antes, para o progresso vir da conta quando houver login
+      void stores.account.refresh().then(() => stores.learning.init(s));
     });
     const onHide = () => void stores.project.flush();
     window.addEventListener('pagehide', onHide);

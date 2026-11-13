@@ -2,9 +2,18 @@
 
 Plataforma educacional de programação, de código aberto, que reúne um editor no estilo VS Code e trilhas de aprendizagem com etapas pedagógicas, glossário pessoal, desafios e avaliações.
 
-**Status:** Etapas 1 e 2 concluídas; Etapa 3 (trilhas e conteúdo) em validação. Áreas da interface marcadas com "Em breve" ainda não funcionam e indicam a etapa em que serão entregues.
+**Status:** Etapas 1 a 3 concluídas; Etapa 4 (cadastro e perfis) em validação. Áreas da interface marcadas com "Em breve" ainda não funcionam e indicam a etapa em que serão entregues.
 
 ## O que já funciona
+
+**Cadastro e perfis (Etapa 4)**
+
+- Cadastro por e-mail e senha, com confirmação obrigatória do e-mail antes do primeiro login; reenvio do link.
+- Login, logout, recuperação de senha por link enviado por e-mail e troca de senha (encerra as sessões em outros aparelhos).
+- Edição de nome e instituição.
+- Papéis aluno, professor e administrador, verificados na API. Todo cadastro é de aluno; um administrador promove contas na visão Conta. O primeiro administrador é criado com `pnpm admin:criar email@exemplo.org`.
+- Progresso nas trilhas salvo na conta; no primeiro login, o progresso feito no navegador é importado. Notas da avaliação registradas pelo servidor.
+- Senhas com hash scrypt, sessões em cookie `HttpOnly` e limite de tentativas em login, cadastro e recuperação de senha (Better Auth).
 
 **Trilhas e conteúdo (Etapa 3)**
 
@@ -14,7 +23,7 @@ Plataforma educacional de programação, de código aberto, que reúne um editor
 - Desafios corrigidos por testes automáticos executados no sandbox, com uma orientação para cada item não atendido.
 - Avaliações corrigidas no servidor (o gabarito não chega ao navegador), com feedback para cada alternativa e nota mínima de 70%.
 - Exemplo, experimento e desafio de cada unidade abrem em projetos separados; o projeto livre do aluno é preservado.
-- Progresso guardado no navegador (até existir login, na Etapa 4).
+- Progresso guardado no navegador sem login e na conta com login (Etapa 4).
 - Conteúdo em arquivos (`content/`), validado e carregado no banco sem recompilar a plataforma. Guia de autoria em [content/README.md](content/README.md).
 
 **Editor e execução (Etapa 2)**
@@ -70,25 +79,36 @@ pnpm dev
 
 Endereços em desenvolvimento:
 
-| Serviço           | Endereço                         |
-| ----------------- | -------------------------------- |
-| Interface         | http://localhost:5173            |
-| API               | http://localhost:3000/api/health |
-| Sandbox (Etapa 2) | http://localhost:5174            |
-| Caixa de e-mail   | http://localhost:8025            |
+| Serviço         | Endereço                         |
+| --------------- | -------------------------------- |
+| Interface       | http://localhost:5173            |
+| API             | http://localhost:3000/api/health |
+| Sandbox         | http://localhost:5174            |
+| Caixa de e-mail | http://localhost:8025            |
 
 ## Comandos
 
-| Comando            | O que faz                                                          |
-| ------------------ | ------------------------------------------------------------------ |
-| `pnpm dev`         | Sobe interface, API e sandbox com recarga automática               |
-| `pnpm test`        | Testes de unidade e integração (os de banco exigem `DATABASE_URL`) |
-| `pnpm test:e2e`    | Testes no navegador em três tamanhos de tela (Playwright)          |
-| `pnpm lint`        | ESLint                                                             |
-| `pnpm typecheck`   | Verificação de tipos do TypeScript                                 |
-| `pnpm build`       | Build de produção de todos os pacotes                              |
-| `pnpm db:generate` | Gera uma migração a partir de `apps/api/src/db/schema.ts`          |
-| `pnpm db:migrate`  | Aplica as migrações pendentes                                      |
+| Comando                            | O que faz                                                          |
+| ---------------------------------- | ------------------------------------------------------------------ |
+| `pnpm dev`                         | Sobe interface, API e sandbox com recarga automática               |
+| `pnpm test`                        | Testes de unidade e integração (os de banco exigem `DATABASE_URL`) |
+| `pnpm test:e2e`                    | Testes no navegador em três tamanhos de tela (Playwright)          |
+| `pnpm lint`                        | ESLint                                                             |
+| `pnpm typecheck`                   | Verificação de tipos do TypeScript                                 |
+| `pnpm build`                       | Build de produção de todos os pacotes                              |
+| `pnpm db:generate`                 | Gera uma migração a partir de `apps/api/src/db/schema.ts`          |
+| `pnpm db:migrate`                  | Aplica as migrações pendentes                                      |
+| `pnpm content:validate`            | Valida o conteúdo de `content/` e mostra erros com arquivo e campo |
+| `pnpm content:sync`                | Carrega o conteúdo no banco (sem recompilar a plataforma)          |
+| `pnpm content:links`               | Confere se os links de leitura complementar respondem              |
+| `pnpm admin:criar <email>`         | Torna administradora uma conta já cadastrada                       |
+| `pnpm admin:papel <email> <papel>` | Define o papel (aluno, professor ou admin) de uma conta            |
+
+Os testes no navegador (`pnpm test:e2e`) sobem a API e precisam do PostgreSQL ativo.
+
+## Publicação
+
+A interface e a API devem ser servidas na **mesma origem** (por exemplo, a API em `/api` atrás de um proxy reverso), porque a sessão usa cookies. Em produção, defina `BETTER_AUTH_SECRET`, `PUBLIC_URL` e o servidor SMTP (`SMTP_*`, `MAIL_FROM`). Veja `.env.example`.
 
 ## Publicação do sandbox
 
@@ -100,7 +120,7 @@ O sandbox (`apps/sandbox`) gera um único arquivo HTML, sem dependências. Em pr
 - `import` entre arquivos JavaScript (módulos ES) ainda não é suportado.
 - As mensagens de erro do JavaScript vêm do navegador e do Monaco, em inglês.
 - O verificador de HTML cobre os erros mais comuns (tags não fechadas, fechamento sem abertura); não é um validador completo.
-- O progresso fica no navegador até a Etapa 4 (login); trocar de navegador ou limpar os dados do site recomeça o progresso.
+- Sem login, o progresso fica só no navegador; ao entrar, ele é levado para a conta.
 - O registro de termos no Meu Glossário chega na Etapa 6; a etapa de vocabulário já sugere os termos e as pistas de pesquisa.
 
 ## Estrutura
@@ -114,8 +134,8 @@ packages/
   shared/     schemas e tipos usados pela interface e pela API
   runners/    execução: protocolo, proteção contra laço infinito, testes de desafio
   content/    formato do conteúdo: schema, validação e compilação
-content/      trilhas, módulos e unidades (texto, desafios e avaliações)
   ui/         tokens visuais (cores, tipografia, espaçamento)
+content/      trilhas, módulos e unidades (texto, desafios e avaliações)
 docs/         análise, arquitetura e plano por etapas
 ```
 

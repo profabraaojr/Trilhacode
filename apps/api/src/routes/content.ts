@@ -8,7 +8,10 @@ import type {
 import { asc, eq } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
+import type { Auth } from '../auth.js';
 import type { Database } from '../db/client.js';
+import { recordAssessment } from './account.js';
+import { getSessionUser } from './session.js';
 import { module, track, unit } from '../db/schema.js';
 
 const answersSchema = z.object({ respostas: z.record(z.string(), z.string()) });
@@ -28,7 +31,10 @@ const toSummary = (u: UnitRow): UnitSummary => ({
 const notFound = { erro: 'não encontrado' };
 
 /** Rotas públicas de leitura do conteúdo e de correção das avaliações. */
-export async function contentRoutes(app: FastifyInstance, { db }: { db: Database }) {
+export async function contentRoutes(
+  app: FastifyInstance,
+  { db, auth }: { db: Database; auth?: Auth },
+) {
   app.get('/api/trilhas', async (): Promise<TrackSummary[]> => {
     const tracks = await db
       .select()
@@ -131,6 +137,17 @@ export async function contentRoutes(app: FastifyInstance, { db }: { db: Database
       });
       const acertos = questoes.filter((q) => q.correta).length;
       const nota = questoes.length ? Math.round((acertos / questoes.length) * 100) : 0;
+      // Com sessão, a nota fica registrada na conta (a correção acontece aqui, no servidor).
+      const sessionUser = auth ? await getSessionUser(auth, req) : null;
+      if (sessionUser) {
+        await recordAssessment(
+          db,
+          sessionUser.id,
+          req.params['*'],
+          nota,
+          nota >= row.key.notaMinima,
+        );
+      }
       return {
         nota,
         notaMinima: row.key.notaMinima,

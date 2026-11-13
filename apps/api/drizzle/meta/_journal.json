@@ -15,6 +15,13 @@
       "when": 1794576641457,
       "tag": "0001_conteudo",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794578810123,
+      "tag": "0002_contas",
+      "breakpoints": true
     }
   ]
 }

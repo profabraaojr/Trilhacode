@@ -1,6 +1,6 @@
 {
   "name": "@trilhacode/web",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "license": "AGPL-3.0-only",
   "type": "module",
@@ -20,6 +20,7 @@
     "@trilhacode/shared": "workspace:*",
     "@trilhacode/ui": "workspace:*",
     "@xyflow/react": "^12.12.0",
+    "better-auth": "1.7.14",
     "lucide-react": "^1.0.0",
     "monaco-editor": "^0.57.0",
     "react": "^19.2.0",

@@ -41,7 +41,6 @@ export const VIEWS: ViewDef[] = [
     id: 'conta',
     label: 'Conta',
     icon: UserRound,
-    stage: 4,
     description: 'Cadastro, login, dados pessoais e troca de senha.',
     placement: 'bottom',
   },

@@ -35,7 +35,11 @@ export function DesktopWorkbench({ api }: { api: ApiStatus }) {
   const contentRef = usePanelRef();
   const panelRef = usePanelRef();
 
-  const [activeView, setActiveView] = useState<ViewId>('trilhas');
+  const { learning, account } = useStores();
+  // Vindo de um link de e-mail (confirmação ou nova senha), abre direto na Conta.
+  const [activeView, setActiveView] = useState<ViewId>(() =>
+    account.getState().urlAction ? 'conta' : 'trilhas',
+  );
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [contentOpen, setContentOpen] = useState(!compactAtMount);
   const [panelOpen, setPanelOpen] = useState(true);
@@ -50,7 +54,6 @@ export function DesktopWorkbench({ api }: { api: ApiStatus }) {
   useWorkbenchShortcuts({ toggleSidebar, togglePanel, toggleContent });
 
   // Ao abrir uma unidade, o painel de conteúdo aparece.
-  const { learning } = useStores();
   useEffect(() => {
     let last = learning.getState().focus?.nonce ?? 0;
     return learning.subscribe(() => {
@@ -175,6 +178,10 @@ export function DesktopWorkbench({ api }: { api: ApiStatus }) {
         onToggleSidebar={toggleSidebar}
         onTogglePanel={togglePanel}
         onToggleContent={toggleContent}
+        onShowAccount={() => {
+          setActiveView('conta');
+          if (sidebarRef.current?.isCollapsed()) sidebarRef.current.expand();
+        }}
       />
     </div>
   );

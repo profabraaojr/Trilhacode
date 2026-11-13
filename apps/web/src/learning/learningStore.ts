@@ -6,7 +6,8 @@ import type {
   UnitPayload,
 } from '@trilhacode/content/types';
 import { UNIT_STEPS, type UnitStepId } from '@trilhacode/shared';
-import { contentApi } from '../api/client';
+import type { AccountStore } from '../account/accountStore';
+import { accountApi, contentApi } from '../api/client';
 import { Store } from '../lib/store';
 import { DEFAULT_PROJECT, type ProjectStore } from '../project/projectStore';
 import type { RunStore } from '../project/runStore';
@@ -58,6 +59,7 @@ export class LearningStore extends Store<LearningState> {
   constructor(
     private readonly project: ProjectStore,
     private readonly run: RunStore,
+    private readonly account: AccountStore,
   ) {
     super({
       tracks: { status: 'idle' },
@@ -71,16 +73,57 @@ export class LearningStore extends Store<LearningState> {
       focus: null,
     });
     this.watchRuns();
+    this.watchAccount();
+  }
+
+  private signedIn() {
+    return this.account.getState().status === 'signed-in';
+  }
+
+  /**
+   * Com login, o progresso vem da conta. No primeiro login, o que estava só no
+   * navegador é importado para a conta e apagado do navegador. Ao sair, volta o local.
+   */
+  private watchAccount() {
+    let last = this.account.getState().status;
+    this.account.subscribe(() => {
+      const status = this.account.getState().status;
+      if (status === last) return;
+      last = status;
+      if (status === 'signed-in') void this.loadAccountProgress();
+      if (status === 'anonymous') void this.loadLocalProgress();
+    });
+  }
+
+  private async loadLocalProgress() {
+    try {
+      const v = await this.storage?.get(PROGRESS_KEY);
+      this.setState({ progress: isProgressData(v) ? v : emptyProgress() });
+    } catch {
+      this.setState({ progress: emptyProgress() });
+    }
+  }
+
+  private async loadAccountProgress() {
+    try {
+      const local = await this.storage?.get(PROGRESS_KEY);
+      let progress: ProgressData;
+      if (isProgressData(local) && Object.keys(local.units).length > 0) {
+        progress = await accountApi.importProgress(local);
+        await this.storage?.set(PROGRESS_KEY, emptyProgress());
+      } else {
+        progress = await accountApi.getProgress();
+      }
+      if (this.signedIn()) this.setState({ progress });
+    } catch {
+      /* sem conexão: mantém o que está na tela */
+    }
   }
 
   async init(storage: RecordStorage) {
     this.storage = storage;
-    try {
-      const v = await storage.get(PROGRESS_KEY);
-      if (isProgressData(v)) this.setState({ progress: v });
-    } catch {
-      /* segue com progresso vazio */
-    }
+    if (this.signedIn()) await this.loadAccountProgress();
+    else await this.loadLocalProgress();
   }
 
   async loadTracks() {
@@ -153,6 +196,13 @@ export class LearningStore extends Store<LearningState> {
       ...current,
       steps: { ...current.steps, [step]: new Date().toISOString() },
     });
+    // A avaliação é registrada pelo próprio servidor ao corrigir.
+    if (this.signedIn() && step !== 'avaliacao') {
+      void accountApi
+        .completeStep(unitId, step)
+        .then((progress) => this.signedIn() && this.setState({ progress }))
+        .catch(() => undefined);
+    }
   }
 
   /** Abre no editor os arquivos de uma etapa (exemplo, experimento ou desafio). */
@@ -220,7 +270,7 @@ export class LearningStore extends Store<LearningState> {
       units: { ...this.state.progress.units, [unitId]: value },
     };
     this.setState({ progress });
-    void this.storage?.set(PROGRESS_KEY, progress).catch(() => undefined);
+    if (!this.signedIn()) void this.storage?.set(PROGRESS_KEY, progress).catch(() => undefined);
   }
 
   /**

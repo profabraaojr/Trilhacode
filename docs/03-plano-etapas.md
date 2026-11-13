@@ -36,7 +36,7 @@ Cada etapa termina com uma entrega testável e só avança depois de validada. O
 
 ## Etapa 3. Trilhas e conteúdo
 
-**Situação:** implementada, aguardando validação. Escopo definido com o responsável: 4 unidades, público do ensino técnico, rascunho autoral para revisão, MDN como leitura complementar. Decisões tomadas na implementação:
+**Situação:** concluída e validada em 13/11/2026. Escopo definido com o responsável: 4 unidades, público do ensino técnico, rascunho autoral para revisão, MDN como leitura complementar. Decisões tomadas na implementação:
 
 - **Progresso no navegador** até a Etapa 4, quando será associado à conta do aluno.
 - **Vocabulário:** a etapa sugere termos com pistas de pesquisa (sem a definição pronta); o formulário do Meu Glossário segue previsto para a Etapa 6.
@@ -54,6 +54,15 @@ Cada etapa termina com uma entrega testável e só avança depois de validada. O
 **Aceite:** adicionar uma unidade nova apenas criando arquivos em `content/` e rodando `content:sync`, sem recompilar; percorrer uma unidade do início ao fim.
 
 ## Etapa 4. Cadastro e perfis
+
+**Situação:** implementada, aguardando validação. Definições aprovadas pelo responsável:
+
+1. Todo cadastro é de aluno; contas de professor são promovidas por um administrador.
+2. O primeiro administrador é criado por comando no servidor (`pnpm admin:criar`).
+3. O cadastro pede nome, e-mail, senha e instituição (opcional); turma e professor serão definidos na matrícula (Etapa 5).
+4. E-mail por qualquer servidor SMTP configurado; Mailpit em desenvolvimento.
+
+Decisões de implementação: interface e API na mesma origem (sessão em cookie); a avaliação de quem está logado é registrada pelo servidor ao corrigir, enquanto as demais etapas são marcadas pela interface; a importação do progresso do navegador aceita o que estava salvo localmente; nos testes automatizados, os e-mails ficam em memória (`MAIL_CAPTURE`), opção recusada em produção.
 
 - Cadastro, login, logout, verificação de e-mail, recuperação e troca de senha.
 - Papéis aluno, professor e administrador, verificados na API.
