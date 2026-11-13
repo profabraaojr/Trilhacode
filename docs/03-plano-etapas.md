@@ -4,6 +4,8 @@ Cada etapa termina com uma entrega testável e só avança depois de validada. O
 
 ## Etapa 1. Fundação e identidade visual
 
+**Situação:** implementada, aguardando validação. Desvios do plano original: o pacote `packages/ui` contém só os tokens visuais (componentes ficam em `apps/web` até haver reuso); `packages/content-schema` e `packages/runners` serão criados nas Etapas 3 e 2, quando tiverem conteúdo.
+
 **Entrega:** monorepo funcionando, banco e e-mail locais, interface-esqueleto no estilo VS Code.
 
 - Monorepo pnpm com `apps/web`, `apps/api`, `apps/sandbox` e pacotes compartilhados.

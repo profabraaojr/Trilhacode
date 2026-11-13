@@ -1,0 +1,10 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Só instala versões publicadas há pelo menos 14 dias (em minutos).
+# Reduz o risco de pacotes comprometidos recém-publicados.
+minimumReleaseAge: 20160
+
+onlyBuiltDependencies:
+  - esbuild

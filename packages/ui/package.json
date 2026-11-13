@@ -1,0 +1,11 @@
+{
+  "name": "@trilhacode/ui",
+  "version": "0.1.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "description": "Tokens visuais (cores, tipografia, espaçamento) da TrilhaCode.",
+  "exports": {
+    "./tokens.css": "./src/tokens.css"
+  }
+}

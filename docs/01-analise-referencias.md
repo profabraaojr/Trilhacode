@@ -4,12 +4,12 @@ Data da verificação: 13/11/2026. As licenças foram lidas diretamente dos repo
 
 ## Síntese
 
-| | LiveCodes | Roadmap.sh |
-|---|---|---|
-| Repositório | `live-codes/livecodes` | `kamranahmedse/developer-roadmap` |
-| Licença | MIT | Licença própria, restritiva (todos os direitos reservados) |
-| Pode ser reutilizado? | Sim: código, build e SDK, com aviso de copyright | Não: nem textos, nem imagens, nem arquivos do projeto |
-| O que aproveitamos | Componente técnico (execução de código no navegador) | Apenas a ideia de organização (mapa de nós com dependências) |
+|                       | LiveCodes                                            | Roadmap.sh                                                   |
+| --------------------- | ---------------------------------------------------- | ------------------------------------------------------------ |
+| Repositório           | `live-codes/livecodes`                               | `kamranahmedse/developer-roadmap`                            |
+| Licença               | MIT                                                  | Licença própria, restritiva (todos os direitos reservados)   |
+| Pode ser reutilizado? | Sim: código, build e SDK, com aviso de copyright     | Não: nem textos, nem imagens, nem arquivos do projeto        |
+| O que aproveitamos    | Componente técnico (execução de código no navegador) | Apenas a ideia de organização (mapa de nós com dependências) |
 
 A diferença de licença define a estratégia: o LiveCodes pode entrar na plataforma como dependência; o Roadmap.sh só pode servir de inspiração conceitual.
 
@@ -58,10 +58,10 @@ Se houver interesse em usar conteúdo do Roadmap.sh, o caminho é pedir autoriza
 
 ## 3. O que cada referência inspira
 
-| Necessidade do projeto | Origem da solução |
-|---|---|
-| Editor com visual de VS Code | Monaco Editor (MIT), o mesmo editor usado no VS Code. O LiveCodes também usa Monaco, mas usá-lo diretamente nos dá a interface completa. |
-| Execução segura no navegador | Padrão do LiveCodes: iframe `sandbox` em origem separada + `postMessage`. Implementação própria para HTML/CSS/JS; LiveCodes auto-hospedado para outras linguagens. |
-| Correção automática de desafios | Testes executados no sandbox (próprios) e `runTests` do SDK (para linguagens via LiveCodes). |
-| Mapa visual da jornada | Ideia de grafo de tópicos; renderização própria com React Flow (`@xyflow/react`, MIT). Conteúdo autoral. |
-| Marcação de progresso | Ideia geral do Roadmap.sh, com modelo pedagógico próprio (etapas, glossário, avaliação). |
+| Necessidade do projeto          | Origem da solução                                                                                                                                                  |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Editor com visual de VS Code    | Monaco Editor (MIT), o mesmo editor usado no VS Code. O LiveCodes também usa Monaco, mas usá-lo diretamente nos dá a interface completa.                           |
+| Execução segura no navegador    | Padrão do LiveCodes: iframe `sandbox` em origem separada + `postMessage`. Implementação própria para HTML/CSS/JS; LiveCodes auto-hospedado para outras linguagens. |
+| Correção automática de desafios | Testes executados no sandbox (próprios) e `runTests` do SDK (para linguagens via LiveCodes).                                                                       |
+| Mapa visual da jornada          | Ideia de grafo de tópicos; renderização própria com React Flow (`@xyflow/react`, MIT). Conteúdo autoral.                                                           |
+| Marcação de progresso           | Ideia geral do Roadmap.sh, com modelo pedagógico próprio (etapas, glossário, avaliação).                                                                           |
