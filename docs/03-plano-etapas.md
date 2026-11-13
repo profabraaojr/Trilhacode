@@ -4,7 +4,7 @@ Cada etapa termina com uma entrega testável e só avança depois de validada. O
 
 ## Etapa 1. Fundação e identidade visual
 
-**Situação:** implementada, aguardando validação. Desvios do plano original: o pacote `packages/ui` contém só os tokens visuais (componentes ficam em `apps/web` até haver reuso); `packages/content-schema` e `packages/runners` serão criados nas Etapas 3 e 2, quando tiverem conteúdo.
+**Situação:** concluída e validada em 13/11/2026. Desvios do plano original: o pacote `packages/ui` contém só os tokens visuais (componentes ficam em `apps/web` até haver reuso); `packages/content-schema` e `packages/runners` serão criados nas Etapas 3 e 2, quando tiverem conteúdo.
 
 **Entrega:** monorepo funcionando, banco e e-mail locais, interface-esqueleto no estilo VS Code.
 
@@ -18,6 +18,14 @@ Cada etapa termina com uma entrega testável e só avança depois de validada. O
 **Aceite:** um comando instala e sobe o projeto; a interface abre em computador, tablet e celular; painéis sem função ainda aparecem identificados como "em breve"; CI verde.
 
 ## Etapa 2. Editor e execução
+
+**Situação:** implementada, aguardando validação. Decisões tomadas na implementação:
+
+- O resultado ficou ao lado do editor (como a visualização ao vivo de um editor), e o painel inferior ficou com o console. No celular, a aba Resultado mostra resultado e console empilhados.
+- `index.html` é o arquivo de entrada; CSS e JS só entram quando vinculados nele, para o aluno aprender a vincular arquivos como em um site real. A plataforma avisa quando há arquivo não vinculado.
+- Laço infinito: o código é instrumentado com uma verificação de tempo em cada laço (limite de 1 s), além de um vigia que encerra o iframe se a página parar de responder por 4 s.
+- Diagnósticos de HTML: o Monaco não traz validação de HTML; foi escrito um verificador de tags para os erros comuns de iniciantes.
+- O painel de conteúdo da unidade começa recolhido até existir conteúdo (Etapa 3).
 
 - Monaco com abas, explorador de arquivos (criar, renomear, excluir), destaque de sintaxe, diagnósticos de HTML, CSS e JS.
 - Executor web em iframe isolado, console com `log`, `warn`, `error` e exceções, limite de tempo.

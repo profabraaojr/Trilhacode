@@ -2,11 +2,11 @@ import { useCallback, useState } from 'react';
 import { Group, Panel, Separator, useDefaultLayout, usePanelRef } from 'react-resizable-panels';
 import type { ApiStatus } from '../api/useApiHealth';
 import { safeStorage } from '../lib/storage';
-import { COMPACT_QUERY, useMediaQuery } from '../lib/useMediaQuery';
 import { ActivityBar } from './ActivityBar';
-import { BottomPanel } from './BottomPanel';
+import { ConsolePanel } from './ConsolePanel';
 import { ContentPane } from './ContentPane';
 import { EditorArea } from './EditorArea';
+import { PreviewPane } from './PreviewPane';
 import { useWorkbenchShortcuts } from './shortcuts';
 import { SideBar } from './SideBar';
 import { StatusBar } from './StatusBar';
@@ -26,21 +26,22 @@ function togglePanelRef(ref: PanelRef) {
  * Painéis recolhidos ficam com `hidden`, para não serem lidos por leitores de tela nem focados.
  */
 export function DesktopWorkbench({ api }: { api: ApiStatus }) {
-  // No tablet o painel de conteúdo começa recolhido para sobrar espaço ao editor.
-  const [compactAtMount] = useState(() => window.matchMedia(COMPACT_QUERY).matches);
-  useMediaQuery(COMPACT_QUERY);
+  // O painel de conteúdo começa recolhido enquanto não há conteúdo de unidades (Etapa 3),
+  // deixando espaço para o editor e o resultado.
+  const compactAtMount = true;
 
   const sidebarRef = usePanelRef();
   const contentRef = usePanelRef();
   const panelRef = usePanelRef();
 
-  const [activeView, setActiveView] = useState<ViewId>('trilhas');
+  const [activeView, setActiveView] = useState<ViewId>('explorador');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [contentOpen, setContentOpen] = useState(!compactAtMount);
   const [panelOpen, setPanelOpen] = useState(true);
 
   const horizontal = useDefaultLayout({ id: 'tc:layout:h', storage: safeStorage });
   const vertical = useDefaultLayout({ id: 'tc:layout:v', storage: safeStorage });
+  const editorSplit = useDefaultLayout({ id: 'tc:layout:editor', storage: safeStorage });
 
   const toggleSidebar = useCallback(() => togglePanelRef(sidebarRef), [sidebarRef]);
   const toggleContent = useCallback(() => togglePanelRef(contentRef), [contentRef]);
@@ -89,21 +90,34 @@ export function DesktopWorkbench({ api }: { api: ApiStatus }) {
               defaultLayout={vertical.defaultLayout}
               onLayoutChange={vertical.onLayoutChange}
             >
-              <Panel id="editor" defaultSize="70" minSize="20">
-                <EditorArea />
+              <Panel id="editor" defaultSize="68" minSize="20">
+                <Group
+                  orientation="horizontal"
+                  className="panel-group"
+                  defaultLayout={editorSplit.defaultLayout}
+                  onLayoutChange={editorSplit.onLayoutChange}
+                >
+                  <Panel id="code" defaultSize="55" minSize="25">
+                    <EditorArea />
+                  </Panel>
+                  <Separator className="resize-handle resize-handle-v" />
+                  <Panel id="preview" defaultSize="45" minSize="200px">
+                    <PreviewPane />
+                  </Panel>
+                </Group>
               </Panel>
               <Separator className="resize-handle resize-handle-h" />
               <Panel
                 id="panel"
                 panelRef={panelRef}
-                defaultSize="30"
+                defaultSize="32"
                 minSize="100px"
                 collapsible
                 collapsedSize="0"
                 onResize={() => setPanelOpen(!panelRef.current?.isCollapsed())}
               >
                 <div className="panel-slot" hidden={!panelOpen}>
-                  <BottomPanel onClose={togglePanel} />
+                  <ConsolePanel onClose={togglePanel} />
                 </div>
               </Panel>
             </Group>

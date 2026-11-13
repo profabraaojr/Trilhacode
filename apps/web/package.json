@@ -1,6 +1,6 @@
 {
   "name": "@trilhacode/web",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "license": "AGPL-3.0-only",
   "type": "module",
@@ -15,9 +15,11 @@
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.0",
     "@fontsource-variable/jetbrains-mono": "^5.2.0",
+    "@trilhacode/runners": "workspace:*",
     "@trilhacode/shared": "workspace:*",
     "@trilhacode/ui": "workspace:*",
     "lucide-react": "^1.0.0",
+    "monaco-editor": "^0.57.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-resizable-panels": "^4.0.0"

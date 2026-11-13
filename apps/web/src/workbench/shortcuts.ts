@@ -4,6 +4,11 @@ const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigat
 const MOD = isMac ? '⌘' : 'Ctrl';
 
 export const SHORTCUTS = [
+  { keys: `${MOD}+Enter`, description: 'Executar o projeto (no editor)' },
+  {
+    keys: `${MOD}+S`,
+    description: 'Salvar e executar (no editor; o salvamento também é automático)',
+  },
   { keys: `${MOD}+B`, description: 'Mostrar ou ocultar a barra lateral' },
   { keys: `${MOD}+J`, description: 'Mostrar ou ocultar o painel inferior' },
   { keys: `${MOD}+Alt+B`, description: 'Mostrar ou ocultar o painel de conteúdo' },

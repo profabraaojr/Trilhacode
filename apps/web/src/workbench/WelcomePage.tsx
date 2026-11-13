@@ -5,7 +5,7 @@ export function WelcomePage() {
   return (
     <article className="welcome">
       <header>
-        <p className="welcome-kicker">TrilhaCode · versão 0.1.0</p>
+        <p className="welcome-kicker">TrilhaCode · versão 0.2.0</p>
         <h1 className="welcome-title">
           Aprender programação escrevendo, testando e entendendo o código.
         </h1>
