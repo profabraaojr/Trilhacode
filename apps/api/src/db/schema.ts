@@ -310,3 +310,83 @@ export const customAttempt = pgTable(
   },
   (t) => [index().on(t.assessmentId, t.userId)],
 );
+
+/* ---------------------------------------------------------------- Avaliação e evolução */
+
+/** Cada tentativa de avaliação de unidade (histórico de desempenho). */
+export const assessmentAttempt = pgTable(
+  'assessment_attempt',
+  {
+    id: text().primaryKey(),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    unitId: text()
+      .notNull()
+      .references(() => unit.id, { onDelete: 'cascade' }),
+    score: integer().notNull(),
+    passed: boolean().notNull(),
+    createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index().on(t.userId, t.createdAt)],
+);
+
+/** Melhor resultado do aluno no desafio de cada unidade (testes do sandbox). */
+export const challengeResult = pgTable(
+  'challenge_result',
+  {
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    unitId: text()
+      .notNull()
+      .references(() => unit.id, { onDelete: 'cascade' }),
+    bestPassed: integer().notNull(),
+    total: integer().notNull(),
+    attempts: integer().notNull().default(1),
+    updatedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.unitId] })],
+);
+
+/** Termos do Meu Glossário. */
+export const glossaryTerm = pgTable(
+  'glossary_term',
+  {
+    id: text().primaryKey(),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    term: text().notNull(),
+    meaning: text().notNull().default(''),
+    ownExplanation: text().notNull().default(''),
+    example: text().notNull().default(''),
+    /** Explicação aceita como escrita com as próprias palavras (verificada no servidor). */
+    ownWords: boolean().notNull().default(false),
+    unitId: text().references(() => unit.id, { onDelete: 'set null' }),
+    ...timestamps,
+  },
+  (t) => [index().on(t.userId), index().on(t.unitId)],
+);
+
+/**
+ * Livro-razão de pontos: eventos imutáveis. O total do aluno é a soma; um evento
+ * nunca é editado nem apagado (exceto com a exclusão da conta). `ref` identifica o
+ * item pontuado (unidade, unidade/etapa, trilha) e não tem chave estrangeira, para
+ * o histórico sobreviver a revisões do conteúdo.
+ */
+export const pointEvent = pgTable(
+  'point_event',
+  {
+    id: text().primaryKey(),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    kind: text().notNull(),
+    ref: text().notNull(),
+    points: integer().notNull(),
+    description: text().notNull(),
+    createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index().on(t.userId, t.kind, t.ref), index().on(t.userId, t.createdAt)],
+);

@@ -1,6 +1,7 @@
 import { createContext, use, useEffect, useState, type ReactNode } from 'react';
 import { AccountStore } from '../account/accountStore';
 import { ClassroomStore } from '../classes/classroomStore';
+import { GlossaryStore } from '../glossary/glossaryStore';
 import { LearningStore } from '../learning/learningStore';
 import { EditorStatusStore } from './editorStatus';
 import { ProjectStore } from './projectStore';
@@ -14,6 +15,7 @@ interface Stores {
   learning: LearningStore;
   account: AccountStore;
   classroom: ClassroomStore;
+  glossary: GlossaryStore;
 }
 
 const ProjectContext = createContext<Stores | null>(null);
@@ -32,6 +34,7 @@ export function ProjectProvider({
     const account = new AccountStore();
     const learning = new LearningStore(project, run, account);
     const classroom = new ClassroomStore();
+    const glossary = new GlossaryStore(account);
     // O mapa da trilha e as páginas de turma disputam o primeiro plano da área central.
     learning.subscribe(() => {
       if (learning.getState().mapActive && classroom.getState().active) classroom.setActive(false);
@@ -45,6 +48,7 @@ export function ProjectProvider({
       run,
       account,
       classroom,
+      glossary,
       editor: new EditorStatusStore(),
       learning,
     };
@@ -56,7 +60,10 @@ export function ProjectProvider({
       if (cancelled) return;
       void stores.project.init(s);
       // a sessão é consultada antes, para o progresso vir da conta quando houver login
-      void stores.account.refresh().then(() => stores.learning.init(s));
+      void stores.account.refresh().then(() => {
+        void stores.learning.init(s);
+        void stores.glossary.init(s);
+      });
     });
     const onHide = () => void stores.project.flush();
     window.addEventListener('pagehide', onHide);

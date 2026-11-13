@@ -260,6 +260,27 @@ export class LearningStore extends Store<LearningState> {
     }
   }
 
+  /**
+   * Guarda o melhor resultado do desafio (pontos proporcionais aos testes aprovados);
+   * com todos os testes aprovados, a etapa é concluída.
+   */
+  private recordChallenge(unitId: string, passed: number, total: number) {
+    const current = this.state.progress.units[unitId] ?? { steps: {}, attempts: 0 };
+    const previous = current.challenge?.total === total ? current.challenge.passed : 0;
+    const best = Math.max(previous, passed);
+    const steps =
+      best === total && !current.steps.desafio
+        ? { ...current.steps, desafio: new Date().toISOString() }
+        : current.steps;
+    this.updateUnitProgress(unitId, { ...current, steps, challenge: { passed: best, total } });
+    if (this.signedIn()) {
+      void accountApi
+        .recordChallenge(unitId, passed, total)
+        .then((progress) => this.signedIn() && this.setState({ progress }))
+        .catch(() => undefined);
+    }
+  }
+
   requestFocus(area: FocusArea) {
     this.setState({ focus: { area, nonce: ++this.nonce } });
   }
@@ -291,12 +312,12 @@ export class LearningStore extends Store<LearningState> {
       if (testResults && testResults !== lastResults) {
         lastResults = testResults;
         const ws = parseWorkspaceKey(testResults.projectKey);
-        if (
-          ws?.workspace === 'desafio' &&
-          testResults.results.length &&
-          testResults.results.every((r) => r.ok)
-        ) {
-          this.completeStep('desafio', ws.unitId);
+        if (ws?.workspace === 'desafio' && testResults.results.length) {
+          this.recordChallenge(
+            ws.unitId,
+            testResults.results.filter((r) => r.ok).length,
+            testResults.results.length,
+          );
         }
       }
     });

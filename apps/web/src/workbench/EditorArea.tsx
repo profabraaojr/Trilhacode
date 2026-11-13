@@ -1,4 +1,4 @@
-import { ClipboardList, Map as MapIcon, Sparkles, Users, X } from 'lucide-react';
+import { ClipboardList, Map as MapIcon, Sparkles, TrendingUp, Users, X } from 'lucide-react';
 import { lazy, Suspense } from 'react';
 import { useStore } from '../lib/store';
 import { useStores } from '../project/ProjectContext';
@@ -10,6 +10,7 @@ const MonacoEditor = lazy(() => import('../editor/MonacoEditor'));
 const TrackMap = lazy(() => import('../learning/TrackMap'));
 const ClassroomPage = lazy(() => import('../classes/ClassroomPage'));
 const StudentAssessmentPage = lazy(() => import('../classes/StudentAssessmentPage'));
+const EvolutionPage = lazy(() => import('../evolution/EvolutionPage'));
 
 /**
  * Área central: abas de arquivos e editor, além das páginas especiais
@@ -78,10 +79,16 @@ export function EditorArea() {
             >
               {page.kind === 'turma' ? (
                 <Users size={14} aria-hidden="true" />
-              ) : (
+              ) : page.kind === 'avaliacao' ? (
                 <ClipboardList size={14} aria-hidden="true" />
+              ) : (
+                <TrendingUp size={14} aria-hidden="true" />
               )}
-              {page.kind === 'turma' ? 'Turma' : 'Avaliação'} · {page.title}
+              {page.kind === 'turma'
+                ? `Turma · ${page.title}`
+                : page.kind === 'avaliacao'
+                  ? `Avaliação · ${page.title}`
+                  : page.title}
             </button>
             <button
               type="button"
@@ -137,8 +144,10 @@ export function EditorArea() {
           <Suspense fallback={<p className="editor-loading">Carregando…</p>}>
             {page.kind === 'turma' ? (
               <ClassroomPage key={page.id} id={page.id} />
-            ) : (
+            ) : page.kind === 'avaliacao' ? (
               <StudentAssessmentPage key={page.id} id={page.id} />
+            ) : (
+              <EvolutionPage />
             )}
           </Suspense>
         )}

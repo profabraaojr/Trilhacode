@@ -99,12 +99,39 @@ describe('workbench no computador', () => {
     );
   });
 
-  it('identifica como "Em breve" as visões que ainda não funcionam', () => {
+  it('o Meu Glossário registra termos sem login e avisa quando a explicação é cópia', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) =>
+        String(input).includes('/api/me')
+          ? Response.json({ erro: 'Entre na sua conta.' }, { status: 401 })
+          : Response.json({}),
+      ),
+    );
     renderApp();
     fireEvent.click(screen.getByRole('button', { name: 'Meu Glossário' }));
-    expect(screen.getByRole('region', { name: 'Meu Glossário: em breve' })).toHaveTextContent(
-      'Etapa 6',
-    );
+    const sidebar = screen.getByRole('complementary', { name: 'Meu Glossário' });
+    fireEvent.click(within(sidebar).getByRole('button', { name: 'Novo termo' }));
+    const form = within(sidebar).getByRole('form', { name: 'Novo termo' });
+    const significado = 'Elemento que representa o conteúdo principal do documento.';
+    fireEvent.change(within(form).getByLabelText('Palavra ou expressão'), {
+      target: { value: 'main' },
+    });
+    fireEvent.change(within(form).getByLabelText('Significado pesquisado'), {
+      target: { value: significado },
+    });
+    fireEvent.change(within(form).getByLabelText('Explicação com as suas palavras'), {
+      target: { value: significado },
+    });
+    expect(within(form).getByText(/muito parecida com o significado/)).toBeInTheDocument();
+    fireEvent.change(within(form).getByLabelText('Explicação com as suas palavras'), {
+      target: { value: 'É a parte central da página, onde fica o assunto principal; só uma.' },
+    });
+    expect(within(form).getByText('Explicação com as suas palavras.')).toBeInTheDocument();
+    fireEvent.click(within(form).getByRole('button', { name: 'Salvar termo' }));
+    const list = await within(sidebar).findByRole('list', { name: 'Termos do glossário' });
+    expect(await within(list).findByText('main')).toBeInTheDocument();
+    expect(within(list).getByText('própria')).toBeInTheDocument();
   });
 
   it('a visão Configurações altera o tema', () => {

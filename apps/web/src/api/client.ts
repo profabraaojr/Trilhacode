@@ -8,7 +8,11 @@ import type {
   CustomAssessmentInput,
   CustomAssessmentPublic,
   CustomAssessmentResult,
+  Evolution,
+  GlossaryTerm,
+  GlossaryTermInput,
   MyClassroom,
+  StudentGlossary,
   StudentRow,
 } from '@trilhacode/shared';
 import type {
@@ -58,6 +62,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     const body = (await res.json().catch(() => null)) as { erro?: string } | null;
     throw new ApiError(res.status, body?.erro ?? `O servidor respondeu com erro (${res.status}).`);
   }
+  if (res.status === 204) return undefined as T;
   return (await res.json()) as T;
 }
 
@@ -96,6 +101,11 @@ export const accountApi = {
     request<ProgressDataPayload>('/api/progresso/etapas', {
       method: 'POST',
       body: JSON.stringify({ unitId, step }),
+    }),
+  recordChallenge: (unitId: string, passed: number, total: number) =>
+    request<ProgressDataPayload>('/api/progresso/desafio', {
+      method: 'POST',
+      body: JSON.stringify({ unitId, passed, total }),
     }),
   importProgress: (progress: ProgressDataPayload) =>
     request<ProgressDataPayload>('/api/progresso/importar', {
@@ -153,4 +163,23 @@ export const classroomApi = {
       `/api/avaliacoes-turma/${enc(assessmentId)}/respostas`,
       json('POST', { respostas }),
     ),
+};
+
+/* ------------------------------------------------------------ Glossário e evolução */
+
+export const glossaryApi = {
+  list: () => request<GlossaryTerm[]>('/api/glossario'),
+  create: (input: GlossaryTermInput) =>
+    request<GlossaryTerm>('/api/glossario', json('POST', input)),
+  update: (id: string, input: GlossaryTermInput) =>
+    request<GlossaryTerm>(`/api/glossario/${enc(id)}`, json('PUT', input)),
+  remove: (id: string) => request<void>(`/api/glossario/${enc(id)}`, json('DELETE')),
+  importTerms: (terms: GlossaryTermInput[]) =>
+    request<GlossaryTerm[]>('/api/glossario/importar', json('POST', { terms })),
+  ofStudent: (classroomId: string, userId: string) =>
+    request<StudentGlossary>(`/api/turmas/${enc(classroomId)}/alunos/${enc(userId)}/glossario`),
+};
+
+export const evolutionApi = {
+  get: () => request<Evolution>('/api/evolucao'),
 };

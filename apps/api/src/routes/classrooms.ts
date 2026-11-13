@@ -23,6 +23,7 @@ import {
   type CustomAssessmentPublic,
   type CustomAssessmentResult,
   type MyClassroom,
+  type StudentGlossary,
 } from '@trilhacode/shared';
 import { and, asc, count, desc, eq, inArray, sql } from 'drizzle-orm';
 import type { FastifyInstance, FastifyReply } from 'fastify';
@@ -36,6 +37,7 @@ import {
   customAssessment,
   customAttempt,
   enrollment,
+  glossaryTerm,
   invitation,
   module,
   track,
@@ -46,6 +48,8 @@ import {
 } from '../db/schema.js';
 import type { Mailer } from '../mail/mailer.js';
 import { inviteEmail } from '../mail/invite.js';
+import { pointTotals } from '../evolution/points.js';
+import { listGlossary } from './evolution.js';
 import { requireUser, type SessionUser } from './session.js';
 
 const STEPS = UNIT_STEP_IDS.length;
@@ -582,6 +586,19 @@ export async function classroomRoutes(app: FastifyInstance, deps: ClassroomDeps)
     const done = (userId: string, unitId: string) =>
       (stepCount.get(`${userId}|${unitId}`) ?? 0) >= STEPS;
 
+    const points = await pointTotals(db, studentIds);
+    const glossary = studentIds.length
+      ? await db
+          .select({
+            userId: glossaryTerm.userId,
+            n: sql<number>`count(*)::int`,
+            own: sql<number>`count(*) filter (where ${glossaryTerm.ownWords})::int`,
+          })
+          .from(glossaryTerm)
+          .where(inArray(glossaryTerm.userId, studentIds))
+          .groupBy(glossaryTerm.userId)
+      : [];
+
     const now = today();
     const dashStudents = students.map((s) => {
       const totalSteps = units.reduce(
@@ -609,6 +626,9 @@ export async function classroomRoutes(app: FastifyInstance, deps: ClassroomDeps)
             attempts.find((t) => t.assessmentId === a.id && t.userId === s.id)?.best ?? null,
           ]),
         ),
+        points: points.get(s.id) ?? 0,
+        glossaryTerms: glossary.find((g) => g.userId === s.id)?.n ?? 0,
+        glossaryOwn: glossary.find((g) => g.userId === s.id)?.own ?? 0,
       };
     });
 
@@ -669,6 +689,9 @@ export async function classroomRoutes(app: FastifyInstance, deps: ClassroomDeps)
       'Média nas avaliações das unidades',
       'Última atividade',
       'Trilhas com prazo vencido',
+      'Pontos',
+      'Termos no glossário',
+      'Termos com explicação própria',
       ...d.assessments.map((a) => `Avaliação: ${a.title}`),
     ];
     const rows = d.students.map((s) => [
@@ -679,6 +702,9 @@ export async function classroomRoutes(app: FastifyInstance, deps: ClassroomDeps)
       s.averageScore ?? '',
       s.lastActivity ? s.lastActivity.slice(0, 10) : '',
       s.overdue.join(', '),
+      s.points,
+      s.glossaryTerms,
+      s.glossaryOwn,
       ...d.assessments.map((a) => s.customScores[a.id] ?? ''),
     ]);
     const csv = '﻿' + [header, ...rows].map((r) => r.map(cell).join(';')).join('\r\n') + '\r\n';
@@ -691,6 +717,24 @@ export async function classroomRoutes(app: FastifyInstance, deps: ClassroomDeps)
     reply.header('content-disposition', `attachment; filename="relatorio-${slug}-${today()}.csv"`);
     return csv;
   });
+
+  /** Glossário de um aluno da turma (somente leitura, para os professores da turma). */
+  app.get<{ Params: { id: string; userId: string } }>(
+    '/api/turmas/:id/alunos/:userId/glossario',
+    async (req, reply): Promise<StudentGlossary | undefined> => {
+      const u = await requireUser(auth, req, reply);
+      if (!u || !(await requireTeacher(u, req.params.id, reply))) return;
+      const [student] = await db
+        .select({ id: user.id, name: user.name, email: user.email })
+        .from(enrollment)
+        .innerJoin(user, eq(enrollment.userId, user.id))
+        .where(
+          and(eq(enrollment.classroomId, req.params.id), eq(enrollment.userId, req.params.userId)),
+        );
+      if (!student) return reply.code(404).send({ erro: 'Aluno não encontrado nesta turma.' });
+      return { aluno: student, termos: await listGlossary(db, student.id) };
+    },
+  );
 
   /* ------------------------------------------------------------ Avaliações complementares */
 

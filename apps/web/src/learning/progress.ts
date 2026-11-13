@@ -10,6 +10,8 @@ export interface UnitProgress {
   /** Melhor nota na avaliação (0 a 100) e número de tentativas. */
   bestScore?: number;
   attempts: number;
+  /** Melhor resultado no desafio: testes aprovados e total. */
+  challenge?: { passed: number; total: number };
 }
 
 export interface ProgressData {

@@ -104,6 +104,11 @@ export interface DashboardStudent {
   /** Trilhas atribuídas com prazo vencido e não concluídas. */
   overdue: string[];
   customScores: Record<string, number | null>;
+  /** Total de pontos no livro-razão (toda a plataforma, não só a turma). */
+  points: number;
+  /** Termos no Meu Glossário e quantos têm explicação própria. */
+  glossaryTerms: number;
+  glossaryOwn: number;
 }
 
 export interface DashboardUnit {
