@@ -35,7 +35,8 @@ export default defineConfig({
   webServer: [
     {
       command:
-        'pnpm --dir ../api db:migrate && pnpm --dir ../api content:sync && pnpm --dir ../api build && pnpm --dir ../api start',
+        // "@trilhacode/api..." compila a API e os pacotes de que ela depende
+        'pnpm --dir ../api db:migrate && pnpm --dir ../api content:sync && pnpm --filter "@trilhacode/api..." build && pnpm --dir ../api start',
       url: 'http://127.0.0.1:3000/api/health',
       reuseExistingServer: !process.env.CI,
       timeout: 180_000,
