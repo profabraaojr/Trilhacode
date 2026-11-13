@@ -2,9 +2,16 @@
 
 Plataforma educacional de programação, de código aberto, que reúne um editor no estilo VS Code e trilhas de aprendizagem com etapas pedagógicas, glossário pessoal, desafios e avaliações.
 
-**Status:** Etapas 1 a 5 concluídas; Etapa 6 (avaliação e evolução) em validação. A Etapa 7 (qualidade e publicação) é a próxima.
+**Status:** versão 1.0.0 em validação. As sete etapas do plano inicial estão implementadas; a Etapa 7 (qualidade e publicação) aguarda aprovação. Para instalar numa escola, veja o [guia de implantação](docs/06-implantacao.md).
 
 ## O que já funciona
+
+**Qualidade e publicação (Etapa 7)**
+
+- LGPD: o usuário baixa todos os seus dados (JSON) e exclui a própria conta, com a senha; página de privacidade com a instituição responsável e o contato do encarregado.
+- Segurança revisada com o OWASP ASVS nível 1 ([relatório](docs/04-seguranca.md)): Content-Security-Policy estrita verificada pelos testes, cabeçalhos de segurança, proteção contra CSRF por origem, erros sem detalhes internos, tokens fora dos registros e senhas de 12 caracteres ou mais.
+- Acessibilidade verificada com axe-core (WCAG 2.2 AA) nas telas principais e desempenho medido com Lighthouse: 90 no celular e 100 no computador ([relatório](docs/05-acessibilidade-desempenho.md)).
+- Imagens Docker e Compose de produção com HTTPS automático (Caddy); as imagens são publicadas no GitHub Container Registry a cada release.
 
 **Avaliação e evolução (Etapa 6)**
 
@@ -125,13 +132,9 @@ Endereços em desenvolvimento:
 
 Os testes no navegador (`pnpm test:e2e`) sobem a API e precisam do PostgreSQL ativo.
 
-## Publicação
+## Implantação
 
-A interface e a API devem ser servidas na **mesma origem** (por exemplo, a API em `/api` atrás de um proxy reverso), porque a sessão usa cookies. Em produção, defina `BETTER_AUTH_SECRET`, `PUBLIC_URL` e o servidor SMTP (`SMTP_*`, `MAIL_FROM`). Veja `.env.example`.
-
-## Publicação do sandbox
-
-O sandbox (`apps/sandbox`) gera um único arquivo HTML, sem dependências. Em produção ele deve ficar em **outra origem** (outro domínio ou subdomínio) que a interface, e a URL dele vai em `VITE_SANDBOX_URL` antes do build da interface. O iframe já isola o código por ser `sandbox` sem `allow-same-origin`; a origem separada é uma segunda camada de proteção.
+Para instalar num servidor, com Docker e HTTPS automático, siga o [guia de implantação](docs/06-implantacao.md). A interface e a API ficam na mesma origem (a sessão usa cookies), e o sandbox fica em outra origem, uma das camadas que isolam o código dos alunos.
 
 ## Limitações conhecidas
 
@@ -143,6 +146,7 @@ O sandbox (`apps/sandbox`) gera um único arquivo HTML, sem dependências. Em pr
 - Os testes do desafio rodam no navegador do aluno; o servidor confere o total de testes, mas confia no número de aprovados. Para a pontuação de uma plataforma escolar, consideramos o risco aceitável.
 - A verificação de cópia no glossário compara pares de palavras: pega cópias e pequenas trocas, mas não paráfrases. O professor lê os glossários para avaliar a qualidade.
 - Avaliações feitas antes da Etapa 6 contam na melhor nota, mas não aparecem no histórico tentativa a tentativa.
+- Senhas não são comparadas com listas de senhas vazadas (ASVS 2.1.7), e ainda não houve teste com leitor de tela por pessoas que usam essa tecnologia.
 
 ## Estrutura
 
@@ -157,7 +161,8 @@ packages/
   content/    formato do conteúdo: schema, validação e compilação
   ui/         tokens visuais (cores, tipografia, espaçamento)
 content/      trilhas, módulos e unidades (texto, desafios e avaliações)
-docs/         análise, arquitetura e plano por etapas
+docker/       imagens e configuração do Caddy para produção
+docs/         arquitetura, plano, segurança, acessibilidade, implantação e conteúdo
 ```
 
 ## Documentação
@@ -165,6 +170,12 @@ docs/         análise, arquitetura e plano por etapas
 1. [Análise das referências (LiveCodes e Roadmap.sh)](docs/01-analise-referencias.md)
 2. [Arquitetura](docs/02-arquitetura.md)
 3. [Plano por etapas](docs/03-plano-etapas.md)
+4. [Segurança (OWASP ASVS nível 1)](docs/04-seguranca.md)
+5. [Acessibilidade e desempenho](docs/05-acessibilidade-desempenho.md)
+6. [Implantação com Docker](docs/06-implantacao.md)
+7. [Criação de conteúdo](docs/07-criacao-de-conteudo.md)
+
+Também: [como contribuir](CONTRIBUTING.md), [política de segurança](SECURITY.md) e [histórico de versões](CHANGELOG.md).
 
 ## Referências e créditos
 

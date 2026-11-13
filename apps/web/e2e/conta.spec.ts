@@ -47,7 +47,7 @@ test('o progresso feito sem login é levado para a conta e fica salvo no servido
     .getByRole('list', { name: 'Trilhas disponíveis' })
     .getByRole('button', { name: /HTML e CSS/ })
     .click();
-  await page.getByRole('button', { name: /Estrutura de um documento HTML: / }).click();
+  await page.getByRole('button', { name: /Estrutura de um documento HTML / }).click();
   const pane = page.getByRole('complementary', { name: 'Conteúdo da unidade' });
   await pane.getByRole('button', { name: 'Concluir etapa' }).click();
   await expect(pane.getByText('1 de 7 etapas')).toBeVisible();
@@ -60,7 +60,7 @@ test('o progresso feito sem login é levado para a conta e fica salvo no servido
     .getByRole('button', { name: /HTML e CSS/ })
     .click();
   await expect(
-    page.getByRole('button', { name: /Estrutura de um documento HTML: Em andamento, 1 de 7/ }),
+    page.getByRole('button', { name: /Estrutura de um documento HTML Em andamento 1 de 7/ }),
   ).toBeVisible();
 
   // Em outro navegador (contexto limpo), o progresso vem da conta
@@ -75,7 +75,7 @@ test('o progresso feito sem login é levado para a conta e fica salvo no servido
     .getByRole('button', { name: /HTML e CSS/ })
     .click();
   await expect(
-    p2.getByRole('button', { name: /Estrutura de um documento HTML: Em andamento, 1 de 7/ }),
+    p2.getByRole('button', { name: /Estrutura de um documento HTML Em andamento 1 de 7/ }),
   ).toBeVisible();
   await other.close();
 });

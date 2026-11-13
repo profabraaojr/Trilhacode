@@ -84,7 +84,7 @@ Decisões de implementação: a planilha é lida no navegador (`read-excel-file`
 
 ## Etapa 6. Avaliação e evolução
 
-**Situação:** implementada, aguardando validação. Definições aprovadas pelo responsável:
+**Situação:** concluída e validada em 13/11/2026. Definições aprovadas pelo responsável:
 
 1. Tabela de pontos: etapa concluída 5; desafio até 30 (proporcional aos testes aprovados); avaliação até 50 (melhor tentativa); termo do glossário com explicação própria 5 (até 5 por unidade); unidade concluída 20; trilha concluída 100.
 2. O professor lê todo o glossário dos alunos das suas turmas, sem editar; o aluno é avisado na tela do glossário.
@@ -98,6 +98,10 @@ Decisões de implementação: a cada mudança no progresso, o servidor calcula q
 - "Meu Glossário" completo: registro durante a unidade, busca, edição e vínculo com a unidade de origem.
 
 ## Etapa 7. Qualidade e publicação
+
+**Situação:** implementada, aguardando validação. Definições aprovadas pelo responsável: implantação com Docker Compose e guia (sem publicar em serviço de hospedagem); primeira versão pública 1.0.0; exportação dos dados e exclusão da conta pelo próprio usuário, com página de privacidade; imagens publicadas no GitHub Container Registry a cada release.
+
+Decisões de implementação: a interface passou a ler a configuração de `/config.js`, gerado quando o contêiner inicia, para que as mesmas imagens sirvam qualquer domínio; o script de tema saiu do HTML para a política de segurança dispensar `unsafe-inline`, e o Zod roda sem compilar validadores no navegador (`jitless`), para dispensar `unsafe-eval`; as imagens são duas (API; interface e sandbox no Caddy, em duas origens); a exclusão de conta usa o Better Auth, sempre com a senha, e o único administrador não pode se excluir; o editor Monaco passou a ser carregado só quando um arquivo é aberto, o que levou o desempenho no celular de 46 para 90. Relatórios: [segurança](04-seguranca.md) e [acessibilidade e desempenho](05-acessibilidade-desempenho.md).
 
 - Auditoria de segurança (OWASP ASVS nível 1), acessibilidade (WCAG 2.2 AA, axe + revisão manual), desempenho (Lighthouse).
 - Documentação de instalação, contribuição e criação de conteúdo.

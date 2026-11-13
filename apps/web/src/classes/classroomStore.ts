@@ -9,7 +9,9 @@ export type ClassroomPage =
   | { kind: 'turma'; id: string; title: string }
   | { kind: 'avaliacao'; id: string; title: string }
   /** Histórico completo do aluno (Minha evolução). */
-  | { kind: 'evolucao'; id: 'historico'; title: string };
+  | { kind: 'evolucao'; id: 'historico'; title: string }
+  /** Política de privacidade da instalação. */
+  | { kind: 'privacidade'; id: 'privacidade'; title: string };
 
 export interface ClassroomState {
   page: ClassroomPage | null;

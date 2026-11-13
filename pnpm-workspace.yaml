@@ -8,3 +8,8 @@ minimumReleaseAge: 20160
 
 onlyBuiltDependencies:
   - esbuild
+
+# Correções de segurança em dependências indiretas (ver docs/04-seguranca.md).
+overrides:
+  # monaco-editor 0.57 traz dompurify 3.4.15 (GHSA-c6gr-qvv4-5v3f e outras)
+  dompurify: ^3.4.17

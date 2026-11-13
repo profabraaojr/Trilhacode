@@ -29,20 +29,17 @@ type ModuleNodeData = { titulo: string; descricao: string };
 function UnitNode({ data }: NodeProps<Node<UnitNodeData>>) {
   const { unit, status, done } = data;
   return (
-    <button
-      type="button"
-      className="map-unit nodrag"
-      data-status={status}
-      aria-label={`${unit.titulo}: ${UNIT_STATUS_LABEL[status]}, ${done} de 7 etapas`}
-    >
+    <button type="button" className="map-unit nodrag" data-status={status}>
+      {/* Sem aria-label: o nome lido é o próprio texto visível (WCAG 2.5.3), com o título
+          primeiro no DOM; o CSS mostra o estado acima dele. */}
       <Handle type="target" position={Position.Top} isConnectable={false} />
+      <span className="map-unit-title">{unit.titulo}</span>
       <span className="map-unit-head">
-        <StatusIcon status={status} />
+        <StatusIcon status={status} decorative />
         <span className="map-unit-status">{UNIT_STATUS_LABEL[status]}</span>
       </span>
-      <span className="map-unit-title">{unit.titulo}</span>
       <span className="map-unit-meta">
-        <Clock size={12} aria-hidden="true" /> {unit.duracaoMinutos} min · {done}/7 etapas
+        {done} de 7 etapas · <Clock size={12} aria-hidden="true" /> {unit.duracaoMinutos} min
       </span>
       <Handle type="source" position={Position.Bottom} isConnectable={false} />
     </button>

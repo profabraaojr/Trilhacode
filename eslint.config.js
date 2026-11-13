@@ -22,6 +22,11 @@ export default tseslint.config(
     rules: reactHooks.configs.recommended.rules,
   },
   {
+    // scripts clássicos servidos como estão (sem build), antes do bundle da interface
+    files: ['apps/web/public/**/*.js'],
+    languageOptions: { globals: globals.browser, sourceType: 'script' },
+  },
+  {
     files: ['apps/api/**/*.ts', '**/*.config.{js,ts}'],
     languageOptions: { globals: globals.node },
   },

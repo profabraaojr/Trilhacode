@@ -1,9 +1,13 @@
 {
   "name": "@trilhacode/content",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "license": "AGPL-3.0-only",
   "type": "module",
+  "files": [
+    "dist",
+    "src"
+  ],
   "description": "Formato do conteúdo das trilhas: schema, carregamento da pasta content/, compilação e validação.",
   "exports": {
     ".": {

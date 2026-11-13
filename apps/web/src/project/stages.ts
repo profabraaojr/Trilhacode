@@ -16,8 +16,8 @@ export const STAGES: Stage[] = [
   { number: 3, title: 'Trilhas e conteúdo', status: 'concluida' },
   { number: 4, title: 'Cadastro e perfis', status: 'concluida' },
   { number: 5, title: 'Gestão pedagógica', status: 'concluida' },
-  { number: 6, title: 'Avaliação e evolução', status: 'em-validacao' },
-  { number: 7, title: 'Qualidade e publicação', status: 'planejada' },
+  { number: 6, title: 'Avaliação e evolução', status: 'concluida' },
+  { number: 7, title: 'Qualidade e publicação', status: 'em-validacao' },
 ];
 
 export const STAGE_STATUS_LABEL: Record<StageStatus, string> = {

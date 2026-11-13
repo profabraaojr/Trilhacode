@@ -24,7 +24,7 @@ test('glossário na unidade, importação no login, pontos e leitura pelo profes
     .getByRole('list', { name: 'Trilhas disponíveis' })
     .getByRole('button', { name: /HTML e CSS/ })
     .click();
-  await page.getByRole('button', { name: /Estrutura de um documento HTML: / }).click();
+  await page.getByRole('button', { name: /Estrutura de um documento HTML / }).click();
   const pane = contentPane(page);
   await pane.getByRole('button', { name: 'Concluir etapa' }).click();
   await pane.getByRole('button', { name: /Etapa 5: Vocabulário técnico/ }).click();

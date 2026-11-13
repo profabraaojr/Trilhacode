@@ -1,3 +1,4 @@
+import { config } from '../config';
 import type {
   AddStudentResult,
   AssignmentInput,
@@ -28,7 +29,7 @@ import type {
   UnitPayload,
 } from '@trilhacode/content/types';
 
-const API_BASE = import.meta.env.VITE_API_URL ?? '';
+const API_BASE = config.apiUrl;
 
 export class ApiError extends Error {
   constructor(
@@ -87,12 +88,9 @@ export interface AdminUser extends Omit<AccountProfile, 'role'> {
 export const accountApi = {
   /** Perfil do usuário logado, ou null sem sessão. */
   async me(): Promise<AccountProfile | null> {
-    try {
-      return await request<AccountProfile>('/api/me');
-    } catch (e) {
-      if (e instanceof ApiError && e.status === 401) return null;
-      throw e;
-    }
+    // /api/sessao responde 200 também para visitantes (sem erro 401 no console)
+    const { profile } = await request<{ profile?: AccountProfile | null }>('/api/sessao');
+    return profile ?? null;
   },
   updateMe: (update: ProfileUpdate) =>
     request<AccountProfile>('/api/me', { method: 'PATCH', body: JSON.stringify(update) }),

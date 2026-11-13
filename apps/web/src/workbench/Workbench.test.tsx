@@ -55,7 +55,7 @@ describe('workbench no computador', () => {
     expect(await screen.findByText(/Não será salvo/)).toBeInTheDocument();
   });
 
-  it('abre um arquivo em aba ao clicar no explorador', () => {
+  it('abre um arquivo em aba ao clicar no explorador', async () => {
     renderApp();
     openExplorer();
     fireEvent.click(screen.getByRole('button', { name: 'style.css' }));
@@ -63,7 +63,8 @@ describe('workbench no computador', () => {
       'aria-selected',
       'true',
     );
-    expect(screen.getByTestId('code-editor')).toBeInTheDocument();
+    // o editor é carregado sob demanda, na primeira vez que aparece
+    expect(await screen.findByTestId('code-editor')).toBeInTheDocument();
   });
 
   it('cria um arquivo validando o nome', () => {
@@ -86,10 +87,16 @@ describe('workbench no computador', () => {
     expect(screen.getByRole('button', { name: 'Excluir style.css' })).toBeInTheDocument();
   });
 
-  it('fecha abas', () => {
+  it('fecha abas pelo botão (mouse) e pela tecla Delete (teclado)', () => {
     renderApp();
-    fireEvent.click(screen.getByRole('button', { name: 'Fechar Boas-vindas' }));
+    fireEvent.click(document.querySelector('[aria-label="Fechar Boas-vindas"]')!);
     expect(screen.queryByRole('tab', { name: 'Boas-vindas' })).not.toBeInTheDocument();
+    openExplorer();
+    fireEvent.click(screen.getByRole('button', { name: /^index\.html/ }));
+    const tab = screen.getByRole('tab', { name: 'index.html' });
+    expect(tab).toHaveAttribute('aria-keyshortcuts', 'Delete');
+    fireEvent.keyDown(tab, { key: 'Delete' });
+    expect(screen.queryByRole('tab', { name: 'index.html' })).not.toBeInTheDocument();
   });
 
   it('o console começa vazio com uma orientação', () => {

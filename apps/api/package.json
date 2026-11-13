@@ -1,9 +1,13 @@
 {
   "name": "@trilhacode/api",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "license": "AGPL-3.0-only",
   "type": "module",
+  "files": [
+    "dist",
+    "drizzle"
+  ],
   "scripts": {
     "dev": "tsx watch --conditions=source --env-file-if-exists=../../.env src/index.ts",
     "build": "tsc -p tsconfig.build.json",

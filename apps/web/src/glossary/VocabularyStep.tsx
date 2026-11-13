@@ -32,8 +32,8 @@ export function VocabularyStep({ unit }: { unit: UnitPayload }) {
           const key = `hint:${h.termo}`;
           return (
             <div key={h.termo} className="term">
-              <div className="term-head">
-                <dt>{h.termo}</dt>
+              <dt className="term-head">
+                {h.termo}
                 {term ? (
                   <span
                     className={
@@ -49,32 +49,34 @@ export function VocabularyStep({ unit }: { unit: UnitPayload }) {
                     )}
                   </span>
                 ) : null}
-              </div>
-              <dd>Pista: {h.dica}</dd>
-              {open === key ? (
-                <TermForm
-                  term={term}
-                  initial={{ termo: h.termo }}
-                  unit={linked}
-                  onDone={() => setOpen(null)}
-                />
-              ) : (
-                <button
-                  type="button"
-                  className="text-button"
-                  onClick={() => setOpen(key)}
-                  aria-label={
-                    term ? `Editar ${h.termo} no glossário` : `Registrar ${h.termo} no glossário`
-                  }
-                >
-                  {term ? (
-                    <Pencil size={13} aria-hidden="true" />
-                  ) : (
-                    <Plus size={13} aria-hidden="true" />
-                  )}
-                  {term ? 'Editar no glossário' : 'Registrar no glossário'}
-                </button>
-              )}
+              </dt>
+              <dd>
+                Pista: {h.dica}
+                {open === key ? (
+                  <TermForm
+                    term={term}
+                    initial={{ termo: h.termo }}
+                    unit={linked}
+                    onDone={() => setOpen(null)}
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    className="text-button term-action"
+                    onClick={() => setOpen(key)}
+                    aria-label={
+                      term ? `Editar ${h.termo} no glossário` : `Registrar ${h.termo} no glossário`
+                    }
+                  >
+                    {term ? (
+                      <Pencil size={13} aria-hidden="true" />
+                    ) : (
+                      <Plus size={13} aria-hidden="true" />
+                    )}
+                    {term ? 'Editar no glossário' : 'Registrar no glossário'}
+                  </button>
+                )}
+              </dd>
             </div>
           );
         })}

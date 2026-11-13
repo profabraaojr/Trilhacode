@@ -131,6 +131,18 @@ export class AccountStore extends Store<AccountState> {
     }
   }
 
+  /** LGPD: exclui a conta e todos os dados (confirmada com a senha). */
+  async deleteAccount(password: string): Promise<Result> {
+    const { error } = await authClient.deleteUser({ password });
+    if (error) {
+      // mensagens do servidor já em português (único administrador, senha ausente)
+      const own = error.message && /administrador|senha/i.test(error.message);
+      return { ok: false, error: own ? error.message! : authErrorMessage(error) };
+    }
+    this.setState({ status: 'anonymous', profile: null, urlAction: null });
+    return { ok: true };
+  }
+
   async signOut(): Promise<void> {
     await authClient.signOut();
     this.setState({ status: 'anonymous', profile: null, urlAction: null });

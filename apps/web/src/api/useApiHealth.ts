@@ -1,3 +1,4 @@
+import { config } from '../config';
 import { healthResponseSchema, type HealthResponse } from '@trilhacode/shared';
 import { useEffect, useState } from 'react';
 
@@ -7,7 +8,7 @@ export type ApiStatus =
   | { state: 'degraded'; health: HealthResponse }
   | { state: 'offline' };
 
-const API_BASE = import.meta.env.VITE_API_URL ?? '';
+const API_BASE = config.apiUrl;
 const POLL_MS = 30_000;
 const TIMEOUT_MS = 4_000;
 

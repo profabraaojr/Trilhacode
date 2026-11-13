@@ -1,7 +1,8 @@
+import { config } from '../config';
 import { inferAdditionalFields } from 'better-auth/client/plugins';
 import { createAuthClient } from 'better-auth/react';
 
-const API_BASE: string = import.meta.env.VITE_API_URL || window.location.origin;
+const API_BASE: string = config.apiUrl || window.location.origin;
 
 /** Cliente do Better Auth. A API e a interface ficam na mesma origem (cookies de sessão). */
 export const authClient = createAuthClient({
@@ -24,7 +25,7 @@ const MESSAGES: Record<string, string> = {
   USER_ALREADY_EXISTS: 'Já existe uma conta com este e-mail. Entre ou use "Esqueci minha senha".',
   USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL:
     'Já existe uma conta com este e-mail. Entre ou use "Esqueci minha senha".',
-  PASSWORD_TOO_SHORT: 'A senha precisa ter pelo menos 8 caracteres.',
+  PASSWORD_TOO_SHORT: 'A senha precisa ter pelo menos 12 caracteres.',
   PASSWORD_TOO_LONG: 'A senha pode ter no máximo 128 caracteres.',
   INVALID_PASSWORD: 'A senha atual está incorreta.',
   INVALID_TOKEN: 'O link expirou ou já foi usado. Peça um novo.',

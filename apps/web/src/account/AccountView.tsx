@@ -1,3 +1,4 @@
+import { YourData } from './YourData';
 import { USER_ROLES, type UserRole } from '@trilhacode/shared';
 import { LogOut, MailCheck } from 'lucide-react';
 import { useEffect, useId, useState, type FormEvent, type ReactNode } from 'react';
@@ -206,8 +207,12 @@ function SignedOut() {
             onChange={setPassword}
             autoComplete={mode === 'entrar' ? 'current-password' : 'new-password'}
             required
-            minLength={8}
-            hint={mode === 'cadastrar' ? 'Pelo menos 8 caracteres.' : undefined}
+            minLength={12}
+            hint={
+              mode === 'cadastrar'
+                ? 'Pelo menos 12 caracteres. Uma frase curta é fácil de lembrar.'
+                : undefined
+            }
           />
         )}
         {mode === 'cadastrar' && (
@@ -290,8 +295,8 @@ function ResetPassword({ token }: { token: string }) {
               onChange={setPassword}
               autoComplete="new-password"
               required
-              minLength={8}
-              hint="Pelo menos 8 caracteres."
+              minLength={12}
+              hint="Pelo menos 12 caracteres. Uma frase curta é fácil de lembrar."
             />
             <Field
               label="Repita a nova senha"
@@ -300,7 +305,7 @@ function ResetPassword({ token }: { token: string }) {
               onChange={setConfirm}
               autoComplete="new-password"
               required
-              minLength={8}
+              minLength={12}
             />
           </>
         )}
@@ -399,8 +404,8 @@ function ChangePassword() {
           onChange={setNext}
           autoComplete="new-password"
           required
-          minLength={8}
-          hint="Pelo menos 8 caracteres."
+          minLength={12}
+          hint="Pelo menos 12 caracteres. Uma frase curta é fácil de lembrar."
         />
         <Message feedback={feedback} />
         <button type="submit" className="secondary-button">
@@ -490,6 +495,7 @@ function SignedIn() {
       <Profile />
       <ChangePassword />
       {profile.role === 'admin' && <AdminUsers />}
+      <YourData />
       <button type="button" className="secondary-button" onClick={() => void account.signOut()}>
         <LogOut size={15} aria-hidden="true" /> Sair
       </button>

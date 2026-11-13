@@ -22,7 +22,7 @@ import {
   user,
 } from '../db/schema.js';
 import { syncPoints } from '../evolution/points.js';
-import { requireUser, type SessionUser } from './session.js';
+import { getSessionUser, requireUser, type SessionUser } from './session.js';
 
 const toProfile = (u: SessionUser): AccountProfile => ({
   id: u.id,
@@ -110,6 +110,12 @@ export async function accountRoutes(
   app.get('/api/me', async (req, reply) => {
     const u = await requireUser(auth, req, reply);
     return u && toProfile(u);
+  });
+
+  /** Sessão atual sem erro para visitantes: { profile: null } quando ninguém entrou. */
+  app.get('/api/sessao', async (req) => {
+    const u = await getSessionUser(auth, req);
+    return { profile: u ? toProfile(u) : null };
   });
 
   app.patch('/api/me', async (req, reply) => {
