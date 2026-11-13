@@ -99,7 +99,7 @@ Decisões de implementação: a cada mudança no progresso, o servidor calcula q
 
 ## Etapa 7. Qualidade e publicação
 
-**Situação:** implementada, aguardando validação. Definições aprovadas pelo responsável: implantação com Docker Compose e guia (sem publicar em serviço de hospedagem); primeira versão pública 1.0.0; exportação dos dados e exclusão da conta pelo próprio usuário, com página de privacidade; imagens publicadas no GitHub Container Registry a cada release.
+**Situação:** concluída e validada em 13/11/2026, com a publicação da versão 1.0.0 (a 1.0.1 corrigiu a geração das imagens para arm64). Definições aprovadas pelo responsável: implantação com Docker Compose e guia (sem publicar em serviço de hospedagem); primeira versão pública 1.0.0; exportação dos dados e exclusão da conta pelo próprio usuário, com página de privacidade; imagens publicadas no GitHub Container Registry a cada release.
 
 Decisões de implementação: a interface passou a ler a configuração de `/config.js`, gerado quando o contêiner inicia, para que as mesmas imagens sirvam qualquer domínio; o script de tema saiu do HTML para a política de segurança dispensar `unsafe-inline`, e o Zod roda sem compilar validadores no navegador (`jitless`), para dispensar `unsafe-eval`; as imagens são duas (API; interface e sandbox no Caddy, em duas origens); a exclusão de conta usa o Better Auth, sempre com a senha, e o único administrador não pode se excluir; o editor Monaco passou a ser carregado só quando um arquivo é aberto, o que levou o desempenho no celular de 46 para 90. Relatórios: [segurança](04-seguranca.md) e [acessibilidade e desempenho](05-acessibilidade-desempenho.md).
 

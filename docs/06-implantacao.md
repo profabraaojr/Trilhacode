@@ -28,11 +28,11 @@ A interface e o sandbox **precisam** ficar em origens diferentes, por exemplo `t
    ```
 
    ```bash
-   curl -fsSLO https://raw.githubusercontent.com/profabraaojr/Trilhacode/v1.0.0/docker-compose.prod.yml
+   curl -fsSLO https://raw.githubusercontent.com/profabraaojr/Trilhacode/v1.0.1/docker-compose.prod.yml
    ```
 
    ```bash
-   curl -fsSL -o .env.prod https://raw.githubusercontent.com/profabraaojr/Trilhacode/v1.0.0/.env.prod.example
+   curl -fsSL -o .env.prod https://raw.githubusercontent.com/profabraaojr/Trilhacode/v1.0.1/.env.prod.example
    ```
 
 2. Gere a senha do banco e o segredo das sessões:
@@ -146,7 +146,7 @@ docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
 | `BETTER_AUTH_SECRET`                                              | Sim                          | Segredo das sessões, com 32 ou mais caracteres. Trocá-lo encerra todas as sessões.            |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS` | Sim (exceto usuário e senha) | Servidor de e-mail.                                                                           |
 | `MAIL_FROM`                                                       | Sim                          | Remetente dos e-mails.                                                                        |
-| `TRILHACODE_VERSION`                                              | Não                          | Versão das imagens (padrão `1.0.0`).                                                          |
+| `TRILHACODE_VERSION`                                              | Não                          | Versão das imagens (padrão `1.0.1`).                                                          |
 | `ACME_EMAIL`                                                      | Não                          | E-mail para avisos do Let's Encrypt.                                                          |
 | `TRILHACODE_INSTITUTION`, `TRILHACODE_PRIVACY_CONTACT`            | Não, mas recomendadas        | Instituição responsável e contato do encarregado de dados, exibidos na página de privacidade. |
 

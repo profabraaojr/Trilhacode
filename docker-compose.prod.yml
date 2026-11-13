@@ -21,7 +21,7 @@ services:
       retries: 20
 
   api:
-    image: ghcr.io/profabraaojr/trilhacode-api:${TRILHACODE_VERSION:-1.0.0}
+    image: ghcr.io/profabraaojr/trilhacode-api:${TRILHACODE_VERSION:-1.0.1}
     build:
       context: .
       dockerfile: docker/api.Dockerfile
@@ -42,7 +42,7 @@ services:
       MAIL_FROM: ${MAIL_FROM:?defina MAIL_FROM}
 
   web:
-    image: ghcr.io/profabraaojr/trilhacode-web:${TRILHACODE_VERSION:-1.0.0}
+    image: ghcr.io/profabraaojr/trilhacode-web:${TRILHACODE_VERSION:-1.0.1}
     build:
       context: .
       dockerfile: docker/web.Dockerfile

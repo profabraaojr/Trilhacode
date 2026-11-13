@@ -2,7 +2,7 @@
 
 Plataforma educacional de programação, de código aberto, que reúne um editor no estilo VS Code e trilhas de aprendizagem com etapas pedagógicas, glossário pessoal, desafios e avaliações.
 
-**Status:** versão 1.0.0 em validação. As sete etapas do plano inicial estão implementadas; a Etapa 7 (qualidade e publicação) aguarda aprovação. Para instalar numa escola, veja o [guia de implantação](docs/06-implantacao.md).
+**Status:** versão 1.0.1. As sete etapas do plano inicial estão concluídas. Para instalar numa escola, veja o [guia de implantação](docs/06-implantacao.md).
 
 ## O que já funciona
 
