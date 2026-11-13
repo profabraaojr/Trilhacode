@@ -1,3 +1,4 @@
+import { config } from '../config';
 import { SandboxSession, type RunStatus } from '@trilhacode/runners';
 import { Play } from 'lucide-react';
 import { useEffect, useRef } from 'react';
@@ -5,7 +6,7 @@ import { useStore } from '../lib/store';
 import { ENTRY_FILE } from '../project/files';
 import { useStores } from '../project/ProjectContext';
 
-export const SANDBOX_URL: string = import.meta.env.VITE_SANDBOX_URL ?? 'http://localhost:5174/';
+export const SANDBOX_URL: string = config.sandboxUrl;
 
 const STATUS_LABEL: Record<RunStatus | 'idle', string> = {
   idle: 'Aguardando',

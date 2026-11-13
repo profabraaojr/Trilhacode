@@ -5,6 +5,8 @@
  */
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { APIError, createAuthMiddleware } from 'better-auth/api';
+import { and, count, eq, ne } from 'drizzle-orm';
 import type { Database } from './db/client.js';
 import { acceptInvitations } from './routes/classrooms.js';
 import * as schema from './db/schema.js';
@@ -41,11 +43,40 @@ export function createAuth({ db, mailer, env }: AuthDeps) {
         role: { type: 'string', required: false, defaultValue: 'aluno', input: false },
         institution: { type: 'string', required: false, input: true },
       },
+      // LGPD: o próprio usuário exclui a conta (POST /api/auth/delete-user, com a senha).
+      // Progresso, notas, glossário, pontos e matrículas são apagados em cascata.
+      deleteUser: {
+        enabled: true,
+        beforeDelete: async (u) => {
+          const [row] = await db
+            .select({ role: schema.user.role })
+            .from(schema.user)
+            .where(eq(schema.user.id, u.id));
+          if (row?.role !== 'admin') return;
+          const [others] = await db
+            .select({ n: count() })
+            .from(schema.user)
+            .where(and(eq(schema.user.role, 'admin'), ne(schema.user.id, u.id)));
+          if (!others?.n)
+            throw new APIError('BAD_REQUEST', {
+              message:
+                'Você é o único administrador. Promova outra pessoa a administrador antes de excluir a conta.',
+            });
+        },
+      },
+    },
+    hooks: {
+      // A exclusão sempre exige a senha (o Better Auth aceitaria uma sessão recente sem ela).
+      before: createAuthMiddleware(async (ctx) => {
+        if (ctx.path === '/delete-user' && !(ctx.body as { password?: string })?.password)
+          throw new APIError('BAD_REQUEST', { message: 'Confirme a exclusão com a sua senha.' });
+      }),
     },
     emailAndPassword: {
       enabled: true,
       requireEmailVerification: true,
-      minPasswordLength: 8,
+      // ASVS V2.1.1: pelo menos 12 caracteres (vale para novas senhas; as antigas continuam valendo).
+      minPasswordLength: 12,
       maxPasswordLength: 128,
       autoSignIn: false,
       revokeSessionsOnPasswordReset: true,

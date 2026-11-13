@@ -1,6 +1,6 @@
 {
   "name": "@trilhacode/web",
-  "version": "0.6.0",
+  "version": "1.0.0",
   "private": true,
   "license": "AGPL-3.0-only",
   "type": "module",
@@ -30,6 +30,7 @@
     "read-excel-file": "^9.3.14"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "1.63.0",
     "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.0",

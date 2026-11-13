@@ -39,6 +39,15 @@ export function ProjectProvider({
     learning.subscribe(() => {
       if (learning.getState().mapActive && classroom.getState().active) classroom.setActive(false);
     });
+    // Abrir um arquivo traz o editor para o primeiro plano, à frente do mapa e das páginas.
+    let lastFocus = project.getState().focusRequest;
+    project.subscribe(() => {
+      const f = project.getState().focusRequest;
+      if (f === lastFocus) return;
+      lastFocus = f;
+      learning.setMapActive(false);
+      classroom.setActive(false);
+    });
     classroom.subscribe(() => {
       if (classroom.getState().active && learning.getState().mapActive)
         learning.setMapActive(false);

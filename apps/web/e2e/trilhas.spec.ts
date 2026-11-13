@@ -37,11 +37,11 @@ test.describe('computador', () => {
     await page.getByText('Objetivos de aprendizagem e pré-requisitos').click();
     await expect(page.getByText('Vincular uma folha de estilo')).toBeVisible();
     await expect(
-      page.getByRole('button', { name: /Estrutura de um documento HTML: Disponível/ }),
+      page.getByRole('button', { name: /Estrutura de um documento HTML Disponível/ }),
     ).toBeVisible();
-    await expect(page.getByRole('button', { name: /Textos e links: Bloqueada/ })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Textos e links Bloqueada/ })).toBeVisible();
     await expect(
-      page.getByRole('button', { name: /Primeiros seletores CSS: Bloqueada/ }),
+      page.getByRole('button', { name: /Primeiros seletores CSS Bloqueada/ }),
     ).toBeVisible();
   });
 
@@ -49,7 +49,7 @@ test.describe('computador', () => {
     page,
   }) => {
     await openTrackMap(page);
-    await page.getByRole('button', { name: /Estrutura de um documento HTML: / }).click();
+    await page.getByRole('button', { name: /Estrutura de um documento HTML / }).click();
     const pane = contentPane(page);
     await expect(
       pane.getByRole('heading', { name: 'Estrutura de um documento HTML' }),
@@ -121,16 +121,16 @@ test.describe('computador', () => {
     // A unidade seguinte fica disponível e o progresso sobrevive ao recarregar
     await page.getByRole('tab', { name: /Mapa/ }).click();
     await expect(
-      page.getByRole('button', { name: /Estrutura de um documento HTML: Concluída/ }),
+      page.getByRole('button', { name: /Estrutura de um documento HTML Concluída/ }),
     ).toBeVisible();
-    await expect(page.getByRole('button', { name: /Textos e links: Disponível/ })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Textos e links Disponível/ })).toBeVisible();
     await page.reload();
     await page
       .getByRole('list', { name: 'Trilhas disponíveis' })
       .getByRole('button', { name: /HTML e CSS/ })
       .click();
     await expect(
-      page.getByRole('button', { name: /Estrutura de um documento HTML: Concluída/ }),
+      page.getByRole('button', { name: /Estrutura de um documento HTML Concluída/ }),
     ).toBeVisible();
     await expect(
       page.getByRole('progressbar', { name: /Progresso na trilha/ }).first(),
@@ -146,7 +146,7 @@ test.describe('computador', () => {
       page,
     }) => {
       await openTrackMap(page);
-      await page.getByRole('button', { name: new RegExp(`${title}: `) }).click();
+      await page.getByRole('button', { name: new RegExp(`${title} `) }).click();
       const pane = contentPane(page);
       await expect(pane.getByRole('heading', { name: title })).toBeVisible();
       await pane.getByRole('button', { name: 'Etapa 6: Desafio prático' }).click();
@@ -172,7 +172,7 @@ test.describe('computador', () => {
     page,
   }) => {
     await openTrackMap(page);
-    await page.getByRole('button', { name: /Estrutura de um documento HTML: / }).click();
+    await page.getByRole('button', { name: /Estrutura de um documento HTML / }).click();
     const pane = contentPane(page);
     await pane.getByRole('button', { name: 'Etapa 4: Experimentação' }).click();
     await pane.getByRole('button', { name: 'Abrir experimento no editor' }).click();
@@ -201,7 +201,7 @@ test.describe('celular', () => {
       .getByRole('button', { name: /HTML e CSS/ })
       .click();
     // abrir a trilha leva ao mapa (aba Código); a unidade abre na aba Conteúdo
-    await page.getByRole('button', { name: /Estrutura de um documento HTML: / }).click();
+    await page.getByRole('button', { name: /Estrutura de um documento HTML / }).click();
     await expect(
       contentPane(page).getByRole('heading', { name: 'Estrutura de um documento HTML' }),
     ).toBeVisible();

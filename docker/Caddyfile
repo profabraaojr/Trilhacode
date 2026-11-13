@@ -1,0 +1,46 @@
+# Interface (com /api encaminhado para a API) e sandbox, em origens diferentes.
+# Com domínios públicos, o Caddy obtém e renova os certificados HTTPS sozinho.
+# O bloco de opções globais (e-mail do Let's Encrypt) é acrescentado pelo
+# docker/web-entrypoint.sh quando ACME_EMAIL é definido.
+
+{$TRILHACODE_URL} {
+	encode zstd gzip
+
+	handle /api/* {
+		reverse_proxy {$TRILHACODE_API_UPSTREAM:api:3000}
+	}
+
+	handle {
+		root * /srv/web
+		try_files {path} /index.html
+		file_server
+
+		header {
+			# mesma política do `vite preview` (apps/web/vite.config.ts)
+			Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; frame-src {$TRILHACODE_SANDBOX_URL}; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+			Strict-Transport-Security "max-age=31536000"
+			X-Content-Type-Options "nosniff"
+			Referrer-Policy "strict-origin-when-cross-origin"
+			Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+			-Server
+		}
+		@assets path /assets/*
+		header @assets Cache-Control "public, max-age=31536000, immutable"
+		@entry path / /index.html /config.js /theme.js
+		header @entry Cache-Control "no-cache"
+	}
+}
+
+{$TRILHACODE_SANDBOX_URL} {
+	encode zstd gzip
+	root * /srv/sandbox
+	file_server
+	header {
+		# só a interface pode incorporar o sandbox; o código do aluno roda no iframe
+		# com sandbox="allow-scripts", sem acesso à origem da plataforma
+		Content-Security-Policy "frame-ancestors {$TRILHACODE_URL}"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+}

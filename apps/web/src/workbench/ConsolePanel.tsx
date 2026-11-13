@@ -28,7 +28,7 @@ export function ConsolePanel({ onClose }: Props) {
   const { run, editor } = useStores();
   const entries = useStore(run, (s) => s.entries);
   const dropped = useStore(run, (s) => s.dropped);
-  const listRef = useRef<HTMLOListElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const errors = entries.filter((e) => e.level === 'error').length;
 
   useEffect(() => {
@@ -72,49 +72,51 @@ export function ConsolePanel({ onClose }: Props) {
           )}
         </div>
       </header>
-      <ol
+      <div
         ref={listRef}
         className="console-list pane-scroll"
         role="log"
         aria-live="polite"
         aria-label="Mensagens do console"
       >
-        {dropped > 0 && (
-          <li className="console-entry console-system">
-            {dropped} mensagens antigas foram descartadas para manter o console leve.
-          </li>
-        )}
-        {entries.length === 0 && (
-          <li className="console-empty">
-            Nenhuma mensagem. Use <code>console.log()</code> no seu JavaScript para escrever aqui.
-          </li>
-        )}
-        {entries.map((e) => (
-          <li
-            key={e.id}
-            className={`console-entry console-${e.level}${e.origin === 'system' ? ' console-system' : ''}`}
-          >
-            <span className="console-icon">
-              <LevelIcon level={e.level} />
-              <span className="visually-hidden">{LEVEL_LABEL[e.level]}: </span>
-            </span>
-            <span className="console-text">
-              {e.origin === 'system' && <strong className="console-origin">TrilhaCode: </strong>}
-              {e.text}
-            </span>
-            {e.location && (
-              <button
-                type="button"
-                className="console-location"
-                title={`Abrir ${e.location.file} na linha ${e.location.line}`}
-                onClick={() => editor.requestReveal(e.location!.file, e.location!.line)}
-              >
-                {e.location.file}:{e.location.line}
-              </button>
-            )}
-          </li>
-        ))}
-      </ol>
+        <ol className="console-items">
+          {dropped > 0 && (
+            <li className="console-entry console-system">
+              {dropped} mensagens antigas foram descartadas para manter o console leve.
+            </li>
+          )}
+          {entries.length === 0 && (
+            <li className="console-empty">
+              Nenhuma mensagem. Use <code>console.log()</code> no seu JavaScript para escrever aqui.
+            </li>
+          )}
+          {entries.map((e) => (
+            <li
+              key={e.id}
+              className={`console-entry console-${e.level}${e.origin === 'system' ? ' console-system' : ''}`}
+            >
+              <span className="console-icon">
+                <LevelIcon level={e.level} />
+                <span className="visually-hidden">{LEVEL_LABEL[e.level]}: </span>
+              </span>
+              <span className="console-text">
+                {e.origin === 'system' && <strong className="console-origin">TrilhaCode: </strong>}
+                {e.text}
+              </span>
+              {e.location && (
+                <button
+                  type="button"
+                  className="console-location"
+                  title={`Abrir ${e.location.file} na linha ${e.location.line}`}
+                  onClick={() => editor.requestReveal(e.location!.file, e.location!.line)}
+                >
+                  {e.location.file}:{e.location.line}
+                </button>
+              )}
+            </li>
+          ))}
+        </ol>
+      </div>
     </section>
   );
 }

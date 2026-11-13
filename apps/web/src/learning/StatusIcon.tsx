@@ -1,12 +1,22 @@
 import { CircleCheck, CircleDashed, CircleDot, Lock } from 'lucide-react';
 import { UNIT_STATUS_LABEL, type UnitStatus } from './progress';
 
-export function StatusIcon({ status, size = 16 }: { status: UnitStatus; size?: number }) {
+/** `decorative`: o estado já está escrito ao lado do ícone, que fica oculto aos leitores de tela. */
+export function StatusIcon({
+  status,
+  size = 16,
+  decorative = false,
+}: {
+  status: UnitStatus;
+  size?: number;
+  decorative?: boolean;
+}) {
   const label = UNIT_STATUS_LABEL[status];
   const props = {
     size,
-    'aria-label': label,
-    role: 'img' as const,
+    ...(decorative
+      ? { 'aria-hidden': true as const }
+      : { 'aria-label': label, role: 'img' as const }),
     className: `status-icon status-${status}`,
   };
   if (status === 'concluida') return <CircleCheck {...props} />;

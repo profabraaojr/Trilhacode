@@ -30,6 +30,8 @@ A TrilhaCode é distribuída sob a AGPL-3.0-only. Ela usa os componentes abaixo,
 | read-excel-file                     | Leitura de planilhas XLSX                                      | MIT                                                                                                  |
 | PostgreSQL (imagem Docker)          | Banco de dados                                                 | PostgreSQL License                                                                                   |
 | Mailpit (imagem Docker)             | E-mail em desenvolvimento                                      | MIT                                                                                                  |
+| Caddy (imagem Docker)               | Servidor web e HTTPS automático em produção                    | Apache-2.0                                                                                           |
+| axe-core e @axe-core/playwright     | Verificação de acessibilidade nos testes (não distribuídos)    | MPL-2.0                                                                                              |
 
 Componentes previstos para etapas futuras serão acrescentados aqui quando entrarem no código, entre eles LiveCodes (MIT, Copyright (c) 2021-present Hatem Hosny).
 

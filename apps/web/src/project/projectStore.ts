@@ -28,6 +28,8 @@ export interface ProjectState {
   saveState: SaveState;
   /** Aumenta quando o conteúdo muda por fora do editor (ex.: restaurar exemplo). */
   revision: number;
+  /** Aumenta quando o usuário abre ou cria um arquivo: o editor vem para o primeiro plano. */
+  focusRequest: number;
 }
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
@@ -48,6 +50,7 @@ export class ProjectStore extends Store<ProjectState> {
       active: WELCOME_TAB,
       saveState: 'loading',
       revision: 0,
+      focusRequest: 0,
     });
   }
 
@@ -123,6 +126,7 @@ export class ProjectStore extends Store<ProjectState> {
       files: [...this.state.files, { name, content: templateFor(name) }],
       openTabs: [...this.state.openTabs, name],
       active: name,
+      focusRequest: this.state.focusRequest + 1,
     });
     this.scheduleSave();
     return { ok: true };
@@ -167,7 +171,7 @@ export class ProjectStore extends Store<ProjectState> {
     const openTabs = this.state.openTabs.includes(name)
       ? this.state.openTabs
       : [...this.state.openTabs, name];
-    this.setState({ openTabs, active: name });
+    this.setState({ openTabs, active: name, focusRequest: this.state.focusRequest + 1 });
     this.scheduleSave();
   }
 

@@ -283,9 +283,10 @@ code {
 .tab-close {
   display: inline-grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
-  margin-right: 6px;
+  /* WCAG 2.5.8: alvo de pelo menos 24 × 24 px */
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
   padding: 0;
   border: 0;
   border-radius: var(--tc-radius-sm);
@@ -563,8 +564,12 @@ code {
   text-align: center;
   letter-spacing: 0;
 }
-.console-list {
+.console-items {
   list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.console-list {
   margin: 0;
   padding: 0;
   font-family: var(--tc-font-code);
@@ -2158,4 +2163,55 @@ kbd {
     grid-column: 1 / -1;
     grid-row: 2;
   }
+}
+
+/* ---------------------------------------------------------------- Seus dados e privacidade (Etapa 7) */
+
+.danger-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tc-space-1);
+  padding: 6px 12px;
+  border: 1px solid var(--tc-danger);
+  border-radius: var(--tc-radius-sm);
+  background: var(--tc-danger);
+  color: #fff;
+  font: inherit;
+  font-size: var(--tc-text-sm);
+  cursor: pointer;
+}
+.danger-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.danger-text {
+  color: var(--tc-danger);
+}
+.inline-link {
+  display: inline;
+  width: auto;
+  min-height: 0;
+  padding: 0;
+  color: var(--tc-accent);
+  font: inherit;
+  text-decoration: underline;
+}
+.account-section a.secondary-button {
+  text-decoration: none;
+  align-self: flex-start;
+}
+.privacy-page .prose {
+  max-width: 72ch;
+}
+
+/* Mapa: o estado aparece acima do título, embora venha depois no DOM (nome acessível). */
+.map-unit-head {
+  order: -1;
+}
+.term-action {
+  display: flex;
+  margin-top: var(--tc-space-1);
+}
+.term dd .term-form {
+  color: var(--tc-fg);
 }

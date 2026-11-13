@@ -9,19 +9,8 @@
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>TrilhaCode</title>
-    <script>
-      // Aplica o tema antes da primeira pintura para evitar o "flash" de tema errado.
-      (function () {
-        var pref = 'system';
-        try {
-          pref = localStorage.getItem('tc:theme') || 'system';
-        } catch (e) {}
-        var dark =
-          pref === 'dark' ||
-          (pref === 'system' && !window.matchMedia('(prefers-color-scheme: light)').matches);
-        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-      })();
-    </script>
+    <script src="/config.js"></script>
+    <script src="/theme.js"></script>
   </head>
   <body>
     <div id="root"></div>
