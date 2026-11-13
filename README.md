@@ -2,9 +2,21 @@
 
 Plataforma educacional de programação, de código aberto, que reúne um editor no estilo VS Code e trilhas de aprendizagem com etapas pedagógicas, glossário pessoal, desafios e avaliações.
 
-**Status:** Etapa 1 (fundação e identidade visual) em validação. Áreas da interface marcadas com "Em breve" ainda não funcionam e indicam a etapa em que serão entregues.
+**Status:** Etapa 1 concluída; Etapa 2 (editor e execução de código) em validação. Áreas da interface marcadas com "Em breve" ainda não funcionam e indicam a etapa em que serão entregues.
 
 ## O que já funciona
+
+**Editor e execução (Etapa 2)**
+
+- Editor Monaco (o mesmo do VS Code) com destaque de sintaxe, numeração de linhas, autocompletar e diagnósticos: JavaScript e CSS pelos serviços do Monaco; HTML por um verificador próprio de tags não fechadas ou fora de ordem.
+- Explorador de arquivos (criar, renomear, excluir, restaurar o exemplo) e abas. O `index.html` é o arquivo de entrada; CSS e JS entram quando vinculados nele, como em um site real, e a plataforma avisa quando um arquivo não está vinculado.
+- Execução em ambiente isolado: cada execução roda em um iframe novo, com `sandbox="allow-scripts"` e em outra origem. O código do aluno não acessa cookies, `localStorage` nem a página da plataforma (há teste automatizado para isso).
+- Proteção contra laço infinito: um laço que passa de 1 s sem terminar é interrompido com a linha exata, e a página continua respondendo.
+- Console com mensagens, avisos, erros e a linha de origem; clicar na linha leva o editor até ela.
+- Execução automática 1 s depois de parar de digitar (pode ser desligada), `Ctrl+Enter` para executar.
+- Projeto salvo automaticamente no navegador (IndexedDB).
+
+**Fundação (Etapa 1)**
 
 - Interface no estilo VS Code: barra de atividades, barra lateral, área do editor, painel inferior, painel de conteúdo e barra de status.
 - Painéis redimensionáveis e recolhíveis, com o tamanho lembrado entre visitas; atalhos `Ctrl+B`, `Ctrl+J` e `Ctrl+Alt+B`.
@@ -63,15 +75,27 @@ Endereços em desenvolvimento:
 | `pnpm db:generate` | Gera uma migração a partir de `apps/api/src/db/schema.ts`          |
 | `pnpm db:migrate`  | Aplica as migrações pendentes                                      |
 
+## Publicação do sandbox
+
+O sandbox (`apps/sandbox`) gera um único arquivo HTML, sem dependências. Em produção ele deve ficar em **outra origem** (outro domínio ou subdomínio) que a interface, e a URL dele vai em `VITE_SANDBOX_URL` antes do build da interface. O iframe já isola o código por ser `sandbox` sem `allow-same-origin`; a origem separada é uma segunda camada de proteção.
+
+## Limitações conhecidas
+
+- Arquivos ficam em uma única pasta (sem subpastas) e só `.html`, `.css` e `.js`.
+- `import` entre arquivos JavaScript (módulos ES) ainda não é suportado.
+- As mensagens de erro do JavaScript vêm do navegador e do Monaco, em inglês.
+- O verificador de HTML cobre os erros mais comuns (tags não fechadas, fechamento sem abertura); não é um validador completo.
+
 ## Estrutura
 
 ```
 apps/
   web/        interface (React + Vite)
   api/        API (Fastify + Drizzle + PostgreSQL)
-  sandbox/    página de execução isolada (Etapa 2)
+  sandbox/    ambiente de execução isolado (origem separada)
 packages/
   shared/     schemas e tipos usados pela interface e pela API
+  runners/    execução: protocolo, proteção contra laço infinito, montagem do documento
   ui/         tokens visuais (cores, tipografia, espaçamento)
 docs/         análise, arquitetura e plano por etapas
 ```

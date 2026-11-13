@@ -2,9 +2,10 @@ import { BookText, Code2, Menu, MonitorPlay, Moon, Sun, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type { ApiStatus } from '../api/useApiHealth';
 import { useTheme } from '../theme/ThemeContext';
-import { BottomPanel } from './BottomPanel';
+import { ConsolePanel } from './ConsolePanel';
 import { ContentPane } from './ContentPane';
 import { EditorArea } from './EditorArea';
+import { PreviewPane } from './PreviewPane';
 import { SideBar } from './SideBar';
 import { ApiIndicator } from './StatusBar';
 import { VIEWS, type ViewId } from './views';
@@ -76,13 +77,23 @@ export function MobileWorkbench({ api }: { api: ApiStatus }) {
 
       <main className="mobile-main">
         {view ? (
-          <SideBar view={view} onClose={() => setView(null)} />
+          <SideBar
+            view={view}
+            onClose={() => setView(null)}
+            onOpenFile={() => {
+              setView(null);
+              setSurface('codigo');
+            }}
+          />
         ) : surface === 'conteudo' ? (
           <ContentPane />
         ) : surface === 'codigo' ? (
           <EditorArea />
         ) : (
-          <BottomPanel />
+          <div className="mobile-result">
+            <PreviewPane />
+            <ConsolePanel />
+          </div>
         )}
       </main>
 

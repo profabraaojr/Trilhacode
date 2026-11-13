@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
     <title>TrilhaCode · sandbox</title>
-  </head>
-  <body>
     <!--
-      Esta página será servida em uma origem separada da aplicação (ex.: run.exemplo.org)
-      e executará o código dos alunos dentro de iframes com o atributo sandbox.
-      A implementação chega na Etapa 2 (docs/03-plano-etapas.md).
-      Na Etapa 1 ela existe apenas para fixar a estrutura do monorepo e a porta 5174.
+      Ambiente de execução da TrilhaCode. Deve ser publicado em uma origem diferente
+      da plataforma (ex.: https://run.exemplo.org). A plataforma o carrega em um iframe
+      com sandbox="allow-scripts" e envia os arquivos do aluno por postMessage.
+      O build gera um único arquivo HTML, sem dependências externas.
     -->
-    <p>Sandbox de execução da TrilhaCode. Ainda não implementado (Etapa 2).</p>
-  </body>
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body></body>
 </html>

@@ -26,7 +26,6 @@ export const VIEWS: ViewDef[] = [
     id: 'explorador',
     label: 'Explorador',
     icon: Files,
-    stage: 2,
     description: 'Arquivos do seu projeto: criar, renomear, excluir e abrir em abas.',
     placement: 'top',
   },

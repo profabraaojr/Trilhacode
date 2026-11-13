@@ -11,8 +11,8 @@ export interface Stage {
 }
 
 export const STAGES: Stage[] = [
-  { number: 1, title: 'Fundação e identidade visual', status: 'em-validacao' },
-  { number: 2, title: 'Editor e execução de código', status: 'planejada' },
+  { number: 1, title: 'Fundação e identidade visual', status: 'concluida' },
+  { number: 2, title: 'Editor e execução de código', status: 'em-validacao' },
   { number: 3, title: 'Trilhas e conteúdo', status: 'planejada' },
   { number: 4, title: 'Cadastro e perfis', status: 'planejada' },
   { number: 5, title: 'Gestão pedagógica', status: 'planejada' },

@@ -98,7 +98,8 @@ interface Runner {
 }
 ```
 
-- **Executor web (Etapa 2).** Monta um documento a partir dos arquivos HTML, CSS e JS e o injeta num iframe `sandbox="allow-scripts"` (sem `allow-same-origin`), servido pela origem do sandbox. `console.log`, erros e exceções são capturados e enviados ao console da interface por `postMessage`. Um limite de tempo interrompe laços infinitos recriando o iframe.
+- **Executor web (implementado na Etapa 2, `packages/runners`).** A cada execução a interface cria um iframe novo apontando para o sandbox (`apps/sandbox`, outra origem), com `sandbox="allow-scripts allow-modals allow-forms"` e sem `allow-same-origin`. Quando o sandbox avisa que está pronto, a interface envia os arquivos por `postMessage`. O sandbox gera URLs `blob:` para o CSS e o JS do projeto, troca as referências do `index.html` por elas, instrumenta os laços e escreve o documento. O console, os erros (com arquivo e linha) e um sinal de vida a cada segundo voltam por `postMessage`; a interface só aceita mensagens do iframe da execução atual.
+- **Proteção contra laço infinito.** O JavaScript é analisado com Acorn e cada laço recebe uma verificação de tempo, inserida sem quebras de linha para preservar os números de linha. Passando de 1 s, o laço lança um erro com a linha. Se mesmo assim a página parar de responder, o vigia da interface descarta o iframe após 4 s sem sinal de vida.
 - **Executor LiveCodes (etapa posterior).** Usa o SDK em modo headless apontando para a instância própria do LiveCodes. Habilita Python, SQL e outras linguagens sem escrever compiladores.
 - **Arquivos do aluno** ficam no IndexedDB do navegador (funciona sem rede) e são sincronizados com a API quando o aluno está autenticado.
 

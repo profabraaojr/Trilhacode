@@ -1,6 +1,62 @@
-import { Moon, PanelBottom, PanelLeft, PanelRight, Sun } from 'lucide-react';
+import {
+  CircleAlert,
+  Moon,
+  PanelBottom,
+  PanelLeft,
+  PanelRight,
+  Sun,
+  TriangleAlert,
+} from 'lucide-react';
 import { API_STATUS_LABEL, type ApiStatus } from '../api/useApiHealth';
+import { useStore } from '../lib/store';
+import { LANGUAGE_LABEL, languageFor } from '../project/files';
+import { useStores } from '../project/ProjectContext';
+import { WELCOME_TAB, type SaveState } from '../project/projectStore';
 import { useTheme } from '../theme/ThemeContext';
+
+const SAVE_LABEL: Record<SaveState, string> = {
+  loading: 'Carregando projeto…',
+  saving: 'Salvando…',
+  saved: 'Salvo no navegador',
+  error: 'Erro ao salvar',
+  memory: 'Não será salvo (armazenamento indisponível)',
+};
+
+export function SaveIndicator() {
+  const { project } = useStores();
+  const state = useStore(project, (s) => s.saveState);
+  return (
+    <span className="status-text" data-save={state} title={SAVE_LABEL[state]}>
+      {SAVE_LABEL[state]}
+    </span>
+  );
+}
+
+function EditorInfo() {
+  const { project, editor } = useStores();
+  const active = useStore(project, (s) => s.active);
+  const cursor = useStore(editor, (s) => s.cursor);
+  const problems = useStore(editor, (s) => s.problems);
+  const isFile = active !== null && active !== WELCOME_TAB;
+  return (
+    <>
+      <span
+        className="status-text status-problems"
+        aria-label={`${problems.errors} erros e ${problems.warnings} avisos no código`}
+        title="Problemas encontrados pelo editor"
+      >
+        <CircleAlert size={13} aria-hidden="true" /> {problems.errors}
+        <TriangleAlert size={13} aria-hidden="true" /> {problems.warnings}
+      </span>
+      {isFile && cursor && (
+        <span className="status-text">
+          Ln {cursor.line}, Col {cursor.column}
+        </span>
+      )}
+      {isFile && <span className="status-text">{LANGUAGE_LABEL[languageFor(active)]}</span>}
+    </>
+  );
+}
 
 interface Props {
   api: ApiStatus;
@@ -50,6 +106,8 @@ export function StatusBar(props: Props) {
     <footer className="status-bar" aria-label="Barra de status">
       <div className="status-group">
         <ApiIndicator api={props.api} />
+        <SaveIndicator />
+        <EditorInfo />
       </div>
       <div className="status-group">
         {toggles.map(({ open, onClick, icon: Icon, label }) => (
@@ -78,7 +136,7 @@ export function StatusBar(props: Props) {
             <Moon size={14} aria-hidden="true" />
           )}
         </button>
-        <span className="status-text">TrilhaCode 0.1.0</span>
+        <span className="status-text status-version">TrilhaCode 0.2.0</span>
       </div>
     </footer>
   );

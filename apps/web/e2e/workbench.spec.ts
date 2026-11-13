@@ -34,8 +34,8 @@ test.describe('computador e tablet', () => {
   test.skip(({ viewport }) => (viewport?.width ?? 0) < 768, 'layout em colunas');
 
   test('Ctrl+B e Ctrl+J recolhem e reabrem a barra lateral e o painel', async ({ page }) => {
-    const sidebar = page.getByRole('complementary', { name: 'Trilhas' });
-    const panel = page.getByRole('region', { name: 'Painel inferior' });
+    const sidebar = page.getByRole('complementary', { name: 'Explorador' });
+    const panel = page.getByRole('region', { name: 'Console' });
     await expect(sidebar).toBeVisible();
     await expect(panel).toBeVisible();
 
@@ -51,7 +51,7 @@ test.describe('computador e tablet', () => {
   });
 
   test('a barra lateral pode ser redimensionada arrastando a divisória', async ({ page }) => {
-    const sidebar = page.getByRole('complementary', { name: 'Trilhas' });
+    const sidebar = page.getByRole('complementary', { name: 'Explorador' });
     const before = (await sidebar.boundingBox())!.width;
     const handle = page.getByRole('separator').first();
     const box = (await handle.boundingBox())!;
@@ -73,7 +73,9 @@ test.describe('celular', () => {
     await tabs.getByRole('button', { name: 'Conteúdo' }).click();
     await expect(page.getByRole('complementary', { name: 'Conteúdo da unidade' })).toBeVisible();
     await tabs.getByRole('button', { name: 'Resultado' }).click();
-    await expect(page.getByRole('region', { name: 'Painel inferior' })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Resultado' })).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Console' })).toBeVisible();
+    await expect(page.getByText('O script foi carregado.')).toBeVisible();
     await tabs.getByRole('button', { name: 'Código' }).click();
     await expect(page.getByRole('tab', { name: 'Boas-vindas' })).toBeVisible();
   });

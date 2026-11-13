@@ -4,13 +4,18 @@
   "private": true,
   "license": "AGPL-3.0-only",
   "type": "module",
-  "description": "Página servida em origem separada para executar o código dos alunos (implementação na Etapa 2).",
+  "description": "Ambiente de execução isolado: recebe os arquivos do aluno e executa em origem separada da plataforma.",
   "scripts": {
-    "dev": "vite --port 5174 --strictPort",
-    "build": "vite build",
-    "typecheck": "echo 'sandbox: sem TypeScript na Etapa 1'"
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "vite": "^8.0.0"
+    "vite": "^8.0.0",
+    "vite-plugin-singlefile": "^2.3.4"
+  },
+  "dependencies": {
+    "@trilhacode/runners": "workspace:*"
   }
 }
