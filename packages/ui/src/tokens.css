@@ -1,0 +1,94 @@
+/*
+ * Tokens visuais da TrilhaCode.
+ * Inspirados na organização do VS Code, com paleta própria (sem cores ou marcas da Microsoft).
+ * Tema escuro é o padrão; o tema claro é aplicado com data-theme="light" no <html>.
+ * Pares de texto/fundo verificados para contraste mínimo WCAG AA (4.5:1).
+ */
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --tc-bg-activity: #16181d;
+  --tc-bg-sidebar: #1b1e24;
+  --tc-bg-editor: #21252c;
+  --tc-bg-panel: #1b1e24;
+  --tc-bg-tab-inactive: #1b1e24;
+  --tc-bg-hover: #2a2f38;
+  --tc-bg-selected: #2f3540;
+  --tc-bg-input: #2a2f38;
+
+  --tc-fg: #e6e8eb;
+  --tc-fg-muted: #a3aab5;
+  --tc-fg-subtle: #8a919c;
+  --tc-fg-on-accent: #ffffff;
+
+  --tc-border: #2e333b;
+  --tc-border-strong: #3d434d;
+
+  --tc-accent: #2dd4bf;
+  --tc-accent-strong: #0f766e;
+  --tc-accent-soft: rgb(45 212 191 / 0.14);
+
+  --tc-ok: #4ade80;
+  --tc-warn: #fbbf24;
+  --tc-danger: #f87171;
+
+  --tc-focus: #5eead4;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --tc-bg-activity: #e4e7ec;
+  --tc-bg-sidebar: #f1f3f6;
+  --tc-bg-editor: #ffffff;
+  --tc-bg-panel: #f7f8fa;
+  --tc-bg-tab-inactive: #eceff3;
+  --tc-bg-hover: #e1e5eb;
+  --tc-bg-selected: #d5dbe3;
+  --tc-bg-input: #ffffff;
+
+  --tc-fg: #1c2027;
+  --tc-fg-muted: #4b5361;
+  --tc-fg-subtle: #5f6775;
+  --tc-fg-on-accent: #ffffff;
+
+  --tc-border: #d6dae1;
+  --tc-border-strong: #b9c0ca;
+
+  --tc-accent: #0b655e;
+  --tc-accent-strong: #0f766e;
+  --tc-accent-soft: rgb(15 118 110 / 0.1);
+
+  --tc-ok: #166534;
+  --tc-warn: #854d0e;
+  --tc-danger: #b91c1c;
+
+  --tc-focus: #0f766e;
+}
+
+:root {
+  --tc-font-ui: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --tc-font-code: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  --tc-text-xs: 0.75rem;
+  --tc-text-sm: 0.8125rem;
+  --tc-text-md: 0.875rem;
+  --tc-text-lg: 1rem;
+  --tc-text-xl: 1.375rem;
+  --tc-text-2xl: 1.75rem;
+
+  --tc-space-1: 4px;
+  --tc-space-2: 8px;
+  --tc-space-3: 12px;
+  --tc-space-4: 16px;
+  --tc-space-6: 24px;
+  --tc-space-8: 32px;
+
+  --tc-radius-sm: 4px;
+  --tc-radius-md: 6px;
+
+  --tc-activity-width: 48px;
+  --tc-statusbar-height: 24px;
+  --tc-tabs-height: 36px;
+}

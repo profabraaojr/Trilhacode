@@ -1,0 +1,16 @@
+{
+  "name": "@trilhacode/sandbox",
+  "version": "0.1.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "description": "Página servida em origem separada para executar o código dos alunos (implementação na Etapa 2).",
+  "scripts": {
+    "dev": "vite --port 5174 --strictPort",
+    "build": "vite build",
+    "typecheck": "echo 'sandbox: sem TypeScript na Etapa 1'"
+  },
+  "devDependencies": {
+    "vite": "^8.0.0"
+  }
+}

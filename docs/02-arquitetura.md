@@ -37,24 +37,24 @@ Status: **aprovada em 13/11/2026** (nome TrilhaCode, licença AGPL-3.0-only, tec
 
 ## 3. Tecnologias propostas
 
-| Camada | Escolha | Licença | Motivo |
-|---|---|---|---|
-| Linguagem | TypeScript em todo o projeto | Apache-2.0 | Tipos compartilhados entre front, API e validação de conteúdo |
-| Monorepo | pnpm workspaces | MIT | Pacotes independentes no mesmo repositório |
-| Front-end | React 19 + Vite | MIT | Ecossistema amplo; SPA leve, sem servidor de renderização |
-| Editor | Monaco Editor | MIT | É o editor do VS Code: destaque de sintaxe, numeração, diagnósticos e sugestões já prontos |
-| Mapa da trilha | React Flow (`@xyflow/react`) | MIT | Grafos interativos com nós e arestas |
-| Gráficos do painel | Recharts | MIT | Indicadores do aluno e do professor |
-| API | Fastify | MIT | Rápido, validação por schema, plugins |
-| Autenticação | Better Auth | MIT | E-mail/senha, verificação de e-mail, recuperação de senha, sessões e papéis, sem serviço pago |
-| Banco | PostgreSQL | PostgreSQL License | Relacional, maduro, gratuito |
-| ORM e migrações | Drizzle ORM | Apache-2.0 | SQL explícito, migrações versionadas |
-| Validação | Zod | MIT | Mesmo schema valida API e arquivos de conteúdo |
-| Planilhas | PapaParse (CSV) + ExcelJS (XLSX) | MIT | Importação de alunos |
-| E-mail | Nodemailer; Mailpit em desenvolvimento | MIT-0 / MIT | Qualquer SMTP em produção; caixa de teste local |
-| Execução extra | LiveCodes (auto-hospedado, SDK) | MIT | Python, SQL e outras linguagens no navegador |
-| Testes | Vitest + Playwright | MIT / Apache-2.0 | Unidade e ponta a ponta |
-| Ambiente local | Docker Compose | Apache-2.0 | Sobe Postgres e Mailpit com um comando |
+| Camada             | Escolha                                | Licença            | Motivo                                                                                        |
+| ------------------ | -------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------- |
+| Linguagem          | TypeScript em todo o projeto           | Apache-2.0         | Tipos compartilhados entre front, API e validação de conteúdo                                 |
+| Monorepo           | pnpm workspaces                        | MIT                | Pacotes independentes no mesmo repositório                                                    |
+| Front-end          | React 19 + Vite                        | MIT                | Ecossistema amplo; SPA leve, sem servidor de renderização                                     |
+| Editor             | Monaco Editor                          | MIT                | É o editor do VS Code: destaque de sintaxe, numeração, diagnósticos e sugestões já prontos    |
+| Mapa da trilha     | React Flow (`@xyflow/react`)           | MIT                | Grafos interativos com nós e arestas                                                          |
+| Gráficos do painel | Recharts                               | MIT                | Indicadores do aluno e do professor                                                           |
+| API                | Fastify                                | MIT                | Rápido, validação por schema, plugins                                                         |
+| Autenticação       | Better Auth                            | MIT                | E-mail/senha, verificação de e-mail, recuperação de senha, sessões e papéis, sem serviço pago |
+| Banco              | PostgreSQL                             | PostgreSQL License | Relacional, maduro, gratuito                                                                  |
+| ORM e migrações    | Drizzle ORM                            | Apache-2.0         | SQL explícito, migrações versionadas                                                          |
+| Validação          | Zod                                    | MIT                | Mesmo schema valida API e arquivos de conteúdo                                                |
+| Planilhas          | PapaParse (CSV) + ExcelJS (XLSX)       | MIT                | Importação de alunos                                                                          |
+| E-mail             | Nodemailer; Mailpit em desenvolvimento | MIT-0 / MIT        | Qualquer SMTP em produção; caixa de teste local                                               |
+| Execução extra     | LiveCodes (auto-hospedado, SDK)        | MIT                | Python, SQL e outras linguagens no navegador                                                  |
+| Testes             | Vitest + Playwright                    | MIT / Apache-2.0   | Unidade e ponta a ponta                                                                       |
+| Ambiente local     | Docker Compose                         | Apache-2.0         | Sobe Postgres e Mailpit com um comando                                                        |
 
 Alternativa considerada para o front e a API: Next.js em um único app. Descartei porque a separação entre aplicação, API e sandbox fica mais clara em apps distintos, e o sandbox precisa de origem própria de qualquer forma.
 
@@ -91,9 +91,9 @@ Interface comum a todos os executores:
 
 ```ts
 interface Runner {
-  id: string;                         // "web", "python", ...
-  languages: string[];                // extensões aceitas
-  run(files: ProjectFile[]): Promise<RunSession>;   // emite console e resultado
+  id: string; // "web", "python", ...
+  languages: string[]; // extensões aceitas
+  run(files: ProjectFile[]): Promise<RunSession>; // emite console e resultado
   test(files: ProjectFile[], tests: TestSpec): Promise<TestReport>;
 }
 ```
@@ -122,6 +122,8 @@ glossario        aluno, termo, significado, explicacao_propria, exemplo, unidade
 eventos_pontos   aluno, tipo, pontos, referencia (livro-razão imutável)
 projetos_codigo  aluno, unidade, arquivos (jsonb), atualizado_em
 ```
+
+Os nomes acima descrevem as entidades. No código e no banco os identificadores estão em inglês (`user`, `track`, `module`, `unit`, `unit_progress`...), o que mantém compatibilidade com o Better Auth e facilita contribuições externas; a interface e a documentação permanecem em português. O schema implementado está em `apps/api/src/db/schema.ts`.
 
 O conteúdo vive em `content/` e é copiado para o banco por `pnpm content:sync`; cada item tem um identificador estável (`html-css/estrutura/tags`) para que o progresso dos alunos sobreviva a revisões de texto.
 
