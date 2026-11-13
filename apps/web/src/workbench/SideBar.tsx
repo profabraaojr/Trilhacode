@@ -1,6 +1,7 @@
 import { X } from 'lucide-react';
 import { ComingSoon } from '../components/ComingSoon';
 import { AccountView } from '../account/AccountView';
+import { ClassesView } from '../classes/ClassesView';
 import { TracksView } from '../learning/TracksView';
 import { FileExplorer } from './FileExplorer';
 import { SettingsView } from './SettingsView';
@@ -11,9 +12,11 @@ interface Props {
   onClose?: () => void;
   /** Chamado ao abrir um arquivo (no celular, volta para a aba Código). */
   onOpenFile?: () => void;
+  /** Abre a visão Conta (para quem ainda não entrou). */
+  onShowAccount?: () => void;
 }
 
-export function SideBar({ view, onClose, onOpenFile }: Props) {
+export function SideBar({ view, onClose, onOpenFile, onShowAccount }: Props) {
   const def = getView(view);
   return (
     <aside className="sidebar" aria-label={def.label}>
@@ -33,6 +36,8 @@ export function SideBar({ view, onClose, onOpenFile }: Props) {
       <div className="pane-scroll">
         {view === 'trilhas' ? (
           <TracksView />
+        ) : view === 'turmas' ? (
+          <ClassesView onShowAccount={onShowAccount} />
         ) : view === 'conta' ? (
           <AccountView />
         ) : view === 'explorador' ? (

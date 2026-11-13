@@ -1,4 +1,4 @@
-import { Map as MapIcon, Sparkles, X } from 'lucide-react';
+import { ClipboardList, Map as MapIcon, Sparkles, Users, X } from 'lucide-react';
 import { lazy, Suspense } from 'react';
 import { useStore } from '../lib/store';
 import { useStores } from '../project/ProjectContext';
@@ -8,20 +8,38 @@ import { WelcomePage } from './WelcomePage';
 
 const MonacoEditor = lazy(() => import('../editor/MonacoEditor'));
 const TrackMap = lazy(() => import('../learning/TrackMap'));
+const ClassroomPage = lazy(() => import('../classes/ClassroomPage'));
+const StudentAssessmentPage = lazy(() => import('../classes/StudentAssessmentPage'));
 
-/** Área central: abas de arquivos e editor (ou a página de boas-vindas). */
+/**
+ * Área central: abas de arquivos e editor, além das páginas especiais
+ * (mapa da trilha, página da turma, avaliação da turma).
+ */
 export function EditorArea() {
-  const { project, learning } = useStores();
+  const { project, learning, classroom } = useStores();
   const openTabs = useStore(project, (s) => s.openTabs);
   const active = useStore(project, (s) => s.active);
   const mapOpen = useStore(learning, (s) => s.mapOpen);
   const mapActive = useStore(learning, (s) => s.mapActive);
   const trackTitle = useStore(learning, (s) => s.track.data?.titulo);
-  const showEditor = !mapActive && active !== null && active !== WELCOME_TAB;
+  const page = useStore(classroom, (s) => s.page);
+  const pageActive = useStore(classroom, (s) => s.active);
+  const specialActive = mapActive || pageActive;
+  const showEditor = !specialActive && active !== null && active !== WELCOME_TAB;
+
   const selectTab = (tab: string) => {
     learning.setMapActive(false);
+    classroom.setActive(false);
     project.setActive(tab);
   };
+
+  const panelLabel = mapActive
+    ? 'Mapa da trilha'
+    : pageActive && page
+      ? page.title
+      : active === WELCOME_TAB
+        ? 'Boas-vindas'
+        : (active ?? 'Nenhum arquivo');
 
   return (
     <section className="editor-area" aria-label="Área do editor">
@@ -49,8 +67,35 @@ export function EditorArea() {
             </button>
           </div>
         )}
+        {page && (
+          <div className="tab" data-selected={pageActive || undefined}>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={pageActive}
+              className="tab-label"
+              onClick={() => classroom.setActive(true)}
+            >
+              {page.kind === 'turma' ? (
+                <Users size={14} aria-hidden="true" />
+              ) : (
+                <ClipboardList size={14} aria-hidden="true" />
+              )}
+              {page.kind === 'turma' ? 'Turma' : 'Avaliação'} · {page.title}
+            </button>
+            <button
+              type="button"
+              className="tab-close"
+              aria-label={`Fechar ${page.title}`}
+              title="Fechar"
+              onClick={() => classroom.close()}
+            >
+              <X size={14} aria-hidden="true" />
+            </button>
+          </div>
+        )}
         {openTabs.map((tab) => {
-          const selected = !mapActive && tab === active;
+          const selected = !specialActive && tab === active;
           const label = tab === WELCOME_TAB ? 'Boas-vindas' : tab;
           return (
             <div key={tab} className="tab" data-selected={selected || undefined}>
@@ -82,24 +127,23 @@ export function EditorArea() {
           );
         })}
       </div>
-      <div
-        className="editor-content"
-        role="tabpanel"
-        aria-label={
-          mapActive
-            ? 'Mapa da trilha'
-            : active === WELCOME_TAB
-              ? 'Boas-vindas'
-              : (active ?? 'Nenhum arquivo')
-        }
-      >
+      <div className="editor-content" role="tabpanel" aria-label={panelLabel}>
         {mapActive && (
           <Suspense fallback={<p className="editor-loading">Carregando o mapa…</p>}>
             <TrackMap />
           </Suspense>
         )}
-        {!mapActive && active === WELCOME_TAB && <WelcomePage />}
-        {!mapActive && active === null && (
+        {pageActive && page && (
+          <Suspense fallback={<p className="editor-loading">Carregando…</p>}>
+            {page.kind === 'turma' ? (
+              <ClassroomPage key={page.id} id={page.id} />
+            ) : (
+              <StudentAssessmentPage key={page.id} id={page.id} />
+            )}
+          </Suspense>
+        )}
+        {!specialActive && active === WELCOME_TAB && <WelcomePage />}
+        {!specialActive && active === null && (
           <div className="editor-empty">
             <p>Nenhum arquivo aberto.</p>
             <p>Abra um arquivo pelo Explorador.</p>

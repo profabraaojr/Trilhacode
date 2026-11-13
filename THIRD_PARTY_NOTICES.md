@@ -26,6 +26,8 @@ A TrilhaCode é distribuída sob a AGPL-3.0-only. Ela usa os componentes abaixo,
 | vite-plugin-singlefile              | Build do sandbox em arquivo único                              | MIT                                                                                                  |
 | Better Auth                         | Autenticação, sessões e senhas                                 | MIT                                                                                                  |
 | Nodemailer                          | Envio de e-mails                                               | MIT-0                                                                                                |
+| PapaParse                           | Leitura de planilhas CSV                                       | MIT                                                                                                  |
+| read-excel-file                     | Leitura de planilhas XLSX                                      | MIT                                                                                                  |
 | PostgreSQL (imagem Docker)          | Banco de dados                                                 | PostgreSQL License                                                                                   |
 | Mailpit (imagem Docker)             | E-mail em desenvolvimento                                      | MIT                                                                                                  |
 

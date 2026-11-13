@@ -7,7 +7,10 @@ export type Result = { ok: true } | { ok: false; error: string; code?: string };
 
 /** Ação vinda de um link de e-mail (confirmação ou redefinição de senha). */
 export type UrlAction =
-  { kind: 'verificado' } | { kind: 'redefinir'; token: string } | { kind: 'erro'; message: string };
+  | { kind: 'verificado' }
+  | { kind: 'redefinir'; token: string }
+  | { kind: 'cadastro'; email: string }
+  | { kind: 'erro'; message: string };
 
 export interface AccountState {
   status: 'loading' | 'anonymous' | 'signed-in';
@@ -35,6 +38,8 @@ function takeUrlAction(): UrlAction | null {
   }
   if (acao === 'redefinir' && token) return { kind: 'redefinir', token };
   if (acao === 'verificado') return { kind: 'verificado' };
+  // Link do convite de turma: abre o cadastro com o e-mail convidado.
+  if (acao === 'cadastro') return { kind: 'cadastro', email: params.get('email') ?? '' };
   return null;
 }
 
@@ -63,11 +68,8 @@ export class AccountStore extends Store<AccountState> {
   }
 
   async signIn(email: string, password: string): Promise<Result> {
-    const { error } = await authClient.signIn.email({
-      email,
-      password,
-      callbackURL: callback('verificado'),
-    });
+    // Sem callbackURL: com ele, o cliente do Better Auth recarrega a página após o login.
+    const { error } = await authClient.signIn.email({ email, password });
     if (error) return { ok: false, error: authErrorMessage(error), code: error.code };
     await this.refresh();
     return { ok: true };
@@ -131,6 +133,6 @@ export class AccountStore extends Store<AccountState> {
 
   async signOut(): Promise<void> {
     await authClient.signOut();
-    this.setState({ status: 'anonymous', profile: null });
+    this.setState({ status: 'anonymous', profile: null, urlAction: null });
   }
 }

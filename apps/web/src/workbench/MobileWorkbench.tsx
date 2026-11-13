@@ -96,6 +96,7 @@ export function MobileWorkbench({ api }: { api: ApiStatus }) {
           <SideBar
             view={view}
             onClose={() => setView(null)}
+            onShowAccount={() => setView('conta')}
             onOpenFile={() => {
               setView(null);
               setSurface('codigo');

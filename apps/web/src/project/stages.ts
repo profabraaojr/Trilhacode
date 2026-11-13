@@ -14,8 +14,8 @@ export const STAGES: Stage[] = [
   { number: 1, title: 'Fundação e identidade visual', status: 'concluida' },
   { number: 2, title: 'Editor e execução de código', status: 'concluida' },
   { number: 3, title: 'Trilhas e conteúdo', status: 'concluida' },
-  { number: 4, title: 'Cadastro e perfis', status: 'em-validacao' },
-  { number: 5, title: 'Gestão pedagógica', status: 'planejada' },
+  { number: 4, title: 'Cadastro e perfis', status: 'concluida' },
+  { number: 5, title: 'Gestão pedagógica', status: 'em-validacao' },
   { number: 6, title: 'Avaliação e evolução', status: 'planejada' },
   { number: 7, title: 'Qualidade e publicação', status: 'planejada' },
 ];

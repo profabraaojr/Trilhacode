@@ -1,5 +1,6 @@
 import { createContext, use, useEffect, useState, type ReactNode } from 'react';
 import { AccountStore } from '../account/accountStore';
+import { ClassroomStore } from '../classes/classroomStore';
 import { LearningStore } from '../learning/learningStore';
 import { EditorStatusStore } from './editorStatus';
 import { ProjectStore } from './projectStore';
@@ -12,6 +13,7 @@ interface Stores {
   editor: EditorStatusStore;
   learning: LearningStore;
   account: AccountStore;
+  classroom: ClassroomStore;
 }
 
 const ProjectContext = createContext<Stores | null>(null);
@@ -28,12 +30,23 @@ export function ProjectProvider({
     const project = new ProjectStore();
     const run = new RunStore();
     const account = new AccountStore();
+    const learning = new LearningStore(project, run, account);
+    const classroom = new ClassroomStore();
+    // O mapa da trilha e as páginas de turma disputam o primeiro plano da área central.
+    learning.subscribe(() => {
+      if (learning.getState().mapActive && classroom.getState().active) classroom.setActive(false);
+    });
+    classroom.subscribe(() => {
+      if (classroom.getState().active && learning.getState().mapActive)
+        learning.setMapActive(false);
+    });
     return {
       project,
       run,
       account,
+      classroom,
       editor: new EditorStatusStore(),
-      learning: new LearningStore(project, run, account),
+      learning,
     };
   });
 

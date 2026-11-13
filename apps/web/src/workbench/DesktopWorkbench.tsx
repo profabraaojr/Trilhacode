@@ -110,7 +110,11 @@ export function DesktopWorkbench({ api }: { api: ApiStatus }) {
             onResize={() => setSidebarOpen(!sidebarRef.current?.isCollapsed())}
           >
             <div className="panel-slot" hidden={!sidebarOpen}>
-              <SideBar view={activeView} onClose={toggleSidebar} />
+              <SideBar
+                view={activeView}
+                onClose={toggleSidebar}
+                onShowAccount={() => setActiveView('conta')}
+              />
             </div>
           </Panel>
           <Separator className="resize-handle resize-handle-v" />

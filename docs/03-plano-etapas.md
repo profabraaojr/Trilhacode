@@ -55,7 +55,7 @@ Cada etapa termina com uma entrega testável e só avança depois de validada. O
 
 ## Etapa 4. Cadastro e perfis
 
-**Situação:** implementada, aguardando validação. Definições aprovadas pelo responsável:
+**Situação:** concluída e validada em 13/11/2026. Definições aprovadas pelo responsável:
 
 1. Todo cadastro é de aluno; contas de professor são promovidas por um administrador.
 2. O primeiro administrador é criado por comando no servidor (`pnpm admin:criar`).
@@ -71,6 +71,10 @@ Decisões de implementação: interface e API na mesma origem (sessão em cookie
 **Aceite:** fluxo completo testado com Mailpit; testes de API confirmam que um aluno não acessa dados de outro e que o professor só vê suas turmas.
 
 ## Etapa 5. Gestão pedagógica
+
+**Situação:** implementada, aguardando validação. Definições aprovadas pelo responsável: matrícula por convite por e-mail; professor responsável com coprofessores; avaliações complementares de múltipla escolha com feedback por alternativa (questões abertas ficam para depois); consulta aos glossários dos alunos na Etapa 6, com o lugar reservado no painel.
+
+Decisões de implementação: a planilha é lida no navegador (`read-excel-file` e `papaparse`), e cada linha é validada no servidor; um convite para uma conta já existente mas sem e-mail confirmado vira matrícula na confirmação; "unidades que pedem atenção" são as que têm alunos abaixo da nota mínima ou média abaixo de 70%; o relatório usa ponto e vírgula e BOM, para abrir corretamente em planilhas configuradas em português.
 
 - Turmas, cadastro individual e importação por CSV/XLSX com relatório de erros por linha.
 - Atribuição de trilhas a turmas com prazo.
