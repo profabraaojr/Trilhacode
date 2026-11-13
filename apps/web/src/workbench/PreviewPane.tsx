@@ -39,11 +39,22 @@ export function PreviewPane() {
   // Executa ao montar, a cada pedido de execução e quando o projeto termina de carregar.
   useEffect(() => {
     if (!loaded) return;
-    sessionRef.current?.run(project.getState().files, ENTRY_FILE, {
-      onConsole: (entries) => run.push(...entries),
-      onClear: () => run.clear(),
-      onStatus: (s) => run.setStatus(s),
-    });
+    const { files, projectKey } = project.getState();
+    const tests = run.takePendingTests();
+    sessionRef.current?.run(
+      files,
+      ENTRY_FILE,
+      {
+        onConsole: (entries) => run.push(...entries),
+        onClear: () => run.clear(),
+        onStatus: (s) => {
+          run.setStatus(s);
+          if (s === 'stopped' || s === 'unavailable') run.testsAborted();
+        },
+        onTests: (results) => run.setTestResults(projectKey, results),
+      },
+      tests ?? undefined,
+    );
   }, [request, loaded, project, run]);
 
   return (

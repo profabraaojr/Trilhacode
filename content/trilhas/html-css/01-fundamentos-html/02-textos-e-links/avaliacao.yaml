@@ -1,0 +1,66 @@
+notaMinima: 70
+questoes:
+  - id: strong-b
+    tipo: conceitual
+    enunciado: '`<strong>` e `<b>` aparecem em negrito por padrão. Qual é a diferença entre eles?'
+    alternativas:
+      - texto: Nenhuma; são sinônimos e podem ser trocados sempre.
+        feedback: A aparência padrão é a mesma, mas o significado não. Leitores de tela e buscadores tratam os dois de forma diferente.
+      - texto: '`<strong>` indica importância ou urgência; `<b>` é um destaque visual sem importância extra.'
+        correta: true
+        feedback: Isso. Escolha o elemento pelo significado; se o objetivo for só a aparência, use CSS.
+      - texto: '`<b>` é mais moderno e substitui o `<strong>`.'
+        feedback: Os dois são atuais, cada um com seu uso. O <b> não substitui o <strong>.
+  - id: niveis
+    tipo: conceitual
+    enunciado: Por que não se deve pular de um `<h2>` direto para um `<h4>`?
+    alternativas:
+      - texto: Porque o navegador mostra uma mensagem de erro.
+        feedback: O navegador não mostra erro; a página funciona. O problema está na estrutura.
+      - texto: Porque quem navega por títulos (por exemplo, com leitor de tela) percebe uma seção faltando na hierarquia.
+        correta: true
+        feedback: Correto. Os níveis formam um sumário; pular um nível quebra essa lógica.
+      - texto: Porque o `<h4>` fica pequeno demais.
+        feedback: O tamanho se ajusta com CSS. O nível do título não deve ser escolhido pela aparência.
+  - id: ancora
+    tipo: leitura-de-codigo
+    enunciado: O link abaixo não leva a lugar nenhum quando clicado. Por quê?
+    codigo:
+      linguagem: html
+      conteudo: |
+        <a href="#contato">Fale conosco</a>
+        ...
+        <h2 class="contato">Contato</h2>
+    alternativas:
+      - texto: 'Falta `target="_blank"` no link.'
+        feedback: O target define onde o destino abre, mas aqui o problema é que o destino não é encontrado.
+      - texto: 'O destino usa `class="contato"`, mas a âncora procura um elemento com `id="contato"`.'
+        correta: true
+        feedback: Isso. O # aponta para um id. Troque class por id no <h2>.
+      - texto: Links para a mesma página precisam do endereço completo.
+        feedback: Para a mesma página, basta # seguido do id.
+  - id: relativa
+    tipo: leitura-de-codigo
+    enunciado: 'A página `cursos/redes.html` tem o link `<a href="../index.html">Início</a>`. Para onde ele leva?'
+    alternativas:
+      - texto: Para `cursos/index.html`.
+        feedback: O ../ sobe um nível de pasta antes de procurar o arquivo, então sai de cursos/.
+      - texto: Para o `index.html` da pasta acima de `cursos/`.
+        correta: true
+        feedback: Correto. ../ significa "a pasta acima da atual".
+      - texto: Para o site `index.html` na internet.
+        feedback: Sem protocolo e domínio, o endereço é relativo à página atual.
+  - id: clique-aqui
+    tipo: resolucao-de-problema
+    enunciado: >-
+      Em uma auditoria de acessibilidade, a página de um cliente recebeu a
+      observação "links sem propósito claro". Os links dizem "clique aqui" e
+      "saiba mais". Qual é a correção adequada?
+    alternativas:
+      - texto: 'Adicionar `target="_blank"` em todos os links.'
+        feedback: Isso muda onde o link abre, não o que ele comunica.
+      - texto: Reescrever o texto de cada link para descrever o destino, como "edital do processo seletivo".
+        correta: true
+        feedback: Isso. O texto do link precisa fazer sentido mesmo fora do parágrafo, como na lista de links de um leitor de tela.
+      - texto: Colocar os links em negrito com `<strong>`.
+        feedback: 'O destaque visual não resolve: o texto continua sem informar o destino.'

@@ -1,0 +1,15 @@
+titulo: HTML e CSS
+descricao: >-
+  Estruture páginas com HTML e dê a elas uma apresentação visual com CSS,
+  escrevendo e testando o código no próprio navegador.
+publico: Ensino técnico
+nivel: Iniciante
+duracaoEstimada: 4 h (estimativa para as quatro unidades)
+objetivos:
+  - Escrever um documento HTML com estrutura válida e elementos bem aninhados.
+  - Organizar textos com títulos, parágrafos, ênfases, listas, links e imagens, escolhendo cada elemento pelo seu significado.
+  - Vincular uma folha de estilo e aplicar regras CSS usando seletores de tipo, classe e id.
+  - Ler mensagens do editor e do console para localizar e corrigir erros.
+prerequisitos:
+  - Usar um navegador e criar, renomear e salvar arquivos.
+  - Nenhum conhecimento prévio de programação.

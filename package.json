@@ -1,7 +1,7 @@
 {
   "name": "trilhacode",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Plataforma educacional de programação de código aberto",
   "license": "AGPL-3.0-only",
   "type": "module",
@@ -19,7 +19,10 @@
     "test": "pnpm -r test",
     "test:e2e": "pnpm --filter @trilhacode/web test:e2e",
     "db:generate": "pnpm --filter @trilhacode/api db:generate",
-    "db:migrate": "pnpm --filter @trilhacode/api db:migrate"
+    "db:migrate": "pnpm --filter @trilhacode/api db:migrate",
+    "content:validate": "pnpm --filter @trilhacode/content validate",
+    "content:links": "pnpm --filter @trilhacode/content links",
+    "content:sync": "pnpm --filter @trilhacode/api content:sync"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

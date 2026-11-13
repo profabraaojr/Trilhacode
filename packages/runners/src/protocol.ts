@@ -30,12 +30,26 @@ export interface RunOptions {
   loopTimeoutMs: number;
 }
 
+/** Teste de desafio: código executado na página do aluno depois que ela carrega. */
+export interface TestSpec {
+  descricao: string;
+  codigo: string;
+}
+
+export interface TestResult {
+  descricao: string;
+  ok: boolean;
+  /** Orientação ao aluno quando o teste falha. */
+  mensagem?: string;
+}
+
 export interface RunRequest {
   type: 'tc:run';
   runId: string;
   entry: string;
   files: ProjectFile[];
   options: RunOptions;
+  tests?: TestSpec[];
 }
 
 export type SandboxMessage =
@@ -43,9 +57,17 @@ export type SandboxMessage =
   | { type: 'tc:console'; runId: string; entries: ConsoleEntry[] }
   | { type: 'tc:clear'; runId: string }
   | { type: 'tc:loaded'; runId: string }
-  | { type: 'tc:heartbeat'; runId: string };
+  | { type: 'tc:heartbeat'; runId: string }
+  | { type: 'tc:tests'; runId: string; results: TestResult[] };
 
-const SANDBOX_TYPES = new Set(['tc:ready', 'tc:console', 'tc:clear', 'tc:loaded', 'tc:heartbeat']);
+const SANDBOX_TYPES = new Set([
+  'tc:ready',
+  'tc:console',
+  'tc:clear',
+  'tc:loaded',
+  'tc:heartbeat',
+  'tc:tests',
+]);
 
 export function isSandboxMessage(value: unknown): value is SandboxMessage {
   if (typeof value !== 'object' || value === null) return false;
@@ -62,6 +84,18 @@ export function isSandboxMessage(value: unknown): value is SandboxMessage {
           e !== null &&
           typeof (e as ConsoleEntry).text === 'string' &&
           typeof (e as ConsoleEntry).level === 'string',
+      )
+    );
+  }
+  if (v.type === 'tc:tests') {
+    return (
+      Array.isArray(v.results) &&
+      v.results.every(
+        (r: unknown) =>
+          typeof r === 'object' &&
+          r !== null &&
+          typeof (r as TestResult).descricao === 'string' &&
+          typeof (r as TestResult).ok === 'boolean',
       )
     );
   }
@@ -85,6 +119,9 @@ export function isRunRequest(value: unknown): value is RunRequest {
     )
   );
 }
+
+/** Tempo máximo de cada teste de desafio. */
+export const TEST_TIMEOUT_MS = 3000;
 
 export const DEFAULT_RUN_OPTIONS: RunOptions = { loopTimeoutMs: 1000 };
 

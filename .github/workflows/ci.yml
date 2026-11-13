@@ -39,6 +39,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm format:check
+      - run: pnpm content:validate
       - run: pnpm typecheck
       - run: pnpm db:migrate
       - run: pnpm test
@@ -47,6 +48,19 @@ jobs:
   e2e:
     name: Interface no navegador (computador, tablet, celular)
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: trilhacode
+          POSTGRES_PASSWORD: trilhacode_dev
+          POSTGRES_DB: trilhacode
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U trilhacode"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      DATABASE_URL: postgres://trilhacode:trilhacode_dev@localhost:5432/trilhacode
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -63,3 +77,18 @@ jobs:
           name: relatorio-playwright
           path: apps/web/playwright-report
           retention-days: 7
+
+  links:
+    name: Links de leitura complementar
+    runs-on: ubuntu-latest
+    # Informativo: um site fora do ar não deve bloquear a integração do código.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm content:links

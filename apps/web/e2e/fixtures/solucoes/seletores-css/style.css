@@ -1,0 +1,15 @@
+h1 {
+  color: #0f766e;
+}
+
+p {
+  font-size: 18px;
+}
+
+.destaque {
+  background-color: #fef3c7;
+}
+
+#aviso {
+  font-weight: bold;
+}

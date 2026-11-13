@@ -1,0 +1,48 @@
+enunciado: |
+  Monte a **ficha técnica de um equipamento** (um computador, um roteador, uma
+  impressora: você escolhe). A página deve ter:
+
+  1. um único `<h1>` com o nome do equipamento;
+  2. pelo menos dois `<h2>` (por exemplo, "Especificações" e "Cuidados de uso"), sem pular para `<h3>` ou abaixo antes de ter um `<h2>`;
+  3. um aviso importante marcado com `<strong>` dentro de um parágrafo;
+  4. um sumário com um link para uma das seções da página (`href="#..."` apontando para um `id` que exista);
+  5. um link para o site do fabricante que abra em outra aba, com `target="_blank"` e `rel="noopener noreferrer"`;
+  6. nenhum link com o texto "clique aqui".
+testes:
+  - descricao: Há exatamente um h1
+    codigo: |
+      const n = document.querySelectorAll('h1').length;
+      verificar(n === 1, `Encontrei ${n} <h1>. A página deve ter exatamente um.`);
+  - descricao: Há pelo menos dois h2
+    codigo: |
+      const n = document.querySelectorAll('h2').length;
+      verificar(n >= 2, `Encontrei ${n} <h2>; são necessários pelo menos 2.`);
+  - descricao: Os títulos não pulam níveis
+    codigo: |
+      let anterior = 0;
+      for (const h of document.querySelectorAll('h1, h2, h3, h4, h5, h6')) {
+        const nivel = Number(h.tagName[1]);
+        verificar(nivel <= anterior + 1,
+          `O título "${h.textContent.trim()}" é um <h${nivel}> logo depois de um <h${anterior}>. Não pule níveis.`);
+        anterior = nivel;
+      }
+  - descricao: Um aviso com strong dentro de parágrafo
+    codigo: |
+      verificar(document.querySelector('p strong'), 'Marque um aviso importante com <strong> dentro de um <p>.');
+  - descricao: Um link interno aponta para um id que existe
+    codigo: |
+      const internos = [...document.querySelectorAll('a[href^="#"]')].filter((a) => a.getAttribute('href').length > 1);
+      verificar(internos.length > 0, 'Crie um link com href="#id-da-secao" para uma seção da página.');
+      const quebrados = internos.filter((a) => !document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1))));
+      verificar(quebrados.length === 0,
+        `O link ${quebrados.map((a) => a.getAttribute('href')).join(', ')} aponta para um id que não existe.`);
+  - descricao: Link externo em outra aba com rel de proteção
+    codigo: |
+      const externos = [...document.querySelectorAll('a[href^="http"]')];
+      verificar(externos.length > 0, 'Crie um link com endereço completo (https://...) para o fabricante.');
+      const ok = externos.some((a) => a.target === '_blank' && /noopener/.test(a.rel) && /noreferrer/.test(a.rel));
+      verificar(ok, 'O link externo precisa de target="_blank" e rel="noopener noreferrer".');
+  - descricao: Nenhum link com o texto "clique aqui"
+    codigo: |
+      const ruim = [...document.querySelectorAll('a')].find((a) => /clique aqui/i.test(a.textContent));
+      verificar(!ruim, 'Troque o texto "clique aqui" por uma descrição do destino do link.');

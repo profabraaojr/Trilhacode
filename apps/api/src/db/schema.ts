@@ -6,16 +6,17 @@
  * que será integrado na Etapa 4. Não renomeie suas colunas sem ajustar a configuração dele.
  */
 import { USER_ROLES, UNIT_STEP_IDS } from '@trilhacode/shared';
+import type { AnswerKey, TrackMetadata, UnitContent } from '@trilhacode/content/types';
 import {
   boolean,
   index,
   integer,
+  jsonb,
   pgEnum,
   pgTable,
   primaryKey,
   text,
   timestamp,
-  unique,
 } from 'drizzle-orm/pg-core';
 
 const timestamps = {
@@ -104,6 +105,7 @@ export const track = pgTable('track', {
   title: text().notNull(),
   description: text().notNull().default(''),
   published: boolean().notNull().default(false),
+  metadata: jsonb().$type<TrackMetadata>(),
   ...timestamps,
 });
 
@@ -128,10 +130,11 @@ export const module = pgTable(
       .notNull()
       .references(() => track.id, { onDelete: 'cascade' }),
     title: text().notNull(),
+    description: text().notNull().default(''),
     position: integer().notNull(),
     ...timestamps,
   },
-  (t) => [unique().on(t.trackId, t.position)],
+  (t) => [index().on(t.trackId)],
 );
 
 export const unit = pgTable(
@@ -143,9 +146,18 @@ export const unit = pgTable(
       .references(() => module.id, { onDelete: 'cascade' }),
     title: text().notNull(),
     position: integer().notNull(),
+    level: text().notNull().default(''),
+    durationMinutes: integer().notNull().default(0),
+    objectives: jsonb().$type<string[]>().notNull().default([]),
+    /** Ids das unidades que devem ser concluídas antes. */
+    requires: jsonb().$type<string[]>().notNull().default([]),
+    /** Conteúdo público (etapas, desafio, questões sem gabarito). */
+    content: jsonb().$type<UnitContent>(),
+    /** Gabarito da avaliação; nunca é enviado à interface. */
+    answerKey: jsonb().$type<AnswerKey>(),
     ...timestamps,
   },
-  (t) => [unique().on(t.moduleId, t.position)],
+  (t) => [index().on(t.moduleId)],
 );
 
 /* ---------------------------------------------------------------- Progresso */

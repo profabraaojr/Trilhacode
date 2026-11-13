@@ -1,6 +1,7 @@
 import { BookText, Code2, Menu, MonitorPlay, Moon, Sun, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type { ApiStatus } from '../api/useApiHealth';
+import { useStores } from '../project/ProjectContext';
 import { useTheme } from '../theme/ThemeContext';
 import { ConsolePanel } from './ConsolePanel';
 import { ContentPane } from './ContentPane';
@@ -39,6 +40,19 @@ export function MobileWorkbench({ api }: { api: ApiStatus }) {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [menuOpen]);
+
+  // Pedidos de foco (abrir unidade, abrir experimento, verificar desafio) trocam a aba.
+  const { learning } = useStores();
+  useEffect(() => {
+    let last = learning.getState().focus?.nonce ?? 0;
+    return learning.subscribe(() => {
+      const f = learning.getState().focus;
+      if (!f || f.nonce === last) return;
+      last = f.nonce;
+      setView(null);
+      setSurface(f.area);
+    });
+  }, [learning]);
 
   const openView = (id: ViewId) => {
     setView(id);
@@ -86,7 +100,7 @@ export function MobileWorkbench({ api }: { api: ApiStatus }) {
             }}
           />
         ) : surface === 'conteudo' ? (
-          <ContentPane />
+          <ContentPane onShowTracks={() => setView('trilhas')} />
         ) : surface === 'codigo' ? (
           <EditorArea />
         ) : (

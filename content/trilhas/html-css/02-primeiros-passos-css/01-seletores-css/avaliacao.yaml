@@ -1,0 +1,74 @@
+notaMinima: 70
+questoes:
+  - id: anatomia
+    tipo: conceitual
+    enunciado: 'Na regra `.preco { color: darkred; }`, o que é `.preco`?'
+    alternativas:
+      - texto: Uma propriedade.
+        feedback: A propriedade é color, dentro das chaves.
+      - texto: Um seletor de classe, que escolhe os elementos com `class="preco"`.
+        correta: true
+        feedback: Isso. O ponto indica classe; o seletor escolhe quem recebe as declarações.
+      - texto: Um seletor de id.
+        feedback: Seletores de id começam com #. O ponto indica classe.
+      - texto: Um valor.
+        feedback: O valor é darkred, depois dos dois-pontos.
+  - id: classe-id
+    tipo: conceitual
+    enunciado: Você precisa destacar em amarelo vários avisos espalhados pela página. Qual seletor é mais adequado?
+    alternativas:
+      - texto: Um id, como `#aviso`, em todos os avisos.
+        feedback: Um id deve ser único na página; repeti-lo é um erro e dificulta o uso com JavaScript.
+      - texto: Uma classe, como `.aviso`, aplicada a cada aviso.
+        correta: true
+        feedback: Correto. A classe foi feita para ser reaproveitada em vários elementos.
+      - texto: O seletor de tipo `p`.
+        feedback: Isso destacaria todos os parágrafos, não só os avisos.
+  - id: cascata
+    tipo: leitura-de-codigo
+    enunciado: 'Com o CSS abaixo, qual é a cor de `<p>Texto</p>` (um parágrafo sem classe)?'
+    codigo:
+      linguagem: css
+      conteudo: |
+        p { color: green; }
+        .nota { color: red; }
+        p { color: blue; }
+    alternativas:
+      - texto: Verde
+        feedback: Existe outra regra de mesmo peso para p mais abaixo, e ela vence.
+      - texto: Vermelho
+        feedback: A regra .nota só vale para elementos com class="nota", e este parágrafo não tem classe.
+      - texto: Azul
+        correta: true
+        feedback: Isso. As duas regras de p têm o mesmo peso; vence a que aparece por último.
+  - id: especificidade
+    tipo: leitura-de-codigo
+    enunciado: 'Com o mesmo CSS da questão anterior, qual é a cor de `<p class="nota">Texto</p>`?'
+    codigo:
+      linguagem: css
+      conteudo: |
+        p { color: green; }
+        .nota { color: red; }
+        p { color: blue; }
+    alternativas:
+      - texto: Azul, porque é a última regra.
+        feedback: A ordem só decide entre seletores de mesmo peso. Aqui a classe é mais específica que o tipo.
+      - texto: Vermelho, porque o seletor de classe é mais específico que o de tipo.
+        correta: true
+        feedback: Correto. A especificidade é avaliada antes da ordem.
+      - texto: Verde, porque é a primeira regra.
+        feedback: A primeira regra é superada pelas outras duas.
+  - id: sem-estilo
+    tipo: resolucao-de-problema
+    enunciado: >-
+      Um colega escreveu um style.css correto, mas a página continua sem nenhum
+      estilo. O HTML dele tem `<link href="estilo.css">` no head. Qual é a
+      causa mais provável?
+    alternativas:
+      - texto: Os seletores precisam de `!important` para funcionar.
+        feedback: Nenhum estilo funciona, o que indica que o arquivo nem foi carregado. !important não resolve isso.
+      - texto: 'O link aponta para estilo.css (o arquivo se chama style.css) e falta rel="stylesheet".'
+        correta: true
+        feedback: Isso. O nome do arquivo precisa bater com o href, e o rel diz que o arquivo é uma folha de estilo.
+      - texto: O CSS só funciona se estiver no fim do body.
+        feedback: O lugar recomendado para o link é o head; a posição não é o problema aqui.

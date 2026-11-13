@@ -19,7 +19,7 @@ Cada etapa termina com uma entrega testável e só avança depois de validada. O
 
 ## Etapa 2. Editor e execução
 
-**Situação:** implementada, aguardando validação. Decisões tomadas na implementação:
+**Situação:** concluída e validada em 13/11/2026. Decisões tomadas na implementação:
 
 - O resultado ficou ao lado do editor (como a visualização ao vivo de um editor), e o painel inferior ficou com o console. No celular, a aba Resultado mostra resultado e console empilhados.
 - `index.html` é o arquivo de entrada; CSS e JS só entram quando vinculados nele, para o aluno aprender a vincular arquivos como em um site real. A plataforma avisa quando há arquivo não vinculado.
@@ -35,6 +35,15 @@ Cada etapa termina com uma entrega testável e só avança depois de validada. O
 **Aceite:** escrever uma página com HTML, CSS e JS, executá-la e ver o resultado e o console; um laço infinito é interrompido sem travar a aba; teste automatizado comprova que o código do sandbox não acessa cookies nem `localStorage` da aplicação.
 
 ## Etapa 3. Trilhas e conteúdo
+
+**Situação:** implementada, aguardando validação. Escopo definido com o responsável: 4 unidades, público do ensino técnico, rascunho autoral para revisão, MDN como leitura complementar. Decisões tomadas na implementação:
+
+- **Progresso no navegador** até a Etapa 4, quando será associado à conta do aluno.
+- **Vocabulário:** a etapa sugere termos com pistas de pesquisa (sem a definição pronta); o formulário do Meu Glossário segue previsto para a Etapa 6.
+- **Conclusão das etapas:** leitura por botão "Concluir etapa"; experimentação ao executar o experimento; desafio quando todos os testes passam; avaliação com nota mínima de 70%.
+- **Avaliação corrigida no servidor**, para o gabarito não chegar ao navegador. As alternativas são embaralhadas de forma determinística na compilação, porque no rascunho a alternativa correta caía quase sempre na mesma posição.
+- **Unidades bloqueadas** podem ser abertas; o bloqueio indica a ordem recomendada, sem impedir o estudo.
+- **Links de leitura complementar:** o ambiente de desenvolvimento não tinha acesso ao MDN; os endereços são conferidos pelo job "Links de leitura complementar" da CI.
 
 - Schema do conteúdo (trilha, módulo, unidade, sete etapas pedagógicas, desafio, avaliação) e CLI `content:validate` / `content:sync`.
 - Mapa visual da trilha com estados (bloqueado, disponível, em andamento, concluído).

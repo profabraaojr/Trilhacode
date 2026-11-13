@@ -1,0 +1,44 @@
+enunciado: |
+  Uma escola técnica precisa da página de apresentação de um curso. Escreva no
+  `index.html` um documento HTML completo que tenha:
+
+  1. a declaração `<!doctype html>`;
+  2. o elemento `<html>` com o idioma português do Brasil (`pt-BR`);
+  3. no `<head>`, a codificação UTF-8 e um título (`<title>`) não vazio;
+  4. no `<body>`, um título principal (`<h1>`) com o nome do curso e pelo menos
+     dois parágrafos (`<p>`) descrevendo o curso;
+  5. pelo menos uma palavra destacada com `<strong>` **dentro** de um parágrafo.
+
+  Use **Verificar desafio** para conferir. Cada item que falhar traz uma pista.
+testes:
+  - descricao: Começa com a declaração <!doctype html>
+    codigo: |
+      verificar(/^\s*<!doctype html>/i.test(arquivos['index.html']),
+        'A primeira linha do arquivo deve ser <!doctype html>.');
+  - descricao: O elemento html informa o idioma pt-BR
+    codigo: |
+      verificar(document.documentElement.getAttribute('lang') === 'pt-BR',
+        'Coloque o atributo lang="pt-BR" na tag de abertura <html>.');
+  - descricao: O head define a codificação UTF-8
+    codigo: |
+      const meta = document.querySelector('head meta[charset]');
+      verificar(meta, 'Falta <meta charset="UTF-8"> dentro do <head>.');
+      verificar(meta.getAttribute('charset').toUpperCase() === 'UTF-8',
+        'O valor do atributo charset deve ser UTF-8.');
+  - descricao: O head tem um título não vazio
+    codigo: |
+      verificar(document.querySelector('head title'), 'Falta o elemento <title> dentro do <head>.');
+      verificar(document.title.trim().length > 0, 'O <title> está vazio: escreva o nome da página.');
+  - descricao: O body tem um h1 com texto
+    codigo: |
+      const h1 = document.querySelector('body h1');
+      verificar(h1, 'Falta um <h1> dentro do <body>.');
+      verificar(h1.textContent.trim().length > 0, 'O <h1> está vazio.');
+  - descricao: Há pelo menos dois parágrafos
+    codigo: |
+      const ps = document.querySelectorAll('body p');
+      verificar(ps.length >= 2, `Encontrei ${ps.length} parágrafo(s); são necessários pelo menos 2.`);
+  - descricao: Um strong está dentro de um parágrafo
+    codigo: |
+      verificar(document.querySelector('p strong'),
+        'Coloque um <strong> dentro de um dos parágrafos, por exemplo: <p>Duração de <strong>2 anos</strong>.</p>');

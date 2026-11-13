@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
 import { ComingSoon } from '../components/ComingSoon';
+import { TracksView } from '../learning/TracksView';
 import { FileExplorer } from './FileExplorer';
 import { SettingsView } from './SettingsView';
 import { getView, type ViewId } from './views';
@@ -29,7 +30,9 @@ export function SideBar({ view, onClose, onOpenFile }: Props) {
         )}
       </header>
       <div className="pane-scroll">
-        {view === 'explorador' ? (
+        {view === 'trilhas' ? (
+          <TracksView />
+        ) : view === 'explorador' ? (
           <FileExplorer onOpen={onOpenFile} />
         ) : view === 'configuracoes' ? (
           <SettingsView />

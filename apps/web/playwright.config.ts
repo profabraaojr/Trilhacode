@@ -3,7 +3,9 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * Testes de ponta a ponta da interface, em três tamanhos de tela.
  * Rodam contra os builds de produção da interface e do sandbox (em portas, portanto
- * origens, diferentes), sem a API: a barra de status deve indicar "Servidor indisponível".
+ * origens, diferentes) e contra a API com o conteúdo de content/ sincronizado.
+ * A API precisa de um PostgreSQL acessível em DATABASE_URL (no CI, um serviço;
+ * localmente, `docker compose up -d`).
  */
 const SANDBOX_URL = 'http://localhost:4174/';
 
@@ -31,6 +33,14 @@ export default defineConfig({
     { name: 'celular', use: { ...devices['Pixel 7'] } },
   ],
   webServer: [
+    {
+      command:
+        // "@trilhacode/api..." compila a API e os pacotes de que ela depende
+        'pnpm --dir ../api db:migrate && pnpm --dir ../api content:sync && pnpm --filter "@trilhacode/api..." build && pnpm --dir ../api start',
+      url: 'http://127.0.0.1:3000/api/health',
+      reuseExistingServer: !process.env.CI,
+      timeout: 180_000,
+    },
     {
       command: 'pnpm --dir ../sandbox build && pnpm --dir ../sandbox preview',
       url: SANDBOX_URL,

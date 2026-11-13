@@ -1,6 +1,8 @@
 import cors from '@fastify/cors';
 import type { HealthResponse } from '@trilhacode/shared';
 import Fastify, { type FastifyServerOptions } from 'fastify';
+import type { Database } from './db/client.js';
+import { contentRoutes } from './routes/content.js';
 import { API_VERSION } from './version.js';
 
 export interface ServerDeps {
@@ -8,6 +10,8 @@ export interface ServerDeps {
   checkDatabase: () => Promise<boolean>;
   webOrigin: string;
   logger?: FastifyServerOptions['logger'];
+  /** Sem banco (alguns testes), as rotas de conteúdo não são registradas. */
+  db?: Database;
 }
 
 export async function buildServer(deps: ServerDeps) {
@@ -25,6 +29,8 @@ export async function buildServer(deps: ServerDeps) {
       time: new Date().toISOString(),
     };
   });
+
+  if (deps.db) await app.register(contentRoutes, { db: deps.db });
 
   return app;
 }

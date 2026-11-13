@@ -70,6 +70,21 @@ describe('ProjectStore', () => {
     expect(again.getState().active).toBe('style.css');
   });
 
+  it('troca de projeto preservando o anterior e restaura os arquivos iniciais', async () => {
+    const { store } = await setup();
+    store.updateContent('style.css', 'body { color: red; }');
+    await store.switchProject('unidade:x:experimento', 'Experimento X', [
+      { name: 'index.html', content: '<p>experimento</p>' },
+    ]);
+    expect(store.getState().projectLabel).toBe('Experimento X');
+    expect(store.getState().files.map((f) => f.name)).toEqual(['index.html']);
+    store.updateContent('index.html', '<p>alterado</p>');
+    store.resetToInitial();
+    expect(store.getFile('index.html')?.content).toBe('<p>experimento</p>');
+    await store.switchProject('local:default', 'Meu projeto');
+    expect(store.getFile('style.css')?.content).toBe('body { color: red; }');
+  });
+
   it('fecha abas escolhendo a vizinha como ativa', async () => {
     const { store } = await setup();
     store.openTab('style.css');

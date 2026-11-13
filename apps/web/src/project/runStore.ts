@@ -1,4 +1,4 @@
-import type { ConsoleEntry, RunStatus } from '@trilhacode/runners';
+import type { ConsoleEntry, RunStatus, TestResult, TestSpec } from '@trilhacode/runners';
 import { safeStorage } from '../lib/storage';
 import { Store } from '../lib/store';
 
@@ -18,6 +18,11 @@ export interface RunState {
   /** Cada incremento pede uma nova execução. */
   request: number;
   autoRun: boolean;
+  /** Testes a enviar na próxima execução (verificação de desafio). */
+  pendingTests: TestSpec[] | null;
+  /** Resultado da última verificação e o projeto em que ela rodou. */
+  testResults: { projectKey: string; results: TestResult[] } | null;
+  testing: boolean;
 }
 
 let nextId = 0;
@@ -30,11 +35,33 @@ export class RunStore extends Store<RunState> {
       status: 'idle',
       request: 0,
       autoRun: safeStorage.getItem(AUTO_RUN_KEY) !== 'false',
+      pendingTests: null,
+      testResults: null,
+      testing: false,
     });
   }
 
-  requestRun() {
-    this.setState({ request: this.state.request + 1 });
+  requestRun(tests?: TestSpec[]) {
+    this.setState({
+      request: this.state.request + 1,
+      pendingTests: tests ?? null,
+      ...(tests ? { testing: true, testResults: null } : {}),
+    });
+  }
+
+  /** Entrega (uma vez) os testes pedidos para a execução que vai começar. */
+  takePendingTests(): TestSpec[] | null {
+    const tests = this.state.pendingTests;
+    if (tests) this.setState({ pendingTests: null });
+    return tests;
+  }
+
+  setTestResults(projectKey: string, results: TestResult[]) {
+    this.setState({ testResults: { projectKey, results }, testing: false });
+  }
+
+  testsAborted() {
+    if (this.state.testing) this.setState({ testing: false });
   }
 
   setAutoRun(autoRun: boolean) {

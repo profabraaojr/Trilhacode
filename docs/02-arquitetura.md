@@ -126,7 +126,7 @@ projetos_codigo  aluno, unidade, arquivos (jsonb), atualizado_em
 
 Os nomes acima descrevem as entidades. No código e no banco os identificadores estão em inglês (`user`, `track`, `module`, `unit`, `unit_progress`...), o que mantém compatibilidade com o Better Auth e facilita contribuições externas; a interface e a documentação permanecem em português. O schema implementado está em `apps/api/src/db/schema.ts`.
 
-O conteúdo vive em `content/` e é copiado para o banco por `pnpm content:sync`; cada item tem um identificador estável (`html-css/estrutura/tags`) para que o progresso dos alunos sobreviva a revisões de texto.
+O conteúdo vive em `content/` e é copiado para o banco por `pnpm content:sync` (implementado na Etapa 3: `packages/content` valida e compila o Markdown em HTML seguro, separa o gabarito das questões e grava tudo em uma transação); cada item tem um identificador estável (`html-css/estrutura/tags`) para que o progresso dos alunos sobreviva a revisões de texto.
 
 ## 7. Segurança e privacidade
 
