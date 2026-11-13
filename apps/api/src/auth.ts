@@ -6,6 +6,7 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import type { Database } from './db/client.js';
+import { acceptInvitations } from './routes/classrooms.js';
 import * as schema from './db/schema.js';
 import type { Env } from './env.js';
 import type { Mailer } from './mail/mailer.js';
@@ -59,7 +60,16 @@ export function createAuth({ db, mailer, env }: AuthDeps) {
       autoSignInAfterVerification: true,
       expiresIn: 24 * 60 * 60,
       sendVerificationEmail: async ({ user, url }) => {
-        await mailer.send(verificationEmail(user.email, user.name, url));
+        // Links sem destino (ex.: reenviados no login) levam à confirmação na plataforma.
+        const link = new URL(url);
+        const callback = link.searchParams.get('callbackURL');
+        if (!callback || callback === '/')
+          link.searchParams.set('callbackURL', `${env.WEB_ORIGIN}/?conta=verificado`);
+        await mailer.send(verificationEmail(user.email, user.name, link.toString()));
+      },
+      // Convites de turma para este e-mail viram matrículas quando o e-mail é confirmado.
+      afterEmailVerification: async (user) => {
+        await acceptInvitations(db, user.id, user.email);
       },
     },
     session: {

@@ -2,9 +2,20 @@
 
 Plataforma educacional de programação, de código aberto, que reúne um editor no estilo VS Code e trilhas de aprendizagem com etapas pedagógicas, glossário pessoal, desafios e avaliações.
 
-**Status:** Etapas 1 a 3 concluídas; Etapa 4 (cadastro e perfis) em validação. Áreas da interface marcadas com "Em breve" ainda não funcionam e indicam a etapa em que serão entregues.
+**Status:** Etapas 1 a 4 concluídas; Etapa 5 (gestão pedagógica) em validação. Áreas da interface marcadas com "Em breve" ainda não funcionam e indicam a etapa em que serão entregues.
 
 ## O que já funciona
+
+**Gestão pedagógica (Etapa 5)**
+
+- Turmas criadas por professores, com professor responsável e coprofessores.
+- Matrícula por convite: o professor informa o e-mail (um a um ou por planilha `.xlsx`/`.csv`, com relatório por linha). Quem já tem conta entra na hora; quem não tem recebe o convite e entra na turma ao confirmar o e-mail do cadastro.
+- Trilhas atribuídas à turma, com prazo.
+- Painel da turma: progresso de cada aluno nas trilhas atribuídas, unidades concluídas, média nas avaliações, última atividade, prazos vencidos e as unidades em que a turma tem mais dificuldade.
+- Avaliações complementares de múltipla escolha, com feedback por alternativa, corrigidas no servidor.
+- Relatório da turma em CSV (abre no Excel e no LibreOffice em português).
+- Visão do aluno: turmas, trilhas com prazo e avaliações a responder.
+- Permissões verificadas na API: professores só veem as próprias turmas; alunos, só as turmas em que estão matriculados.
 
 **Cadastro e perfis (Etapa 4)**
 

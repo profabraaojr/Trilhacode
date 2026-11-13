@@ -9,6 +9,7 @@ import { USER_ROLES, UNIT_STEP_IDS } from '@trilhacode/shared';
 import type { AnswerKey, TrackMetadata, UnitContent } from '@trilhacode/content/types';
 import {
   boolean,
+  date,
   index,
   integer,
   jsonb,
@@ -17,6 +18,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  unique,
 } from 'drizzle-orm/pg-core';
 
 const timestamps = {
@@ -197,4 +199,114 @@ export const unitProgress = pgTable(
     completedAt: timestamp({ withTimezone: true }),
   },
   (t) => [primaryKey({ columns: [t.userId, t.unitId, t.step] }), index().on(t.unitId)],
+);
+
+/* ---------------------------------------------------------------- Turmas */
+
+export const classroomRole = pgEnum('classroom_role', ['responsavel', 'coprofessor']);
+
+export const classroom = pgTable('classroom', {
+  id: text().primaryKey(),
+  name: text().notNull(),
+  institution: text(),
+  period: text(),
+  archived: boolean().notNull().default(false),
+  ...timestamps,
+});
+
+export const classroomTeacher = pgTable(
+  'classroom_teacher',
+  {
+    classroomId: text()
+      .notNull()
+      .references(() => classroom.id, { onDelete: 'cascade' }),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    role: classroomRole().notNull().default('coprofessor'),
+  },
+  (t) => [primaryKey({ columns: [t.classroomId, t.userId] }), index().on(t.userId)],
+);
+
+export const enrollment = pgTable(
+  'enrollment',
+  {
+    classroomId: text()
+      .notNull()
+      .references(() => classroom.id, { onDelete: 'cascade' }),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.classroomId, t.userId] }), index().on(t.userId)],
+);
+
+/** Convite para quem ainda não tem conta: vira matrícula quando o e-mail é confirmado. */
+export const invitation = pgTable(
+  'invitation',
+  {
+    id: text().primaryKey(),
+    classroomId: text()
+      .notNull()
+      .references(() => classroom.id, { onDelete: 'cascade' }),
+    email: text().notNull(),
+    name: text(),
+    invitedBy: text().references(() => user.id, { onDelete: 'set null' }),
+    createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [unique().on(t.classroomId, t.email), index().on(t.email)],
+);
+
+export const assignment = pgTable(
+  'assignment',
+  {
+    classroomId: text()
+      .notNull()
+      .references(() => classroom.id, { onDelete: 'cascade' }),
+    trackId: text()
+      .notNull()
+      .references(() => track.id, { onDelete: 'cascade' }),
+    /** Data limite (AAAA-MM-DD) ou null. */
+    dueDate: date({ mode: 'string' }),
+    createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.classroomId, t.trackId] })],
+);
+
+export interface CustomQuestion {
+  enunciado: string;
+  alternativas: { texto: string; correta: boolean; feedback: string }[];
+}
+
+/** Avaliação complementar criada pelo professor para uma turma (com gabarito). */
+export const customAssessment = pgTable('custom_assessment', {
+  id: text().primaryKey(),
+  classroomId: text()
+    .notNull()
+    .references(() => classroom.id, { onDelete: 'cascade' }),
+  title: text().notNull(),
+  description: text().notNull().default(''),
+  dueDate: date({ mode: 'string' }),
+  minScore: integer().notNull().default(70),
+  questions: jsonb().$type<CustomQuestion[]>().notNull(),
+  createdBy: text().references(() => user.id, { onDelete: 'set null' }),
+  ...timestamps,
+});
+
+export const customAttempt = pgTable(
+  'custom_attempt',
+  {
+    id: text().primaryKey(),
+    assessmentId: text()
+      .notNull()
+      .references(() => customAssessment.id, { onDelete: 'cascade' }),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    answers: jsonb().$type<Record<string, number>>().notNull(),
+    score: integer().notNull(),
+    createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index().on(t.assessmentId, t.userId)],
 );

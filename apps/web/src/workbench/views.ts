@@ -1,6 +1,6 @@
-import { BookOpen, Files, Map, Settings, UserRound, type LucideIcon } from 'lucide-react';
+import { BookOpen, Files, Map, School, Settings, UserRound, type LucideIcon } from 'lucide-react';
 
-export type ViewId = 'trilhas' | 'explorador' | 'glossario' | 'conta' | 'configuracoes';
+export type ViewId = 'trilhas' | 'explorador' | 'turmas' | 'glossario' | 'conta' | 'configuracoes';
 
 export interface ViewDef {
   id: ViewId;
@@ -26,6 +26,14 @@ export const VIEWS: ViewDef[] = [
     label: 'Explorador',
     icon: Files,
     description: 'Arquivos do seu projeto: criar, renomear, excluir e abrir em abas.',
+    placement: 'top',
+  },
+  {
+    id: 'turmas',
+    label: 'Turmas',
+    icon: School,
+    description:
+      'Turmas que você ensina ou em que estuda, com trilhas atribuídas, prazos e avaliações.',
     placement: 'top',
   },
   {

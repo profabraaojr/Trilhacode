@@ -1,4 +1,17 @@
 import type {
+  AddStudentResult,
+  AssignmentInput,
+  ClassroomDashboard,
+  ClassroomDetail,
+  ClassroomInput,
+  ClassroomSummary,
+  CustomAssessmentInput,
+  CustomAssessmentPublic,
+  CustomAssessmentResult,
+  MyClassroom,
+  StudentRow,
+} from '@trilhacode/shared';
+import type {
   AccountProfile,
   ProfileUpdate,
   ProgressDataPayload,
@@ -95,4 +108,49 @@ export const accountApi = {
       method: 'PATCH',
       body: JSON.stringify({ role }),
     }),
+};
+
+/* ------------------------------------------------------------ Turmas */
+
+const json = (method: string, body?: unknown): RequestInit => ({
+  method,
+  ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+});
+const enc = encodeURIComponent;
+
+export const classroomApi = {
+  list: () => request<ClassroomSummary[]>('/api/turmas'),
+  mine: () => request<MyClassroom[]>('/api/minhas-turmas'),
+  create: (input: ClassroomInput) => request<{ id: string }>('/api/turmas', json('POST', input)),
+  get: (id: string) => request<ClassroomDetail>(`/api/turmas/${enc(id)}`),
+  update: (id: string, input: ClassroomInput) =>
+    request(`/api/turmas/${enc(id)}`, json('PATCH', input)),
+  remove: (id: string) => request(`/api/turmas/${enc(id)}`, json('DELETE')),
+  dashboard: (id: string) => request<ClassroomDashboard>(`/api/turmas/${enc(id)}/painel`),
+  reportUrl: (id: string) => `${API_BASE}/api/turmas/${enc(id)}/relatorio.csv`,
+  addStudents: (id: string, students: StudentRow[]) =>
+    request<AddStudentResult[]>(`/api/turmas/${enc(id)}/alunos`, json('POST', { students })),
+  removeStudent: (id: string, userId: string) =>
+    request(`/api/turmas/${enc(id)}/alunos/${enc(userId)}`, json('DELETE')),
+  cancelInvite: (id: string, inviteId: string) =>
+    request(`/api/turmas/${enc(id)}/convites/${enc(inviteId)}`, json('DELETE')),
+  addTeacher: (id: string, email: string) =>
+    request(`/api/turmas/${enc(id)}/professores`, json('POST', { email })),
+  removeTeacher: (id: string, userId: string) =>
+    request(`/api/turmas/${enc(id)}/professores/${enc(userId)}`, json('DELETE')),
+  assign: (id: string, input: AssignmentInput) =>
+    request(`/api/turmas/${enc(id)}/trilhas`, json('PUT', input)),
+  unassign: (id: string, trackId: string) =>
+    request(`/api/turmas/${enc(id)}/trilhas/${enc(trackId)}`, json('DELETE')),
+  createAssessment: (id: string, input: CustomAssessmentInput) =>
+    request<{ id: string }>(`/api/turmas/${enc(id)}/avaliacoes`, json('POST', input)),
+  deleteAssessment: (assessmentId: string) =>
+    request(`/api/avaliacoes-turma/${enc(assessmentId)}`, json('DELETE')),
+  getAssessment: (assessmentId: string) =>
+    request<CustomAssessmentPublic>(`/api/avaliacoes-turma/${enc(assessmentId)}`),
+  answerAssessment: (assessmentId: string, respostas: Record<string, number>) =>
+    request<CustomAssessmentResult>(
+      `/api/avaliacoes-turma/${enc(assessmentId)}/respostas`,
+      json('POST', { respostas }),
+    ),
 };

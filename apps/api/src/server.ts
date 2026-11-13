@@ -5,6 +5,7 @@ import type { Database } from './db/client.js';
 import type { Auth } from './auth.js';
 import type { Mailer } from './mail/mailer.js';
 import { accountRoutes } from './routes/account.js';
+import { classroomRoutes } from './routes/classrooms.js';
 import { authRoutes } from './routes/auth.js';
 import { contentRoutes } from './routes/content.js';
 import { API_VERSION } from './version.js';
@@ -41,6 +42,13 @@ export async function buildServer(deps: ServerDeps) {
   if (deps.db) await app.register(contentRoutes, { db: deps.db, auth: deps.auth });
   if (deps.auth) await app.register(authRoutes, { auth: deps.auth });
   if (deps.auth && deps.db) await app.register(accountRoutes, { auth: deps.auth, db: deps.db });
+  if (deps.auth && deps.db && deps.mailer)
+    await app.register(classroomRoutes, {
+      auth: deps.auth,
+      db: deps.db,
+      mailer: deps.mailer,
+      webOrigin: deps.webOrigin,
+    });
   const outbox = deps.mailer?.outbox;
   if (outbox) {
     app.get<{ Querystring: { para?: string } }>('/api/dev/emails', async (req) =>

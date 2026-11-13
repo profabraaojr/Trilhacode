@@ -74,9 +74,10 @@ type Mode = 'entrar' | 'cadastrar' | 'esqueci';
 function SignedOut() {
   const { account } = useStores();
   const urlAction = useStore(account, (s) => s.urlAction);
-  const [mode, setMode] = useState<Mode>('entrar');
+  const invited = urlAction?.kind === 'cadastro' ? urlAction.email : null;
+  const [mode, setMode] = useState<Mode>(invited !== null ? 'cadastrar' : 'entrar');
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(invited ?? '');
   const [password, setPassword] = useState('');
   const [institution, setInstitution] = useState('');
   const [busy, setBusy] = useState(false);
@@ -145,6 +146,12 @@ function SignedOut() {
         Com uma conta, seu progresso nas trilhas fica salvo no servidor e acompanha você em qualquer
         computador.
       </p>
+      {invited !== null && (
+        <p className="form-ok" role="status">
+          Você foi convidado para uma turma. Crie sua conta com o e-mail {invited || 'do convite'};
+          depois de confirmar o e-mail, a turma aparece em Turmas.
+        </p>
+      )}
       {mode !== 'esqueci' && (
         <div className="segmented" role="tablist" aria-label="Acesso">
           <button

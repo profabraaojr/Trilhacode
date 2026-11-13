@@ -1,5 +1,15 @@
 import { execSync } from 'node:child_process';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
+import {
+  accountSidebar,
+  lastLink,
+  openView,
+  PASSWORD,
+  signIn,
+  signUp,
+  uniqueEmail,
+  verify,
+} from './helpers';
 
 /**
  * Cadastro, login e perfis (Etapa 4). A API roda com MAIL_CAPTURE=true: os e-mails
@@ -7,68 +17,7 @@ import { expect, test, type Page } from '@playwright/test';
  */
 test.skip(({ viewport }) => (viewport?.width ?? 0) < 1200, 'fluxos de conta no computador');
 
-const API = 'http://127.0.0.1:3000';
-const PASSWORD = 'senha-de-teste-1';
-const uniqueEmail = (tag: string) =>
-  `${tag}-${Date.now()}-${Math.floor(Math.random() * 1e6)}@teste.invalid`;
-
-async function lastLink(page: Page, email: string, subject: RegExp): Promise<string> {
-  let link: string | undefined;
-  await expect
-    .poll(async () => {
-      const res = await page.request.get(`${API}/api/dev/emails?para=${encodeURIComponent(email)}`);
-      const mails = (await res.json()) as { subject: string; text: string }[];
-      link = mails
-        .reverse()
-        .find((m) => subject.test(m.subject))
-        ?.text.match(/https?:\/\/\S+/)?.[0];
-      return link;
-    })
-    .toBeTruthy();
-  return link!;
-}
-
-const sidebar = (page: Page) => page.getByRole('complementary', { name: 'Conta' });
-
-/** Abre uma visão pela barra de atividades (clicar na visão já aberta recolheria a barra lateral). */
-async function openView(page: Page, name: 'Conta' | 'Trilhas') {
-  const view = page.getByRole('complementary', { name });
-  if (await view.isVisible()) return;
-  await page
-    .getByRole('navigation', { name: 'Barra de atividades' })
-    .getByRole('button', { name })
-    .click();
-  await expect(view).toBeVisible();
-}
-
-const openAccount = (page: Page) => openView(page, 'Conta');
-
-async function signUp(page: Page, email: string, name = 'Aluna Teste') {
-  await openAccount(page);
-  const s = sidebar(page);
-  await s.getByRole('tab', { name: 'Criar conta' }).click();
-  await s.getByLabel('Nome completo').fill(name);
-  await s.getByLabel('E-mail').fill(email);
-  await s.getByLabel('Senha').fill(PASSWORD);
-  await s.getByLabel(/Escola ou instituição/).fill('Escola Técnica Estadual');
-  await s.getByRole('button', { name: 'Criar conta' }).last().click();
-  await expect(s.getByText(/Conta criada\. Enviamos um link de confirmação/)).toBeVisible();
-}
-
-async function verify(page: Page, email: string) {
-  await page.goto(await lastLink(page, email, /Confirme/));
-  await expect(
-    sidebar(page).getByText('E-mail confirmado. Bem-vindo(a) à TrilhaCode!'),
-  ).toBeVisible();
-}
-
-async function signIn(page: Page, email: string, password = PASSWORD) {
-  await openAccount(page);
-  const s = sidebar(page);
-  await s.getByLabel('E-mail').fill(email);
-  await s.getByLabel('Senha').fill(password);
-  await s.getByRole('button', { name: 'Entrar' }).last().click();
-}
+const sidebar = accountSidebar;
 
 test('cadastro exige confirmação do e-mail e o link ativa a conta já logada', async ({ page }) => {
   const email = uniqueEmail('cadastro');
@@ -198,7 +147,7 @@ test('um administrador promove um aluno a professor', async ({ page }) => {
   // O primeiro administrador é criado por comando no servidor
   execSync(`pnpm --dir ../api admin:criar ${adminEmail}`, { stdio: 'pipe' });
   await page.reload();
-  await openAccount(page);
+  await openView(page, 'Conta');
   const s = sidebar(page);
   await expect(s.getByText('Usuários (administração)')).toBeVisible();
   await s.getByLabel(`Papel de Futuro Professor (${alunoEmail})`).selectOption('professor');
