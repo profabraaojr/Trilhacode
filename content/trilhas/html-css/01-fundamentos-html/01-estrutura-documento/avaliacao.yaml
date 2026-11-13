@@ -1,0 +1,73 @@
+notaMinima: 70
+questoes:
+  - id: elemento-tag
+    tipo: conceitual
+    enunciado: Em `<p class="aviso">Prova na sexta.</p>`, o que é o **elemento**?
+    alternativas:
+      - texto: 'Apenas `<p class="aviso">`.'
+        feedback: Essa é a tag de abertura, que é só uma parte do elemento.
+      - texto: 'O conjunto inteiro: tag de abertura, conteúdo e tag de fechamento.'
+        correta: true
+        feedback: Isso. As tags marcam o início e o fim; o elemento é o conjunto, e é ele que representa o parágrafo.
+      - texto: 'Apenas `class="aviso"`.'
+        feedback: Esse é um atributo, que acrescenta informação ao elemento, mas não é o elemento.
+      - texto: 'Apenas o texto "Prova na sexta."'
+        feedback: O texto é o conteúdo. O elemento inclui também as tags que o delimitam.
+  - id: funcao-head
+    tipo: conceitual
+    enunciado: Qual é a função do `<head>` em um documento HTML?
+    alternativas:
+      - texto: Mostrar o cabeçalho visível da página, com o logotipo e o menu.
+        feedback: É uma confusão comum por causa do nome. O cabeçalho visível fica no body (mais adiante você verá o elemento header).
+      - texto: Reunir metadados, como a codificação e o título da aba, que não aparecem no conteúdo.
+        correta: true
+        feedback: Correto. O head guarda informações sobre a página; o que aparece na tela fica no body.
+      - texto: Guardar o primeiro parágrafo do texto.
+        feedback: Parágrafos são conteúdo visível e ficam no body.
+  - id: aninhamento-erro
+    tipo: leitura-de-codigo
+    enunciado: Qual linha tem um erro de aninhamento?
+    codigo:
+      linguagem: html
+      conteudo: |
+        1  <body>
+        2    <h1>Laboratório <strong>aberto</strong></h1>
+        3    <p>Horário: <strong>8h às 17h</p></strong>
+        4    <p>Traga o crachá.</p>
+        5  </body>
+    alternativas:
+      - texto: Linha 2
+        feedback: Na linha 2 o strong é aberto e fechado dentro do h1, na ordem correta.
+      - texto: Linha 3
+        correta: true
+        feedback: Isso. O strong foi aberto depois do p, então precisa ser fechado antes dele. O correto é ...17h</strong></p>.
+      - texto: Linha 4
+        feedback: A linha 4 tem um parágrafo simples, aberto e fechado corretamente.
+      - texto: Nenhuma, o código está correto.
+        feedback: Releia a ordem de fechamento na linha 3. O último elemento aberto deve ser o primeiro a ser fechado.
+  - id: lang
+    tipo: leitura-de-codigo
+    enunciado: 'Para que serve o atributo em `<html lang="pt-BR">`?'
+    alternativas:
+      - texto: Faz o navegador traduzir a página para o português.
+        feedback: O atributo não traduz nada; ele informa em que idioma o conteúdo já está.
+      - texto: Informa o idioma do conteúdo, o que ajuda leitores de tela, tradutores e buscadores.
+        correta: true
+        feedback: Correto. Um leitor de tela, por exemplo, usa essa informação para escolher a pronúncia.
+      - texto: Define a codificação dos caracteres acentuados.
+        feedback: Quem define a codificação é <meta charset="UTF-8">.
+  - id: titulo-aba
+    tipo: resolucao-de-problema
+    enunciado: >-
+      Um colega reclama que a aba do navegador mostra o nome do arquivo em vez do
+      nome do site. O que está faltando na página dele?
+    alternativas:
+      - texto: Um `<h1>` no começo do body.
+        feedback: O h1 é o título visível do conteúdo; ele não muda o texto da aba.
+      - texto: Um elemento `<title>` dentro do head.
+        correta: true
+        feedback: Isso. Sem <title>, o navegador usa o endereço ou o nome do arquivo na aba.
+      - texto: O atributo `lang` no html.
+        feedback: O lang informa o idioma, mas não define o texto da aba.
+      - texto: A declaração `<!doctype html>`.
+        feedback: O doctype define o modo de interpretação do documento, não o título da aba.

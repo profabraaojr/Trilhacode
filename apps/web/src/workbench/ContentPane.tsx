@@ -1,12 +1,19 @@
 import { X } from 'lucide-react';
-import { ComingSoon } from '../components/ComingSoon';
+import { UnitView } from '../learning/UnitView';
+import { useStore } from '../lib/store';
+import { useStores } from '../project/ProjectContext';
 
 interface Props {
   onClose?: () => void;
+  /** Abre a lista de trilhas (barra lateral no computador, menu no celular). */
+  onShowTracks?: () => void;
 }
 
-/** Painel à direita com a explicação da unidade de aprendizagem. */
-export function ContentPane({ onClose }: Props) {
+/** Painel com a unidade de aprendizagem aberta. */
+export function ContentPane({ onClose, onShowTracks }: Props) {
+  const { learning } = useStores();
+  const unit = useStore(learning, (s) => s.unit);
+
   return (
     <aside className="content-pane" aria-label="Conteúdo da unidade">
       <header className="pane-header">
@@ -23,11 +30,24 @@ export function ContentPane({ onClose }: Props) {
         )}
       </header>
       <div className="pane-scroll">
-        <ComingSoon
-          title="Conteúdo da unidade"
-          stage={3}
-          description="Explicação do conceito, fundamentação, exemplos comentados, desafio e avaliação, em sete etapas, ao lado do editor."
-        />
+        {unit.status === 'loading' && <p className="view-message">Carregando a unidade…</p>}
+        {unit.status === 'error' && (
+          <p className="view-message" role="alert">
+            {unit.error}
+          </p>
+        )}
+        {unit.status === 'ready' && unit.data && <UnitView key={unit.data.id} />}
+        {unit.status === 'idle' && (
+          <div className="view-message">
+            <p>Nenhuma unidade aberta.</p>
+            <p>Escolha uma trilha e uma unidade para estudar aqui, ao lado do editor.</p>
+            {onShowTracks && (
+              <button type="button" className="secondary-button" onClick={onShowTracks}>
+                Ver trilhas
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </aside>
   );

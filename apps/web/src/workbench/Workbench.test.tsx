@@ -13,6 +13,8 @@ vi.mock('../editor/MonacoEditor', () => ({
 
 const memory = () => Promise.resolve(createMemoryStorage());
 const renderApp = () => render(<App storage={memory} />);
+/** A barra lateral abre em Trilhas; vários testes usam o Explorador. */
+const openExplorer = () => fireEvent.click(screen.getByRole('button', { name: 'Explorador' }));
 
 beforeEach(() => {
   localStorage.clear();
@@ -38,6 +40,7 @@ afterEach(() => {
 describe('workbench no computador', () => {
   it('mostra explorador, abas, resultado, console e barra de status', async () => {
     renderApp();
+    openExplorer();
     expect(screen.getByRole('navigation', { name: 'Barra de atividades' })).toBeInTheDocument();
     const explorer = screen.getByRole('list', { name: 'Arquivos do projeto' });
     expect(within(explorer).getByRole('button', { name: /index\.html/ })).toBeInTheDocument();
@@ -54,6 +57,7 @@ describe('workbench no computador', () => {
 
   it('abre um arquivo em aba ao clicar no explorador', () => {
     renderApp();
+    openExplorer();
     fireEvent.click(screen.getByRole('button', { name: 'style.css' }));
     expect(screen.getByRole('tab', { name: /style\.css/ })).toHaveAttribute(
       'aria-selected',
@@ -64,6 +68,7 @@ describe('workbench no computador', () => {
 
   it('cria um arquivo validando o nome', () => {
     renderApp();
+    openExplorer();
     fireEvent.click(screen.getByRole('button', { name: 'Novo arquivo' }));
     const input = screen.getByRole('textbox', { name: 'Nome do novo arquivo' });
     fireEvent.change(input, { target: { value: 'notas.txt' } });
@@ -76,6 +81,7 @@ describe('workbench no computador', () => {
 
   it('não oferece renomear nem excluir o index.html', () => {
     renderApp();
+    openExplorer();
     expect(screen.queryByRole('button', { name: 'Excluir index.html' })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Excluir style.css' })).toBeInTheDocument();
   });
@@ -95,8 +101,6 @@ describe('workbench no computador', () => {
 
   it('identifica como "Em breve" as visões que ainda não funcionam', () => {
     renderApp();
-    fireEvent.click(screen.getByRole('button', { name: 'Trilhas' }));
-    expect(screen.getByRole('region', { name: 'Trilhas: em breve' })).toHaveTextContent('Etapa 3');
     fireEvent.click(screen.getByRole('button', { name: 'Meu Glossário' }));
     expect(screen.getByRole('region', { name: 'Meu Glossário: em breve' })).toHaveTextContent(
       'Etapa 6',

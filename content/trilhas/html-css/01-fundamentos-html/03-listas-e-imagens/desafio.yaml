@@ -1,0 +1,46 @@
+enunciado: |
+  O laboratório de eletrônica precisa de uma página com o **roteiro de uma aula
+  prática**. Ela deve ter:
+
+  1. uma lista **não ordenada** (`<ul>`) com pelo menos 3 materiais;
+  2. uma lista **ordenada** (`<ol>`) com pelo menos 3 passos do procedimento;
+  3. em um dos materiais, uma **sublista** dentro do `<li>` (por exemplo, os valores dos resistores);
+  4. uma imagem (`<img>`) com `src`, `width`, `height` e um `alt` descritivo, com pelo menos 15 caracteres e sem começar com "imagem" ou "foto".
+
+  O arquivo da imagem não precisa existir: o alt aparecerá no lugar dela.
+testes:
+  - descricao: Uma ul com pelo menos 3 itens
+    codigo: |
+      const ul = [...document.querySelectorAll('ul')].find((l) => l.querySelectorAll(':scope > li').length >= 3);
+      verificar(ul, 'Crie uma <ul> com pelo menos 3 <li> diretamente dentro dela.');
+  - descricao: Uma ol com pelo menos 3 itens
+    codigo: |
+      const ol = [...document.querySelectorAll('ol')].find((l) => l.querySelectorAll(':scope > li').length >= 3);
+      verificar(ol, 'Crie uma <ol> com pelo menos 3 passos (<li>).');
+  - descricao: Há uma sublista dentro de um li
+    codigo: |
+      verificar(document.querySelector('li > ul, li > ol'),
+        'Coloque uma sublista (<ul> ou <ol>) dentro de um <li> de outra lista.');
+  - descricao: As listas só têm li como filhos diretos
+    codigo: |
+      for (const lista of document.querySelectorAll('ul, ol')) {
+        for (const filho of lista.children) {
+          verificar(filho.tagName === 'LI',
+            `Dentro de <${lista.tagName.toLowerCase()}> há um <${filho.tagName.toLowerCase()}> solto. Os filhos diretos de uma lista devem ser <li>; sublistas ficam dentro de um <li>.`);
+        }
+      }
+  - descricao: A imagem tem src, width e height
+    codigo: |
+      const img = document.querySelector('img');
+      verificar(img, 'Insira uma imagem com <img>.');
+      verificar(img.getAttribute('src'), 'A imagem precisa do atributo src.');
+      verificar(img.hasAttribute('width') && img.hasAttribute('height'),
+        'Informe width e height para o navegador reservar o espaço da imagem.');
+  - descricao: O alt é descritivo
+    codigo: |
+      const img = document.querySelector('img');
+      verificar(img && img.hasAttribute('alt'), 'A imagem precisa do atributo alt.');
+      const alt = img.getAttribute('alt').trim();
+      verificar(alt.length >= 15, `O alt "${alt}" é curto demais para descrever a imagem.`);
+      verificar(!/^(imagem|foto|figura)\b/i.test(alt),
+        'Não comece o alt com "imagem" ou "foto": o leitor de tela já anuncia que é uma imagem.');

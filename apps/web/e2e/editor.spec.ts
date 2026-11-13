@@ -30,6 +30,8 @@ async function replaceCode(page: Page, code: string) {
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
   await expect(consoleLog(page)).toContainText('O script foi carregado.');
+  // a barra lateral abre em Trilhas; os testes do editor usam o Explorador
+  await page.getByRole('button', { name: 'Explorador' }).click();
 });
 
 test('executa o projeto de exemplo e recebe eventos do resultado', async ({ page }) => {
@@ -126,6 +128,7 @@ test('cria, salva e restaura arquivos depois de recarregar a página', async ({ 
     'Salvo no navegador',
   );
   await page.reload();
+  await page.getByRole('button', { name: 'Explorador' }).click();
   await expect(page.getByRole('list', { name: 'Arquivos do projeto' })).toContainText('extra.js');
   await openFile(page, 'extra.js');
   await expect(page.locator('.monaco-editor .view-lines')).toContainText('// arquivo salvo');

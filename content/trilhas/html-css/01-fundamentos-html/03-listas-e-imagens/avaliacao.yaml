@@ -1,0 +1,69 @@
+notaMinima: 70
+questoes:
+  - id: ul-ou-ol
+    tipo: conceitual
+    enunciado: Você vai listar os passos para formatar um computador. Qual elemento usar e por quê?
+    alternativas:
+      - texto: '`<ul>`, porque é a lista mais comum.'
+        feedback: A escolha não depende de qual é mais comum, e sim de a ordem importar ou não.
+      - texto: '`<ol>`, porque trocar a ordem dos passos muda o resultado.'
+        correta: true
+        feedback: Isso. Quando a sequência faz parte da informação, a lista é ordenada.
+      - texto: Parágrafos numerados à mão, para controlar a numeração.
+        feedback: A numeração manual não é reconhecida como lista por leitores de tela e precisa ser refeita a cada mudança.
+  - id: alt-decorativa
+    tipo: conceitual
+    enunciado: Uma página tem uma imagem de fundo com ondas, só para enfeitar. Como deve ficar o alt?
+    alternativas:
+      - texto: '`alt="imagem decorativa de ondas"`'
+        feedback: Se a imagem não acrescenta informação, descrevê-la só faz o leitor de tela ler algo inútil.
+      - texto: 'Sem o atributo alt.'
+        feedback: Sem alt, muitos leitores de tela leem o nome do arquivo, o que é pior.
+      - texto: '`alt=""` (vazio).'
+        correta: true
+        feedback: Correto. O alt vazio diz ao leitor de tela que a imagem pode ser ignorada.
+  - id: sublista
+    tipo: leitura-de-codigo
+    enunciado: O que está errado neste código?
+    codigo:
+      linguagem: html
+      conteudo: |
+        <ul>
+          <li>Periféricos</li>
+          <ul>
+            <li>Teclado</li>
+            <li>Mouse</li>
+          </ul>
+        </ul>
+    alternativas:
+      - texto: Listas não podem ser aninhadas.
+        feedback: Podem, desde que a sublista fique dentro de um <li>.
+      - texto: 'A sublista está solta dentro do `<ul>`; ela deveria estar dentro do `<li>` "Periféricos".'
+        correta: true
+        feedback: Isso. Os filhos diretos de <ul> só podem ser <li>.
+      - texto: 'Falta o atributo `start` na sublista.'
+        feedback: start é um atributo opcional do <ol> e não tem relação com o problema.
+  - id: width-height
+    tipo: leitura-de-codigo
+    enunciado: 'Qual é a vantagem de escrever `width` e `height` em `<img src="grafico.png" alt="..." width="600" height="300">`?'
+    alternativas:
+      - texto: A imagem carrega mais rápido.
+        feedback: O tempo de carregamento depende do tamanho do arquivo, não desses atributos.
+      - texto: O navegador reserva o espaço antes da imagem chegar, e o texto não pula quando ela carrega.
+        correta: true
+        feedback: Correto. Isso evita o deslocamento de layout, que incomoda quem está lendo.
+      - texto: A imagem passa a ser lida por leitores de tela.
+        feedback: Quem é lido pelos leitores de tela é o alt.
+  - id: alt-informativo
+    tipo: resolucao-de-problema
+    enunciado: >-
+      Em um tutorial, uma imagem mostra em qual porta do roteador o cabo do modem
+      deve ser ligado. Qual alt é o mais adequado?
+    alternativas:
+      - texto: '"roteador.jpg"'
+        feedback: O nome do arquivo não comunica nada a quem não vê a imagem.
+      - texto: '"Foto de um roteador"'
+        feedback: 'Além de começar com "foto", não informa o que importa no tutorial: qual porta usar.'
+      - texto: '"Cabo do modem ligado na porta WAN, de cor azul, separada das quatro portas LAN"'
+        correta: true
+        feedback: Isso. O alt transmite a informação que a imagem tem naquele contexto.

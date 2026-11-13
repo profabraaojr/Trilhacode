@@ -6,14 +6,22 @@ import {
   validateFileName,
   type ProjectFile,
 } from './files';
-import type { ProjectStorage, StoredProject } from './storage';
+import { isValidStoredProject, type RecordStorage } from './storage';
 
 /** Aba especial com a página de boas-vindas. */
 export const WELCOME_TAB = 'tc:boas-vindas';
 
+/** Projeto livre do aluno. Unidades usam chaves "unidade:<id>:<etapa>". */
+export const DEFAULT_PROJECT = { key: 'local:default', label: 'Meu projeto' } as const;
+
 export type SaveState = 'loading' | 'saved' | 'saving' | 'error' | 'memory';
 
 export interface ProjectState {
+  /** Projeto em edição (chave no armazenamento) e nome exibido. */
+  projectKey: string;
+  projectLabel: string;
+  /** Arquivos iniciais do projeto, usados por "Restaurar". */
+  initialFiles: ProjectFile[];
   files: ProjectFile[];
   openTabs: string[];
   active: string | null;
@@ -27,11 +35,14 @@ export type ActionResult = { ok: true } | { ok: false; error: string };
 const SAVE_DELAY_MS = 400;
 
 export class ProjectStore extends Store<ProjectState> {
-  private storage: ProjectStorage | null = null;
+  private storage: RecordStorage | null = null;
   private saveTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
     super({
+      projectKey: DEFAULT_PROJECT.key,
+      projectLabel: DEFAULT_PROJECT.label,
+      initialFiles: DEFAULT_FILES,
       files: DEFAULT_FILES,
       openTabs: [WELCOME_TAB, 'index.html'],
       active: WELCOME_TAB,
@@ -40,22 +51,55 @@ export class ProjectStore extends Store<ProjectState> {
     });
   }
 
-  async init(storage: ProjectStorage): Promise<void> {
+  async init(storage: RecordStorage): Promise<void> {
     this.storage = storage;
-    let stored: StoredProject | null;
+    await this.loadInto(DEFAULT_PROJECT.key);
+    this.setState({ saveState: storage.persistent ? 'saved' : 'memory' });
+  }
+
+  /**
+   * Troca o projeto em edição. O atual é gravado antes; o novo é lido do
+   * armazenamento ou, na primeira vez, criado com os arquivos iniciais.
+   */
+  async switchProject(
+    key: string,
+    label: string,
+    initialFiles: ProjectFile[] = DEFAULT_FILES,
+  ): Promise<void> {
+    if (key === this.state.projectKey) return;
+    await this.flush();
+    const files = initialFiles.length ? initialFiles : DEFAULT_FILES;
+    this.setState({
+      projectKey: key,
+      projectLabel: label,
+      initialFiles: files,
+      files,
+      openTabs: files.map((f) => f.name),
+      active: files[0]?.name ?? null,
+      revision: this.state.revision + 1,
+    });
+    await this.loadInto(key);
+  }
+
+  isDefaultProject(): boolean {
+    return this.state.projectKey === DEFAULT_PROJECT.key;
+  }
+
+  private async loadInto(key: string) {
+    let stored: unknown;
     try {
-      stored = await storage.load();
+      stored = await this.storage?.get(key);
     } catch {
-      stored = null;
+      stored = undefined;
     }
-    if (stored && stored.files.some((f) => f.name === ENTRY_FILE)) {
+    if (key !== this.state.projectKey) return; // trocou de novo durante a leitura
+    if (isValidStoredProject(stored) && stored.files.some((f) => f.name === ENTRY_FILE)) {
       const names = new Set(stored.files.map((f) => f.name));
       const openTabs = stored.openTabs.filter((t) => t === WELCOME_TAB || names.has(t));
       const active =
         stored.active && openTabs.includes(stored.active) ? stored.active : (openTabs[0] ?? null);
       this.setState({ files: stored.files, openTabs, active, revision: this.state.revision + 1 });
     }
-    this.setState({ saveState: storage.persistent ? 'saved' : 'memory' });
   }
 
   getFile(name: string): ProjectFile | undefined {
@@ -109,16 +153,11 @@ export class ProjectStore extends Store<ProjectState> {
       return { ok: false, error: `${ENTRY_FILE} é o arquivo de entrada e não pode ser excluído.` };
     if (!this.getFile(name)) return { ok: false, error: `${name} não existe.` };
     const openTabs = this.state.openTabs.filter((t) => t !== name);
+    const active = this.state.active === name ? this.neighbourOf(name) : this.state.active;
     this.setState({
       files: this.state.files.filter((f) => f.name !== name),
       openTabs,
-      active: this.state.active === name ? this.neighbourOf(name) : this.state.active,
-    });
-    this.setState({
-      active:
-        this.state.active && openTabs.includes(this.state.active)
-          ? this.state.active
-          : (openTabs.at(-1) ?? null),
+      active: active && openTabs.includes(active) ? active : (openTabs.at(-1) ?? null),
     });
     this.scheduleSave();
     return { ok: true };
@@ -149,24 +188,25 @@ export class ProjectStore extends Store<ProjectState> {
     }
   }
 
-  /** Substitui o projeto pelo exemplo inicial. */
-  resetToDefault() {
+  /** Volta o projeto atual aos arquivos iniciais (o exemplo, ou os arquivos da unidade). */
+  resetToInitial() {
+    const files = this.state.initialFiles;
     this.setState({
-      files: DEFAULT_FILES,
-      openTabs: ['index.html', 'style.css', 'script.js'],
-      active: 'index.html',
+      files,
+      openTabs: files.map((f) => f.name),
+      active: files[0]?.name ?? null,
       revision: this.state.revision + 1,
     });
     this.scheduleSave();
   }
 
-  /** Grava imediatamente (usado ao sair da página). */
+  /** Grava imediatamente (ao trocar de projeto ou sair da página). */
   async flush(): Promise<void> {
     if (this.saveTimer) {
       clearTimeout(this.saveTimer);
       this.saveTimer = null;
+      await this.save();
     }
-    await this.save();
   }
 
   private neighbourOf(name: string): string | null {
@@ -187,9 +227,14 @@ export class ProjectStore extends Store<ProjectState> {
 
   private async save() {
     if (!this.storage) return;
-    const { files, openTabs, active } = this.state;
+    const { files, openTabs, active, projectKey } = this.state;
     try {
-      await this.storage.save({ files, openTabs, active, updatedAt: new Date().toISOString() });
+      await this.storage.set(projectKey, {
+        files,
+        openTabs,
+        active,
+        updatedAt: new Date().toISOString(),
+      });
       if (!this.saveTimer)
         this.setState({ saveState: this.storage.persistent ? 'saved' : 'memory' });
     } catch {

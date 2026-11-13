@@ -136,7 +136,7 @@ export function StatusBar(props: Props) {
             <Moon size={14} aria-hidden="true" />
           )}
         </button>
-        <span className="status-text status-version">TrilhaCode 0.2.0</span>
+        <span className="status-text status-version">TrilhaCode 0.3.0</span>
       </div>
     </footer>
   );

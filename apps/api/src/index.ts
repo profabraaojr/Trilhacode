@@ -3,11 +3,12 @@ import { loadEnv } from './env.js';
 import { buildServer } from './server.js';
 
 const env = loadEnv();
-const { pool } = createDb(env.DATABASE_URL);
+const { db, pool } = createDb(env.DATABASE_URL);
 
 const app = await buildServer({
   checkDatabase: () => pingDatabase(pool),
   webOrigin: env.WEB_ORIGIN,
+  db,
   logger: { level: 'info' },
 });
 

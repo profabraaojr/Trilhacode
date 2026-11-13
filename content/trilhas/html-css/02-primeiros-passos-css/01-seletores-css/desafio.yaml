@@ -1,0 +1,50 @@
+enunciado: |
+  A página do evento já está pronta no `index.html`, mas sem estilo. Escreva as
+  regras **no arquivo `style.css`** (não use o atributo `style` no HTML) para que:
+
+  1. todos os `<h1>` tenham a cor `#0f766e`;
+  2. todos os parágrafos tenham `font-size` de `18px`;
+  3. os elementos com a classe `destaque` tenham fundo (`background-color`) `#fef3c7`;
+  4. o elemento com id `aviso` fique em negrito (`font-weight: bold`);
+  5. os itens da lista com a classe `destaque` também recebam o fundo amarelo (a mesma regra do item 3 deve servir).
+
+  Dica: se nada mudar, confira se o `style.css` está ligado no `<head>`.
+testes:
+  - descricao: O style.css está ligado ao index.html
+    codigo: |
+      verificar(document.querySelector('link[rel="stylesheet"]'),
+        'Falta <link rel="stylesheet" href="style.css"> no <head>.');
+  - descricao: Nenhum estilo escrito no atributo style
+    codigo: |
+      verificar(!/\sstyle\s*=/i.test(arquivos['index.html']),
+        'Escreva as regras no style.css, não no atributo style do HTML.');
+  - descricao: h1 com a cor #0f766e
+    codigo: |
+      const h1 = document.querySelector('h1');
+      verificar(estilo(h1, 'color') === 'rgb(15, 118, 110)',
+        `A cor do <h1> está ${estilo(h1, 'color')}. Use color: #0f766e; em uma regra para h1.`);
+  - descricao: Parágrafos com 18px
+    codigo: |
+      for (const p of document.querySelectorAll('p')) {
+        verificar(estilo(p, 'font-size') === '18px',
+          `Um parágrafo está com font-size ${estilo(p, 'font-size')}. Crie uma regra para p com font-size: 18px;`);
+      }
+  - descricao: Classe destaque com fundo #fef3c7
+    codigo: |
+      const els = document.querySelectorAll('.destaque');
+      verificar(els.length >= 2, 'O HTML original tem dois elementos com class="destaque"; não os remova.');
+      for (const el of els) {
+        verificar(estilo(el, 'background-color') === 'rgb(254, 243, 199)',
+          `O elemento <${el.tagName.toLowerCase()}> com a classe destaque não está com o fundo #fef3c7. Use o seletor .destaque.`);
+      }
+  - descricao: Id aviso em negrito
+    codigo: |
+      const aviso = document.getElementById('aviso');
+      verificar(aviso, 'O elemento com id="aviso" não foi encontrado; não o remova do HTML.');
+      const peso = Number(estilo(aviso, 'font-weight'));
+      verificar(peso >= 700, 'O elemento #aviso precisa de font-weight: bold;');
+  - descricao: Usa seletores de classe e de id no CSS
+    codigo: |
+      const css = arquivos['style.css'] ?? '';
+      verificar(/\.destaque\b/.test(css), 'Use o seletor de classe .destaque no style.css.');
+      verificar(/#aviso\b/.test(css), 'Use o seletor de id #aviso no style.css.');

@@ -1,4 +1,5 @@
 import { createContext, use, useEffect, useState, type ReactNode } from 'react';
+import { LearningStore } from '../learning/learningStore';
 import { EditorStatusStore } from './editorStatus';
 import { ProjectStore } from './projectStore';
 import { RunStore } from './runStore';
@@ -8,6 +9,7 @@ interface Stores {
   project: ProjectStore;
   run: RunStore;
   editor: EditorStatusStore;
+  learning: LearningStore;
 }
 
 const ProjectContext = createContext<Stores | null>(null);
@@ -20,16 +22,23 @@ export function ProjectProvider({
   /** Permite injetar armazenamento em memória nos testes. */
   storage?: () => Promise<ProjectStorage>;
 }) {
-  const [stores] = useState<Stores>(() => ({
-    project: new ProjectStore(),
-    run: new RunStore(),
-    editor: new EditorStatusStore(),
-  }));
+  const [stores] = useState<Stores>(() => {
+    const project = new ProjectStore();
+    const run = new RunStore();
+    return {
+      project,
+      run,
+      editor: new EditorStatusStore(),
+      learning: new LearningStore(project, run),
+    };
+  });
 
   useEffect(() => {
     let cancelled = false;
     void (storage ?? createBestStorage)().then((s) => {
-      if (!cancelled) void stores.project.init(s);
+      if (cancelled) return;
+      void stores.project.init(s);
+      void stores.learning.init(s);
     });
     const onHide = () => void stores.project.flush();
     window.addEventListener('pagehide', onHide);

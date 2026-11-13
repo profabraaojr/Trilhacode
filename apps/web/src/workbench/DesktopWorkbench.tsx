@@ -1,7 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Group, Panel, Separator, useDefaultLayout, usePanelRef } from 'react-resizable-panels';
 import type { ApiStatus } from '../api/useApiHealth';
 import { safeStorage } from '../lib/storage';
+import { useStores } from '../project/ProjectContext';
 import { ActivityBar } from './ActivityBar';
 import { ConsolePanel } from './ConsolePanel';
 import { ContentPane } from './ContentPane';
@@ -34,7 +35,7 @@ export function DesktopWorkbench({ api }: { api: ApiStatus }) {
   const contentRef = usePanelRef();
   const panelRef = usePanelRef();
 
-  const [activeView, setActiveView] = useState<ViewId>('explorador');
+  const [activeView, setActiveView] = useState<ViewId>('trilhas');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [contentOpen, setContentOpen] = useState(!compactAtMount);
   const [panelOpen, setPanelOpen] = useState(true);
@@ -47,6 +48,33 @@ export function DesktopWorkbench({ api }: { api: ApiStatus }) {
   const toggleContent = useCallback(() => togglePanelRef(contentRef), [contentRef]);
   const togglePanel = useCallback(() => togglePanelRef(panelRef), [panelRef]);
   useWorkbenchShortcuts({ toggleSidebar, togglePanel, toggleContent });
+
+  // Ao abrir uma unidade, o painel de conteúdo aparece.
+  const { learning } = useStores();
+  useEffect(() => {
+    let last = learning.getState().focus?.nonce ?? 0;
+    return learning.subscribe(() => {
+      const f = learning.getState().focus;
+      if (!f || f.nonce === last) return;
+      last = f.nonce;
+      // a unidade abre com cerca de um terço da largura, para o texto não ficar espremido
+      const content = contentRef.current;
+      if (
+        f.area === 'conteudo' &&
+        content &&
+        (content.isCollapsed() || content.getSize().inPixels < 360)
+      ) {
+        if (content.isCollapsed()) content.expand();
+        content.resize('34%');
+      }
+      if (f.area === 'resultado' && panelRef.current?.isCollapsed()) panelRef.current.expand();
+    });
+  }, [learning, contentRef, panelRef]);
+
+  const showTracks = () => {
+    setActiveView('trilhas');
+    if (sidebarRef.current?.isCollapsed()) sidebarRef.current.expand();
+  };
 
   const selectView = (id: ViewId) => {
     const p = sidebarRef.current;
@@ -134,7 +162,7 @@ export function DesktopWorkbench({ api }: { api: ApiStatus }) {
             onResize={() => setContentOpen(!contentRef.current?.isCollapsed())}
           >
             <div className="panel-slot" hidden={!contentOpen}>
-              <ContentPane onClose={toggleContent} />
+              <ContentPane onClose={toggleContent} onShowTracks={showTracks} />
             </div>
           </Panel>
         </Group>

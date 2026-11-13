@@ -2,9 +2,20 @@
 
 Plataforma educacional de programação, de código aberto, que reúne um editor no estilo VS Code e trilhas de aprendizagem com etapas pedagógicas, glossário pessoal, desafios e avaliações.
 
-**Status:** Etapa 1 concluída; Etapa 2 (editor e execução de código) em validação. Áreas da interface marcadas com "Em breve" ainda não funcionam e indicam a etapa em que serão entregues.
+**Status:** Etapas 1 e 2 concluídas; Etapa 3 (trilhas e conteúdo) em validação. Áreas da interface marcadas com "Em breve" ainda não funcionam e indicam a etapa em que serão entregues.
 
 ## O que já funciona
+
+**Trilhas e conteúdo (Etapa 3)**
+
+- Trilha **HTML e CSS** para o ensino técnico, com 4 unidades autorais em dois módulos.
+- Mapa visual da trilha (React Flow) com objetivos, pré-requisitos, progresso e o estado de cada unidade (bloqueada, disponível, em andamento, concluída).
+- Unidade ao lado do editor, com as sete etapas: apresentação, fundamentação (com leitura complementar), demonstração (o exemplo abre no editor), experimentação (concluída ao executar o experimento), vocabulário (termos com pistas de pesquisa), desafio e avaliação.
+- Desafios corrigidos por testes automáticos executados no sandbox, com uma orientação para cada item não atendido.
+- Avaliações corrigidas no servidor (o gabarito não chega ao navegador), com feedback para cada alternativa e nota mínima de 70%.
+- Exemplo, experimento e desafio de cada unidade abrem em projetos separados; o projeto livre do aluno é preservado.
+- Progresso guardado no navegador (até existir login, na Etapa 4).
+- Conteúdo em arquivos (`content/`), validado e carregado no banco sem recompilar a plataforma. Guia de autoria em [content/README.md](content/README.md).
 
 **Editor e execução (Etapa 2)**
 
@@ -50,6 +61,10 @@ pnpm db:migrate
 ```
 
 ```bash
+pnpm content:sync
+```
+
+```bash
 pnpm dev
 ```
 
@@ -85,6 +100,8 @@ O sandbox (`apps/sandbox`) gera um único arquivo HTML, sem dependências. Em pr
 - `import` entre arquivos JavaScript (módulos ES) ainda não é suportado.
 - As mensagens de erro do JavaScript vêm do navegador e do Monaco, em inglês.
 - O verificador de HTML cobre os erros mais comuns (tags não fechadas, fechamento sem abertura); não é um validador completo.
+- O progresso fica no navegador até a Etapa 4 (login); trocar de navegador ou limpar os dados do site recomeça o progresso.
+- O registro de termos no Meu Glossário chega na Etapa 6; a etapa de vocabulário já sugere os termos e as pistas de pesquisa.
 
 ## Estrutura
 
@@ -95,7 +112,9 @@ apps/
   sandbox/    ambiente de execução isolado (origem separada)
 packages/
   shared/     schemas e tipos usados pela interface e pela API
-  runners/    execução: protocolo, proteção contra laço infinito, montagem do documento
+  runners/    execução: protocolo, proteção contra laço infinito, testes de desafio
+  content/    formato do conteúdo: schema, validação e compilação
+content/      trilhas, módulos e unidades (texto, desafios e avaliações)
   ui/         tokens visuais (cores, tipografia, espaçamento)
 docs/         análise, arquitetura e plano por etapas
 ```

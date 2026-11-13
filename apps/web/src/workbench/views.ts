@@ -18,8 +18,7 @@ export const VIEWS: ViewDef[] = [
     id: 'trilhas',
     label: 'Trilhas',
     icon: Map,
-    stage: 3,
-    description: 'Mapa das trilhas de aprendizagem, com módulos, unidades e o seu progresso.',
+    description: 'Trilhas de aprendizagem, com módulos, unidades e o seu progresso.',
     placement: 'top',
   },
   {

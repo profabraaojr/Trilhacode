@@ -14,10 +14,8 @@ test('carrega sem rolagem horizontal da página', async ({ page }) => {
   expect(overflow).toBeLessThanOrEqual(0);
 });
 
-test('indica que o servidor está indisponível quando a API não roda', async ({ page }) => {
-  await expect(
-    page.getByRole('status').filter({ hasText: 'Servidor indisponível' }),
-  ).toBeAttached();
+test('indica que o servidor está conectado', async ({ page }) => {
+  await expect(page.getByRole('status').filter({ hasText: 'Servidor conectado' })).toBeAttached();
 });
 
 test('o tema escolhido sobrevive ao recarregar a página', async ({ page }) => {
@@ -34,7 +32,7 @@ test.describe('computador e tablet', () => {
   test.skip(({ viewport }) => (viewport?.width ?? 0) < 768, 'layout em colunas');
 
   test('Ctrl+B e Ctrl+J recolhem e reabrem a barra lateral e o painel', async ({ page }) => {
-    const sidebar = page.getByRole('complementary', { name: 'Explorador' });
+    const sidebar = page.getByRole('complementary', { name: 'Trilhas' });
     const panel = page.getByRole('region', { name: 'Console' });
     await expect(sidebar).toBeVisible();
     await expect(panel).toBeVisible();
@@ -51,7 +49,7 @@ test.describe('computador e tablet', () => {
   });
 
   test('a barra lateral pode ser redimensionada arrastando a divisória', async ({ page }) => {
-    const sidebar = page.getByRole('complementary', { name: 'Explorador' });
+    const sidebar = page.getByRole('complementary', { name: 'Trilhas' });
     const before = (await sidebar.boundingBox())!.width;
     const handle = page.getByRole('separator').first();
     const box = (await handle.boundingBox())!;

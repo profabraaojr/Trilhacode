@@ -5,6 +5,7 @@
 import { formatArgs } from '../format.js';
 import { buildDocument } from '../html.js';
 import { addLoopGuards, createLoopGuardRuntime, InfiniteLoopError } from '../loopGuard.js';
+import { runChallengeTests } from './tests.js';
 import {
   CONSOLE_BATCH_SIZE,
   EXTRA_ERROR_ENTRIES,
@@ -240,7 +241,17 @@ function execute(request: RunRequest, parentWindow: Window) {
         text: `Promise rejeitada sem tratamento: ${formatArgs([event.reason])}`,
       });
     });
-    window.addEventListener('load', () => post({ type: 'tc:loaded', runId }));
+    window.addEventListener('load', () => {
+      post({ type: 'tc:loaded', runId });
+      if (request.tests?.length) {
+        // espera eventuais tarefas agendadas pelo script do aluno no carregamento
+        setTimeout(() => {
+          void runChallengeTests(request.tests!, files).then((results) =>
+            post({ type: 'tc:tests', runId, results }),
+          );
+        }, 50);
+      }
+    });
     window.setInterval(() => post({ type: 'tc:heartbeat', runId }), 1000);
   };
 

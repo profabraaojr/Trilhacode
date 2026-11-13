@@ -1,7 +1,7 @@
 /**
- * Persistência do projeto no IndexedDB do navegador.
+ * Registros guardados no IndexedDB do navegador (projetos e progresso).
  * Se o IndexedDB não estiver disponível (janela anônima em alguns navegadores,
- * armazenamento bloqueado), o projeto funciona apenas em memória e a interface avisa.
+ * armazenamento bloqueado), tudo funciona apenas em memória e a interface avisa.
  */
 import type { ProjectFile } from './files';
 
@@ -12,15 +12,17 @@ export interface StoredProject {
   updatedAt: string;
 }
 
-export interface ProjectStorage {
+export interface RecordStorage {
   readonly persistent: boolean;
-  load(): Promise<StoredProject | null>;
-  save(project: StoredProject): Promise<void>;
+  get(key: string): Promise<unknown>;
+  set(key: string, value: unknown): Promise<void>;
 }
+
+/** Mantido por compatibilidade de nome: projetos usam o mesmo armazenamento de registros. */
+export type ProjectStorage = RecordStorage;
 
 const DB_NAME = 'trilhacode';
 const STORE = 'projects';
-const KEY = 'local:default';
 
 function openDb(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -56,34 +58,32 @@ export function isValidStoredProject(v: unknown): v is StoredProject {
   );
 }
 
-export async function createIndexedDbStorage(): Promise<ProjectStorage> {
+export async function createIndexedDbStorage(): Promise<RecordStorage> {
   const db = await openDb();
   return {
     persistent: true,
-    async load() {
-      const v = await request<unknown>(db, 'readonly', (s) => s.get(KEY));
-      return isValidStoredProject(v) ? v : null;
-    },
-    async save(project) {
-      await request(db, 'readwrite', (s) => s.put(project, KEY));
+    get: (key) => request<unknown>(db, 'readonly', (s) => s.get(key)),
+    async set(key, value) {
+      await request(db, 'readwrite', (s) => s.put(value, key));
     },
   };
 }
 
-export function createMemoryStorage(initial: StoredProject | null = null): ProjectStorage {
-  let data = initial;
+export function createMemoryStorage(initial: Record<string, unknown> = {}): RecordStorage {
+  const data = new Map<string, unknown>(Object.entries(initial));
   return {
     persistent: false,
-    async load() {
-      return data;
+    async get(key) {
+      const v = data.get(key);
+      return v === undefined ? undefined : structuredClone(v);
     },
-    async save(project) {
-      data = structuredClone(project);
+    async set(key, value) {
+      data.set(key, structuredClone(value));
     },
   };
 }
 
-export async function createBestStorage(): Promise<ProjectStorage> {
+export async function createBestStorage(): Promise<RecordStorage> {
   try {
     if (typeof indexedDB === 'undefined') throw new Error('sem IndexedDB');
     return await createIndexedDbStorage();

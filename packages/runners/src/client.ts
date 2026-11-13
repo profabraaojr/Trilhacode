@@ -13,6 +13,8 @@ import {
   type ProjectFile,
   type RunOptions,
   type RunRequest,
+  type TestResult,
+  type TestSpec,
 } from './protocol.js';
 
 export type RunStatus = 'starting' | 'running' | 'finished' | 'stopped' | 'unavailable';
@@ -22,6 +24,8 @@ export interface RunHandlers {
   onConsole: (entries: ConsoleEntry[]) => void;
   onClear: () => void;
   onStatus: (status: RunStatus) => void;
+  /** Resultado dos testes de desafio, quando a execução os incluiu. */
+  onTests?: (results: TestResult[]) => void;
 }
 
 export interface SandboxSessionOptions {
@@ -53,7 +57,7 @@ export class SandboxSession {
     window.addEventListener('message', this.onMessage);
   }
 
-  run(files: ProjectFile[], entry: string, handlers: RunHandlers): void {
+  run(files: ProjectFile[], entry: string, handlers: RunHandlers, tests?: TestSpec[]): void {
     this.teardown();
     this.handlers = handlers;
     const runId = newRunId();
@@ -74,6 +78,7 @@ export class SandboxSession {
       entry,
       files: files.map((f) => ({ name: f.name, content: f.content })),
       options: this.options.runOptions ?? DEFAULT_RUN_OPTIONS,
+      ...(tests?.length ? { tests } : {}),
     };
     this.pending = request;
 
@@ -167,6 +172,9 @@ export class SandboxSession {
         break;
       case 'tc:loaded':
         this.handlers.onStatus('finished');
+        break;
+      case 'tc:tests':
+        this.handlers.onTests?.(msg.results);
         break;
     }
   }

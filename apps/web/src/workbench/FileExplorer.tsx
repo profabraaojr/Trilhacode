@@ -1,4 +1,4 @@
-import { FilePlus, Pencil, RotateCcw, Trash2 } from 'lucide-react';
+import { ArrowLeft, FilePlus, Pencil, RotateCcw, Trash2 } from 'lucide-react';
 import { useId, useState, type FormEvent } from 'react';
 import { useStore } from '../lib/store';
 import { ENTRY_FILE } from '../project/files';
@@ -9,8 +9,10 @@ type Editing = { mode: 'create' } | { mode: 'rename'; name: string } | null;
 
 /** Explorador de arquivos do projeto: abrir, criar, renomear e excluir. */
 export function FileExplorer({ onOpen }: { onOpen?: () => void }) {
-  const { project } = useStores();
+  const { project, learning } = useStores();
   const files = useStore(project, (s) => s.files);
+  const label = useStore(project, (s) => s.projectLabel);
+  const isDefault = useStore(project, (s) => s.projectKey === 'local:default');
   const active = useStore(project, (s) => s.active);
   const [editing, setEditing] = useState<Editing>(null);
   const [value, setValue] = useState('');
@@ -55,12 +57,9 @@ export function FileExplorer({ onOpen }: { onOpen?: () => void }) {
   };
 
   const reset = () => {
-    if (
-      window.confirm(
-        'Restaurar o projeto de exemplo? Todos os arquivos atuais serão substituídos pelo exemplo inicial.',
-      )
-    )
-      project.resetToDefault();
+    const what = isDefault ? 'o projeto de exemplo' : 'os arquivos iniciais desta etapa';
+    if (window.confirm(`Restaurar ${what}? Os arquivos atuais deste projeto serão substituídos.`))
+      project.resetToInitial();
   };
 
   const nameForm = (
@@ -94,7 +93,9 @@ export function FileExplorer({ onOpen }: { onOpen?: () => void }) {
   return (
     <div className="explorer">
       <div className="explorer-toolbar">
-        <span className="explorer-project">Meu projeto</span>
+        <span className="explorer-project" title={label}>
+          {label}
+        </span>
         <button
           type="button"
           className="icon-button"
@@ -114,6 +115,15 @@ export function FileExplorer({ onOpen }: { onOpen?: () => void }) {
           <RotateCcw size={16} aria-hidden="true" />
         </button>
       </div>
+      {!isDefault && (
+        <button
+          type="button"
+          className="text-button explorer-back"
+          onClick={() => void learning.backToMyProject()}
+        >
+          <ArrowLeft size={14} aria-hidden="true" /> Voltar ao meu projeto
+        </button>
+      )}
       <ul className="explorer-list" aria-label="Arquivos do projeto">
         {files.map((f) =>
           editing?.mode === 'rename' && editing.name === f.name ? (

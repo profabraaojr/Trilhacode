@@ -1,0 +1,39 @@
+{
+  "name": "@trilhacode/content",
+  "version": "0.1.0",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "description": "Formato do conteúdo das trilhas: schema, carregamento da pasta content/, compilação e validação.",
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./types": {
+      "source": "./src/types.ts",
+      "types": "./dist/types.d.ts",
+      "default": "./dist/types.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "validate": "tsx --conditions=source src/cli.ts validate ../../content",
+    "links": "tsx --conditions=source src/cli.ts links ../../content"
+  },
+  "dependencies": {
+    "@trilhacode/shared": "workspace:*",
+    "marked": "^18.0.0",
+    "yaml": "^2.8.0",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.20.0",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.0"
+  }
+}

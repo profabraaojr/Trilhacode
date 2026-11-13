@@ -11,10 +11,12 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "db:generate": "NODE_OPTIONS=--conditions=source drizzle-kit generate",
-    "db:migrate": "tsx --conditions=source --env-file-if-exists=../../.env src/db/migrate.ts"
+    "db:migrate": "tsx --conditions=source --env-file-if-exists=../../.env src/db/migrate.ts",
+    "content:sync": "tsx --conditions=source --env-file-if-exists=../../.env src/content/sync.ts ../../content"
   },
   "dependencies": {
     "@fastify/cors": "^11.0.0",
+    "@trilhacode/content": "workspace:*",
     "@trilhacode/shared": "workspace:*",
     "drizzle-orm": "^0.45.0",
     "fastify": "^5.6.0",
