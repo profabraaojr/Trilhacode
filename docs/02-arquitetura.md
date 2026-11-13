@@ -1,6 +1,6 @@
 # Proposta de arquitetura
 
-Status: **proposta, aguardando validação**. Nada aqui foi implementado ainda.
+Status: **aprovada em 13/11/2026** (nome TrilhaCode, licença AGPL-3.0-only, tecnologias da seção 3). Implementação a partir da Etapa 1.
 
 ## 1. Princípios
 
@@ -8,7 +8,7 @@ Status: **proposta, aguardando validação**. Nada aqui foi implementado ainda.
 2. **Linguagens como plugins.** Cada linguagem é registrada por um executor que segue uma interface comum. Adicionar Python ou SQL significa adicionar um executor, não alterar o editor.
 3. **Código do aluno nunca roda no servidor nem na origem da aplicação.** Toda execução acontece no navegador, em iframe isolado e origem separada.
 4. **Nada de tela falsa.** Recurso não implementado não aparece, ou aparece desabilitado com o rótulo "em breve".
-5. **Somente dependências de código aberto,** com licença compatível registrada em `THIRD_PARTY_NOTICES.md`.
+5. **Somente dependências de código aberto,** com licença compatível com a AGPL-3.0 do projeto, registradas em `THIRD_PARTY_NOTICES.md`.
 
 ## 2. Visão geral
 
