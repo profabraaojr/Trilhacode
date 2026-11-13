@@ -7,12 +7,21 @@ import {
   type ProgressDataPayload,
   type UnitStepId,
 } from '@trilhacode/shared';
+import { randomUUID } from 'node:crypto';
 import { and, asc, eq, inArray, sql } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import type { Auth } from '../auth.js';
 import type { Database } from '../db/client.js';
-import { unit, unitProgress, unitScore, user } from '../db/schema.js';
+import {
+  assessmentAttempt,
+  challengeResult,
+  unit,
+  unitProgress,
+  unitScore,
+  user,
+} from '../db/schema.js';
+import { syncPoints } from '../evolution/points.js';
 import { requireUser, type SessionUser } from './session.js';
 
 const toProfile = (u: SessionUser): AccountProfile => ({
@@ -45,6 +54,14 @@ export async function loadProgress(db: Database, userId: string): Promise<Progre
     const entry = (units[sc.unitId] ??= { steps: {}, attempts: 0 });
     entry.bestScore = sc.bestScore;
     entry.attempts = sc.attempts;
+  }
+  const challenges = await db
+    .select()
+    .from(challengeResult)
+    .where(eq(challengeResult.userId, userId));
+  for (const c of challenges) {
+    const entry = (units[c.unitId] ??= { steps: {}, attempts: 0 });
+    entry.challenge = { passed: c.bestPassed, total: c.total };
   }
   return { version: 1, units };
 }
@@ -81,7 +98,9 @@ export async function recordAssessment(
         updatedAt: sql`now()`,
       },
     });
+  await db.insert(assessmentAttempt).values({ id: randomUUID(), userId, unitId, score, passed });
   if (passed) await completeStep(db, userId, unitId, 'avaliacao');
+  await syncPoints(db, userId);
 }
 
 export async function accountRoutes(
@@ -124,6 +143,7 @@ export async function accountRoutes(
       .where(eq(unit.id, parsed.data.unitId));
     if (!exists) return reply.code(404).send({ erro: 'Unidade não encontrada.' });
     await completeStep(db, u.id, parsed.data.unitId, parsed.data.step);
+    await syncPoints(db, u.id);
     return loadProgress(db, u.id);
   });
 
@@ -168,7 +188,18 @@ export async function accountRoutes(
             },
           });
       }
+      if (p.challenge) {
+        const { passed, total } = p.challenge;
+        await db
+          .insert(challengeResult)
+          .values({ userId: u.id, unitId, bestPassed: passed, total })
+          .onConflictDoUpdate({
+            target: [challengeResult.userId, challengeResult.unitId],
+            set: { bestPassed: sql`greatest(${challengeResult.bestPassed}, ${passed})` },
+          });
+      }
     }
+    await syncPoints(db, u.id);
     return loadProgress(db, u.id);
   });
 

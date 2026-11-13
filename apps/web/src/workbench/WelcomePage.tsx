@@ -5,7 +5,7 @@ export function WelcomePage() {
   return (
     <article className="welcome">
       <header>
-        <p className="welcome-kicker">TrilhaCode · versão 0.5.0</p>
+        <p className="welcome-kicker">TrilhaCode · versão 0.6.0</p>
         <h1 className="welcome-title">
           Aprender programação escrevendo, testando e entendendo o código.
         </h1>
@@ -38,8 +38,9 @@ export function WelcomePage() {
           Estado do desenvolvimento
         </h2>
         <p className="welcome-text">
-          A plataforma é construída por etapas. Áreas marcadas com <strong>Em breve</strong> ainda
-          não funcionam e indicam a etapa em que serão entregues.
+          A plataforma é construída por etapas, e cada uma é validada antes da seguinte. Uma área
+          que ainda não funciona aparece marcada como <strong>Em breve</strong>, com a etapa em que
+          será entregue.
         </p>
         <ol className="stage-list">
           {STAGES.map((s) => (

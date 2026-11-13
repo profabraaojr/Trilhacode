@@ -26,7 +26,10 @@ export async function lastLink(page: Page, email: string, subject: RegExp): Prom
 export const accountSidebar = (page: Page) => page.getByRole('complementary', { name: 'Conta' });
 
 /** Abre uma visão pela barra de atividades (clicar na visão já aberta recolheria a barra lateral). */
-export async function openView(page: Page, name: 'Conta' | 'Trilhas' | 'Turmas') {
+export async function openView(
+  page: Page,
+  name: 'Conta' | 'Trilhas' | 'Turmas' | 'Meu Glossário' | 'Minha evolução',
+) {
   const view = page.getByRole('complementary', { name });
   if (await view.isVisible()) return;
   await page

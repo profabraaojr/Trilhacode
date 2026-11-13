@@ -2,9 +2,17 @@
 
 Plataforma educacional de programação, de código aberto, que reúne um editor no estilo VS Code e trilhas de aprendizagem com etapas pedagógicas, glossário pessoal, desafios e avaliações.
 
-**Status:** Etapas 1 a 4 concluídas; Etapa 5 (gestão pedagógica) em validação. Áreas da interface marcadas com "Em breve" ainda não funcionam e indicam a etapa em que serão entregues.
+**Status:** Etapas 1 a 5 concluídas; Etapa 6 (avaliação e evolução) em validação. A Etapa 7 (qualidade e publicação) é a próxima.
 
 ## O que já funciona
+
+**Avaliação e evolução (Etapa 6)**
+
+- Meu Glossário: o aluno registra termos com significado pesquisado, explicação com as próprias palavras e exemplo de uso, direto na etapa de vocabulário da unidade ou pela barra lateral, com busca, edição e exclusão. Sem login, os termos ficam no navegador e vão para a conta no primeiro login.
+- Verificação simples de cópia: se a explicação repete o significado pesquisado, o termo é salvo, mas não pontua, e o aluno recebe um aviso para reescrever.
+- Pontuação em livro-razão de eventos imutáveis, sem bônus por velocidade: 5 pontos por etapa concluída; até 30 pelo desafio (proporcional aos testes aprovados); até 50 pela avaliação (melhor tentativa); 5 por termo com explicação própria ligado a uma unidade (até 5 termos por unidade); 20 por unidade e 100 por trilha concluídas.
+- Minha evolução: pontos por tipo de atividade, trilhas iniciadas e concluídas, percentual de progresso, avaliações realizadas, desafios concluídos, glossário e uma lista do que revisar (avaliação abaixo da nota mínima, desafio incompleto, termo sem explicação própria). O histórico completo traz cada tentativa de avaliação, os desafios e os pontos recebidos.
+- Professor: aba Glossários na turma, para ler (sem editar) os termos de cada aluno; pontos e termos no painel e no relatório CSV. Não há ranking entre alunos.
 
 **Gestão pedagógica (Etapa 5)**
 
@@ -132,7 +140,9 @@ O sandbox (`apps/sandbox`) gera um único arquivo HTML, sem dependências. Em pr
 - As mensagens de erro do JavaScript vêm do navegador e do Monaco, em inglês.
 - O verificador de HTML cobre os erros mais comuns (tags não fechadas, fechamento sem abertura); não é um validador completo.
 - Sem login, o progresso fica só no navegador; ao entrar, ele é levado para a conta.
-- O registro de termos no Meu Glossário chega na Etapa 6; a etapa de vocabulário já sugere os termos e as pistas de pesquisa.
+- Os testes do desafio rodam no navegador do aluno; o servidor confere o total de testes, mas confia no número de aprovados. Para a pontuação de uma plataforma escolar, consideramos o risco aceitável.
+- A verificação de cópia no glossário compara pares de palavras: pega cópias e pequenas trocas, mas não paráfrases. O professor lê os glossários para avaliar a qualidade.
+- Avaliações feitas antes da Etapa 6 contam na melhor nota, mas não aparecem no histórico tentativa a tentativa.
 
 ## Estrutura
 

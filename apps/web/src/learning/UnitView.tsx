@@ -1,5 +1,6 @@
 import { UNIT_STEPS, type UnitStepId } from '@trilhacode/shared';
 import { ArrowLeft, ArrowRight, Check, ExternalLink, FolderOpen } from 'lucide-react';
+import { VocabularyStep } from '../glossary/VocabularyStep';
 import { useStore } from '../lib/store';
 import { useStores } from '../project/ProjectContext';
 import { AssessmentForm } from './AssessmentForm';
@@ -141,25 +142,7 @@ export function UnitView() {
           </>
         )}
 
-        {step === 'vocabulario' && (
-          <>
-            <Prose html={etapas.vocabulario.html} />
-            <h4 className="terms-title">Termos sugeridos para pesquisar</h4>
-            <dl className="terms">
-              {etapas.vocabulario.termos.map((t) => (
-                <div key={t.termo} className="term">
-                  <dt>{t.termo}</dt>
-                  <dd>Pista: {t.dica}</dd>
-                </div>
-              ))}
-            </dl>
-            <p className="step-note">
-              <span className="badge badge-soon">Em breve · Etapa 6</span> O registro no Meu
-              Glossário (termo, significado pesquisado, explicação com suas palavras e exemplo)
-              chega na Etapa 6. Por enquanto, anote os termos no seu caderno.
-            </p>
-          </>
-        )}
+        {step === 'vocabulario' && <VocabularyStep unit={unit} />}
 
         {step === 'desafio' && <ChallengePanel />}
         {step === 'avaliacao' && <AssessmentForm key={unit.id} />}

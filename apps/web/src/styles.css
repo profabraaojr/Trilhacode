@@ -1569,6 +1569,8 @@ kbd {
   font-size: var(--tc-text-sm);
 }
 .form-field input,
+.form-field textarea,
+.form-field select,
 .user-row select {
   padding: 6px 8px;
   border: 1px solid var(--tc-border-strong);
@@ -1878,5 +1880,282 @@ kbd {
   }
   .page-body {
     padding: var(--tc-space-4);
+  }
+}
+
+/* ---------------------------------------------------------------- Meu Glossário (Etapa 6) */
+
+.form-field textarea {
+  resize: vertical;
+  min-height: 2.5em;
+}
+.code-input {
+  font-family: var(--tc-font-code);
+  font-size: var(--tc-text-sm);
+}
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--tc-space-2);
+  font-size: var(--tc-text-sm);
+}
+.term-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tc-space-3);
+  margin: var(--tc-space-2) 0 var(--tc-space-3);
+  padding: var(--tc-space-3);
+  border: 1px solid var(--tc-border);
+  border-radius: var(--tc-radius-md);
+  background: var(--tc-bg-panel);
+}
+.explanation-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tc-space-1);
+  margin: 0;
+  font-size: var(--tc-text-xs);
+  color: var(--tc-fg-muted);
+}
+.explanation-ok {
+  color: var(--tc-ok);
+}
+.explanation-warn {
+  padding: var(--tc-space-1) var(--tc-space-2);
+  border-left: 3px solid var(--tc-warn);
+  background: color-mix(in srgb, var(--tc-warn) 10%, transparent);
+  color: var(--tc-fg);
+}
+.glossary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tc-space-2);
+  padding: var(--tc-space-2) var(--tc-space-3);
+}
+.glossary-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--tc-space-2);
+}
+.search-field {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--tc-space-1);
+  padding: 4px 8px;
+  border: 1px solid var(--tc-border-strong);
+  border-radius: var(--tc-radius-sm);
+  background: var(--tc-bg-input);
+  color: var(--tc-fg-muted);
+}
+.search-field input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--tc-fg);
+  font: inherit;
+  font-size: var(--tc-text-sm);
+}
+.search-field:focus-within {
+  outline: 2px solid var(--tc-focus);
+}
+.search-field input:focus-visible {
+  outline: none;
+}
+.glossary-count {
+  margin: 0;
+  font-size: var(--tc-text-xs);
+  color: var(--tc-fg-muted);
+}
+.glossary-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.glossary-item {
+  border-bottom: 1px solid var(--tc-border);
+  padding: var(--tc-space-2) 0;
+}
+.glossary-item summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tc-space-2);
+  cursor: pointer;
+}
+.glossary-term {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tc-space-2);
+  margin: 0;
+  font-size: var(--tc-text-md);
+  font-weight: 600;
+}
+.term-details {
+  margin: var(--tc-space-2) 0;
+  font-size: var(--tc-text-sm);
+}
+.term-details dt {
+  margin-top: var(--tc-space-2);
+  font-size: var(--tc-text-xs);
+  color: var(--tc-fg-muted);
+}
+.term-details dd {
+  margin: 2px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.term-example {
+  display: block;
+  padding: var(--tc-space-1) var(--tc-space-2);
+  border-radius: var(--tc-radius-sm);
+  background: var(--tc-bg-editor);
+  font-family: var(--tc-font-code);
+  white-space: pre-wrap;
+}
+.term-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tc-space-2);
+}
+.glossary-read .glossary-item {
+  padding: var(--tc-space-3) 0;
+}
+.inline-field {
+  max-width: 420px;
+  margin: var(--tc-space-3) 0;
+}
+
+/* ---------------------------------------------------------------- Minha evolução (Etapa 6) */
+
+.evolution {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tc-space-3);
+  padding: var(--tc-space-2) var(--tc-space-3) var(--tc-space-4);
+}
+.evolution section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tc-space-2);
+}
+.points-card {
+  display: flex;
+  align-items: center;
+  gap: var(--tc-space-2);
+  padding: var(--tc-space-3);
+  border: 1px solid var(--tc-border);
+  border-radius: var(--tc-radius-md);
+  background: var(--tc-accent-soft);
+  color: var(--tc-fg);
+}
+.points-card p {
+  margin: 0;
+}
+.points-total {
+  font-size: var(--tc-text-2xl);
+  font-weight: 650;
+}
+.points-breakdown {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px var(--tc-space-3);
+  margin: 0;
+  font-size: var(--tc-text-sm);
+}
+.points-breakdown div {
+  display: contents;
+}
+.points-breakdown dt {
+  color: var(--tc-fg-muted);
+}
+.points-breakdown dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.indicator-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tc-space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--tc-text-sm);
+}
+.indicator-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tc-space-2);
+}
+.indicator-list svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--tc-fg-muted);
+}
+.evolution-track {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.review-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.review-list .attention-item {
+  flex-direction: column;
+  align-items: flex-start;
+}
+.bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tc-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 640px;
+}
+.bar-list li {
+  display: grid;
+  grid-template-columns: minmax(120px, 180px) 1fr 3.5em;
+  align-items: center;
+  gap: var(--tc-space-2);
+  font-size: var(--tc-text-sm);
+}
+.bar-track {
+  display: inline-block;
+  position: relative;
+  height: 8px;
+  min-width: 60px;
+  border-radius: 4px;
+  background: var(--tc-bg-hover);
+  overflow: hidden;
+}
+.bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--tc-accent);
+  border-radius: 4px;
+}
+.bar-value {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.cell-progress .bar-track {
+  width: 80px;
+  margin-right: var(--tc-space-2);
+  vertical-align: middle;
+}
+@media (max-width: 640px) {
+  .bar-list li {
+    grid-template-columns: 1fr 3em;
+  }
+  .bar-list .bar-track {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
 }

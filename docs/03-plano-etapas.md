@@ -72,7 +72,7 @@ Decisões de implementação: interface e API na mesma origem (sessão em cookie
 
 ## Etapa 5. Gestão pedagógica
 
-**Situação:** implementada, aguardando validação. Definições aprovadas pelo responsável: matrícula por convite por e-mail; professor responsável com coprofessores; avaliações complementares de múltipla escolha com feedback por alternativa (questões abertas ficam para depois); consulta aos glossários dos alunos na Etapa 6, com o lugar reservado no painel.
+**Situação:** concluída e validada em 13/11/2026. Definições aprovadas pelo responsável: matrícula por convite por e-mail; professor responsável com coprofessores; avaliações complementares de múltipla escolha com feedback por alternativa (questões abertas ficam para depois); consulta aos glossários dos alunos na Etapa 6, com o lugar reservado no painel.
 
 Decisões de implementação: a planilha é lida no navegador (`read-excel-file` e `papaparse`), e cada linha é validada no servidor; um convite para uma conta já existente mas sem e-mail confirmado vira matrícula na confirmação; "unidades que pedem atenção" são as que têm alunos abaixo da nota mínima ou média abaixo de 70%; o relatório usa ponto e vírgula e BOM, para abrir corretamente em planilhas configuradas em português.
 
@@ -83,6 +83,15 @@ Decisões de implementação: a planilha é lida no navegador (`read-excel-file`
 - Relatórios exportáveis (CSV).
 
 ## Etapa 6. Avaliação e evolução
+
+**Situação:** implementada, aguardando validação. Definições aprovadas pelo responsável:
+
+1. Tabela de pontos: etapa concluída 5; desafio até 30 (proporcional aos testes aprovados); avaliação até 50 (melhor tentativa); termo do glossário com explicação própria 5 (até 5 por unidade); unidade concluída 20; trilha concluída 100.
+2. O professor lê todo o glossário dos alunos das suas turmas, sem editar; o aluno é avisado na tela do glossário.
+3. Sem ranking entre alunos; o professor vê os pontos de cada um no painel da turma.
+4. Verificação de cópia por semelhança: a explicação parecida demais com o significado é salva, mas não pontua, e o aluno recebe um aviso.
+
+Decisões de implementação: a cada mudança no progresso, o servidor calcula quanto cada item vale e lança só a diferença positiva no livro-razão (`point_event`), sob um bloqueio por aluno; assim o total nunca diminui, repetir uma ação não pontua de novo e excluir e recriar termos não gera pontos extras. A semelhança é a proporção de pares de palavras da explicação que já aparecem no significado (sem acentos e maiúsculas), com limite de 50% e mínimo de 40 caracteres; a mesma função roda no navegador (aviso imediato) e no servidor (decisão). Só termos ligados a uma unidade pontuam, para estimular o registro durante o estudo. O resultado do desafio vem dos testes executados no sandbox do navegador; o servidor confere o total de testes da unidade. Termos sem login ficam no navegador e são importados no primeiro login, como o progresso.
 
 - Livro-razão de pontos com as regras da arquitetura.
 - Painel do aluno: trilhas iniciadas e concluídas, histórico de avaliações, desafios, conteúdos a revisar.

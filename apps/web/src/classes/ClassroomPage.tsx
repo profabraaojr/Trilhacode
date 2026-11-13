@@ -3,19 +3,20 @@ import type { AddStudentResult, ClassroomDashboard, ClassroomDetail } from '@tri
 import { Download, FileSpreadsheet, Trash2, UserPlus } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
 import { classroomApi, contentApi } from '../api/client';
-import { ComingSoon } from '../components/ComingSoon';
+import { GlossariesTab } from './GlossariesTab';
 import { ProgressBar } from '../learning/StatusIcon';
 import { useStores } from '../project/ProjectContext';
 import { AssessmentEditor } from './AssessmentEditor';
 import { formatDate, formatDateTime, isPast } from './dates';
 import { parseStudentFile } from './parseStudents';
 
-type Tab = 'painel' | 'alunos' | 'trilhas' | 'avaliacoes' | 'professores';
+type Tab = 'painel' | 'alunos' | 'trilhas' | 'avaliacoes' | 'glossarios' | 'professores';
 const TABS: { id: Tab; label: string }[] = [
   { id: 'painel', label: 'Painel' },
   { id: 'alunos', label: 'Alunos' },
   { id: 'trilhas', label: 'Trilhas' },
   { id: 'avaliacoes', label: 'Avaliações' },
+  { id: 'glossarios', label: 'Glossários' },
   { id: 'professores', label: 'Professores' },
 ];
 
@@ -112,6 +113,7 @@ export default function ClassroomPage({ id }: { id: string }) {
         {tab === 'alunos' && <StudentsTab detail={detail} onChange={changed} />}
         {tab === 'trilhas' && <TracksTab detail={detail} onChange={changed} />}
         {tab === 'avaliacoes' && <AssessmentsTab detail={detail} onChange={changed} />}
+        {tab === 'glossarios' && <GlossariesTab detail={detail} />}
         {tab === 'professores' && <TeachersTab detail={detail} onChange={changed} />}
       </div>
     </article>
@@ -179,6 +181,8 @@ function DashboardTab({ id }: { id: string }) {
                   <th scope="col">Progresso</th>
                   <th scope="col">Unidades concluídas</th>
                   <th scope="col">Média</th>
+                  <th scope="col">Pontos</th>
+                  <th scope="col">Glossário</th>
                   {d.assessments.map((a) => (
                     <th key={a.id} scope="col">
                       {a.title}
@@ -200,6 +204,13 @@ function DashboardTab({ id }: { id: string }) {
                     </td>
                     <td>{s.unitsCompleted}</td>
                     <td>{s.averageScore === null ? '—' : `${s.averageScore}%`}</td>
+                    <td>{s.points}</td>
+                    <td>
+                      {s.glossaryTerms} termo(s)
+                      {s.glossaryTerms > 0 && (
+                        <span className="form-hint">{s.glossaryOwn} com explicação própria</span>
+                      )}
+                    </td>
                     {d.assessments.map((a) => (
                       <td key={a.id}>
                         {s.customScores[a.id] === null || s.customScores[a.id] === undefined
@@ -275,12 +286,6 @@ function DashboardTab({ id }: { id: string }) {
           </div>
         </details>
       </section>
-
-      <ComingSoon
-        title="Glossários dos alunos"
-        stage={6}
-        description="Consulta aos termos que cada aluno registrou no Meu Glossário, com as explicações escritas por ele."
-      />
     </>
   );
 }

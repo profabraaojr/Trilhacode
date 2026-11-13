@@ -1,6 +1,16 @@
-import { BookOpen, Files, Map, School, Settings, UserRound, type LucideIcon } from 'lucide-react';
+import {
+  BookOpen,
+  Files,
+  Map,
+  School,
+  Settings,
+  TrendingUp,
+  UserRound,
+  type LucideIcon,
+} from 'lucide-react';
 
-export type ViewId = 'trilhas' | 'explorador' | 'turmas' | 'glossario' | 'conta' | 'configuracoes';
+export type ViewId =
+  'trilhas' | 'explorador' | 'turmas' | 'glossario' | 'evolucao' | 'conta' | 'configuracoes';
 
 export interface ViewDef {
   id: ViewId;
@@ -40,9 +50,15 @@ export const VIEWS: ViewDef[] = [
     id: 'glossario',
     label: 'Meu Glossário',
     icon: BookOpen,
-    stage: 6,
     description:
       'Termos que você ainda não conhece, com o significado pesquisado, sua explicação e um exemplo.',
+    placement: 'top',
+  },
+  {
+    id: 'evolucao',
+    label: 'Minha evolução',
+    icon: TrendingUp,
+    description: 'Pontos, trilhas, avaliações, desafios e conteúdos a revisar.',
     placement: 'top',
   },
   {

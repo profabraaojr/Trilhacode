@@ -6,7 +6,10 @@ import { Store } from '../lib/store';
  * e o mapa da trilha; só uma página especial fica em primeiro plano por vez.
  */
 export type ClassroomPage =
-  { kind: 'turma'; id: string; title: string } | { kind: 'avaliacao'; id: string; title: string };
+  | { kind: 'turma'; id: string; title: string }
+  | { kind: 'avaliacao'; id: string; title: string }
+  /** Histórico completo do aluno (Minha evolução). */
+  | { kind: 'evolucao'; id: 'historico'; title: string };
 
 export interface ClassroomState {
   page: ClassroomPage | null;

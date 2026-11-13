@@ -2,6 +2,8 @@ import { X } from 'lucide-react';
 import { ComingSoon } from '../components/ComingSoon';
 import { AccountView } from '../account/AccountView';
 import { ClassesView } from '../classes/ClassesView';
+import { EvolutionView } from '../evolution/EvolutionView';
+import { GlossaryView } from '../glossary/GlossaryView';
 import { TracksView } from '../learning/TracksView';
 import { FileExplorer } from './FileExplorer';
 import { SettingsView } from './SettingsView';
@@ -38,6 +40,10 @@ export function SideBar({ view, onClose, onOpenFile, onShowAccount }: Props) {
           <TracksView />
         ) : view === 'turmas' ? (
           <ClassesView onShowAccount={onShowAccount} />
+        ) : view === 'glossario' ? (
+          <GlossaryView />
+        ) : view === 'evolucao' ? (
+          <EvolutionView onShowAccount={onShowAccount} />
         ) : view === 'conta' ? (
           <AccountView />
         ) : view === 'explorador' ? (
