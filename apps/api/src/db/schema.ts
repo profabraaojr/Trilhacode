@@ -40,6 +40,8 @@ export const user = pgTable('user', {
   emailVerified: boolean().notNull().default(false),
   image: text(),
   role: userRole().notNull().default('aluno'),
+  /** Escola ou instituição informada no cadastro. */
+  institution: text(),
   ...timestamps,
 });
 
@@ -161,6 +163,23 @@ export const unit = pgTable(
 );
 
 /* ---------------------------------------------------------------- Progresso */
+
+/** Melhor nota e número de tentativas na avaliação de cada unidade (corrigida no servidor). */
+export const unitScore = pgTable(
+  'unit_score',
+  {
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    unitId: text()
+      .notNull()
+      .references(() => unit.id, { onDelete: 'cascade' }),
+    bestScore: integer().notNull().default(0),
+    attempts: integer().notNull().default(0),
+    updatedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.unitId] })],
+);
 
 /** Uma linha por aluno, unidade e etapa pedagógica. */
 export const unitProgress = pgTable(

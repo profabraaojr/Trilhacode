@@ -1525,3 +1525,132 @@ kbd {
 .welcome-steps li + li {
   margin-top: 4px;
 }
+
+/* ---------- Conta ---------- */
+.account {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tc-space-3);
+  padding: var(--tc-space-4);
+}
+.account-intro {
+  margin: 0;
+  font-size: var(--tc-text-sm);
+  color: var(--tc-fg-muted);
+}
+.segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--tc-border-strong);
+  border-radius: var(--tc-radius-sm);
+  overflow: hidden;
+}
+.segmented button {
+  padding: 6px;
+  border: 0;
+  background: transparent;
+  color: var(--tc-fg-muted);
+  font-size: var(--tc-text-sm);
+  cursor: pointer;
+}
+.segmented button[aria-selected='true'] {
+  background: var(--tc-accent-strong);
+  color: var(--tc-fg-on-accent);
+}
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tc-space-3);
+}
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--tc-text-sm);
+}
+.form-field input,
+.user-row select {
+  padding: 6px 8px;
+  border: 1px solid var(--tc-border-strong);
+  border-radius: var(--tc-radius-sm);
+  background: var(--tc-bg-input);
+  color: var(--tc-fg);
+  font: inherit;
+}
+.form-field input:focus-visible {
+  outline-offset: 0;
+}
+.form-hint {
+  font-size: var(--tc-text-xs);
+  color: var(--tc-fg-muted);
+}
+.form-ok,
+.form-error {
+  margin: 0;
+  padding: var(--tc-space-2) var(--tc-space-3);
+  border-radius: var(--tc-radius-sm);
+  font-size: var(--tc-text-sm);
+}
+.form-ok {
+  background: color-mix(in srgb, var(--tc-ok) 12%, transparent);
+  color: var(--tc-ok);
+}
+.form-error {
+  background: color-mix(in srgb, var(--tc-danger) 12%, transparent);
+  color: var(--tc-danger);
+}
+.account .primary-button,
+.account .secondary-button {
+  align-self: flex-start;
+}
+.account-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: var(--tc-space-3);
+  border: 1px solid var(--tc-border);
+  border-radius: var(--tc-radius-md);
+}
+.account-name {
+  font-weight: 600;
+}
+.account-card .form-hint,
+.user-info .form-hint {
+  overflow-wrap: anywhere;
+}
+.account-section {
+  padding-top: var(--tc-space-3);
+  border-top: 1px solid var(--tc-border);
+}
+.account-section-title {
+  margin: 0 0 var(--tc-space-2);
+  font-size: var(--tc-text-sm);
+  font-weight: 600;
+}
+.user-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.user-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tc-space-2);
+  padding: var(--tc-space-2) 0;
+  border-bottom: 1px solid var(--tc-border);
+}
+.user-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.user-name {
+  font-size: var(--tc-text-sm);
+}
+.status-account {
+  display: inline-flex;
+  gap: 4px;
+  opacity: 1;
+}

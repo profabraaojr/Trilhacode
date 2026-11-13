@@ -125,7 +125,7 @@ test('cria, salva e restaura arquivos depois de recarregar a página', async ({ 
   );
   await replaceCode(page, '// arquivo salvo');
   await expect(page.getByRole('contentinfo', { name: 'Barra de status' })).toContainText(
-    'Salvo no navegador',
+    'Arquivos salvos no navegador',
   );
   await page.reload();
   await page.getByRole('button', { name: 'Explorador' }).click();

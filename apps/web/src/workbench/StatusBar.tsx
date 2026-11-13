@@ -6,6 +6,7 @@ import {
   PanelRight,
   Sun,
   TriangleAlert,
+  UserRound,
 } from 'lucide-react';
 import { API_STATUS_LABEL, type ApiStatus } from '../api/useApiHealth';
 import { useStore } from '../lib/store';
@@ -17,7 +18,7 @@ import { useTheme } from '../theme/ThemeContext';
 const SAVE_LABEL: Record<SaveState, string> = {
   loading: 'Carregando projeto…',
   saving: 'Salvando…',
-  saved: 'Salvo no navegador',
+  saved: 'Arquivos salvos no navegador',
   error: 'Erro ao salvar',
   memory: 'Não será salvo (armazenamento indisponível)',
 };
@@ -66,6 +67,7 @@ interface Props {
   onToggleSidebar: () => void;
   onTogglePanel: () => void;
   onToggleContent: () => void;
+  onShowAccount: () => void;
 }
 
 export function ApiIndicator({ api, compact = false }: { api: ApiStatus; compact?: boolean }) {
@@ -77,6 +79,19 @@ export function ApiIndicator({ api, compact = false }: { api: ApiStatus; compact
       <span className="api-dot" aria-hidden="true" />
       <span className={compact ? 'visually-hidden' : undefined}>{label}</span>
     </span>
+  );
+}
+
+function AccountIndicator({ onClick }: { onClick: () => void }) {
+  const { account } = useStores();
+  const status = useStore(account, (s) => s.status);
+  const name = useStore(account, (s) => s.profile?.name);
+  if (status === 'loading') return null;
+  return (
+    <button type="button" className="status-button status-account" onClick={onClick} title="Conta">
+      <UserRound size={13} aria-hidden="true" />
+      <span>{status === 'signed-in' ? name : 'Entrar'}</span>
+    </button>
   );
 }
 
@@ -106,6 +121,7 @@ export function StatusBar(props: Props) {
     <footer className="status-bar" aria-label="Barra de status">
       <div className="status-group">
         <ApiIndicator api={props.api} />
+        <AccountIndicator onClick={props.onShowAccount} />
         <SaveIndicator />
         <EditorInfo />
       </div>
@@ -136,7 +152,7 @@ export function StatusBar(props: Props) {
             <Moon size={14} aria-hidden="true" />
           )}
         </button>
-        <span className="status-text status-version">TrilhaCode 0.3.0</span>
+        <span className="status-text status-version">TrilhaCode 0.4.0</span>
       </div>
     </footer>
   );

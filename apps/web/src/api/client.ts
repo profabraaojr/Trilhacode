@@ -1,4 +1,10 @@
 import type {
+  AccountProfile,
+  ProfileUpdate,
+  ProgressDataPayload,
+  UserRole,
+} from '@trilhacode/shared';
+import type {
   AssessmentResult,
   TrackDetail,
   TrackSummary,
@@ -35,7 +41,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   }
   if (res.status === 404)
     throw new ApiError(404, 'Conteúdo não encontrado. Ele pode ter sido removido ou renomeado.');
-  if (!res.ok) throw new ApiError(res.status, `O servidor respondeu com erro (${res.status}).`);
+  if (!res.ok) {
+    const body = (await res.json().catch(() => null)) as { erro?: string } | null;
+    throw new ApiError(res.status, body?.erro ?? `O servidor respondeu com erro (${res.status}).`);
+  }
   return (await res.json()) as T;
 }
 
@@ -50,5 +59,40 @@ export const contentApi = {
     request<AssessmentResult>(`/api/avaliacoes/${encodePath(unitId)}`, {
       method: 'POST',
       body: JSON.stringify({ respostas }),
+    }),
+};
+
+export interface AdminUser extends Omit<AccountProfile, 'role'> {
+  role: UserRole;
+}
+
+export const accountApi = {
+  /** Perfil do usuário logado, ou null sem sessão. */
+  async me(): Promise<AccountProfile | null> {
+    try {
+      return await request<AccountProfile>('/api/me');
+    } catch (e) {
+      if (e instanceof ApiError && e.status === 401) return null;
+      throw e;
+    }
+  },
+  updateMe: (update: ProfileUpdate) =>
+    request<AccountProfile>('/api/me', { method: 'PATCH', body: JSON.stringify(update) }),
+  getProgress: () => request<ProgressDataPayload>('/api/progresso'),
+  completeStep: (unitId: string, step: string) =>
+    request<ProgressDataPayload>('/api/progresso/etapas', {
+      method: 'POST',
+      body: JSON.stringify({ unitId, step }),
+    }),
+  importProgress: (progress: ProgressDataPayload) =>
+    request<ProgressDataPayload>('/api/progresso/importar', {
+      method: 'POST',
+      body: JSON.stringify(progress),
+    }),
+  listUsers: () => request<AdminUser[]>('/api/admin/usuarios'),
+  setRole: (id: string, role: UserRole) =>
+    request<{ id: string; role: UserRole }>(`/api/admin/usuarios/${encodeURIComponent(id)}/papel`, {
+      method: 'PATCH',
+      body: JSON.stringify({ role }),
     }),
 };

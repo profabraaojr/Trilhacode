@@ -23,7 +23,10 @@ const SURFACES = [
 export function MobileWorkbench({ api }: { api: ApiStatus }) {
   const { resolved, toggle } = useTheme();
   const [surface, setSurface] = useState<Surface>('codigo');
-  const [view, setView] = useState<ViewId | null>(null);
+  const { learning, account } = useStores();
+  const [view, setView] = useState<ViewId | null>(() =>
+    account.getState().urlAction ? 'conta' : null,
+  );
   const [menuOpen, setMenuOpen] = useState(false);
   const firstItem = useRef<HTMLButtonElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
@@ -42,7 +45,6 @@ export function MobileWorkbench({ api }: { api: ApiStatus }) {
   }, [menuOpen]);
 
   // Pedidos de foco (abrir unidade, abrir experimento, verificar desafio) trocam a aba.
-  const { learning } = useStores();
   useEffect(() => {
     let last = learning.getState().focus?.nonce ?? 0;
     return learning.subscribe(() => {

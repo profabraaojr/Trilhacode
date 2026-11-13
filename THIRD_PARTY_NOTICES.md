@@ -24,9 +24,11 @@ A TrilhaCode é distribuída sob a AGPL-3.0-only. Ela usa os componentes abaixo,
 | marked                              | Conversão do Markdown do conteúdo                              | MIT                                                                                                  |
 | yaml                                | Leitura dos arquivos de conteúdo                               | ISC                                                                                                  |
 | vite-plugin-singlefile              | Build do sandbox em arquivo único                              | MIT                                                                                                  |
+| Better Auth                         | Autenticação, sessões e senhas                                 | MIT                                                                                                  |
+| Nodemailer                          | Envio de e-mails                                               | MIT-0                                                                                                |
 | PostgreSQL (imagem Docker)          | Banco de dados                                                 | PostgreSQL License                                                                                   |
 | Mailpit (imagem Docker)             | E-mail em desenvolvimento                                      | MIT                                                                                                  |
 
-Componentes previstos para etapas futuras serão acrescentados aqui quando entrarem no código, entre eles Better Auth (MIT) e LiveCodes (MIT, Copyright (c) 2021-present Hatem Hosny).
+Componentes previstos para etapas futuras serão acrescentados aqui quando entrarem no código, entre eles LiveCodes (MIT, Copyright (c) 2021-present Hatem Hosny).
 
 Nenhum conteúdo do roadmap.sh é reproduzido neste projeto. O conteúdo das trilhas é autoral; as indicações de leitura complementar do MDN Web Docs apenas apontam para o site, cujo conteúdo é distribuído sob CC-BY-SA 2.5.

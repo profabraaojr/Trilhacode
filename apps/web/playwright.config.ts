@@ -38,6 +38,9 @@ export default defineConfig({
         // "@trilhacode/api..." compila a API e os pacotes de que ela depende
         'pnpm --dir ../api db:migrate && pnpm --dir ../api content:sync && pnpm --filter "@trilhacode/api..." build && pnpm --dir ../api start',
       url: 'http://127.0.0.1:3000/api/health',
+      // E-mails ficam em memória (GET /api/dev/emails) para os testes abrirem os links;
+      // o limite de tentativas é desligado porque os testes criam muitas contas seguidas.
+      env: { WEB_ORIGIN: 'http://localhost:4173', MAIL_CAPTURE: 'true', AUTH_RATE_LIMIT: 'false' },
       reuseExistingServer: !process.env.CI,
       timeout: 180_000,
     },
